@@ -1,1 +1,1 @@
-# azure_c_sharp_rag_assistant
+# Azure C# RAG
