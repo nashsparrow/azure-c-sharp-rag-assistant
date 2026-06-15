@@ -5,6 +5,8 @@ VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureCSharpRAGAssistant.Api", "src\AzureCSharpRAGAssistant.Api\AzureCSharpRAGAssistant.Api.csproj", "{C2EA2B36-9D61-4983-BCC3-8A39ED623BAB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureCSharpRAGAssistant.Api.Tests", "tests\AzureCSharpRAGAssistant.Api.Tests\AzureCSharpRAGAssistant.Api.Tests.csproj", "{235AC280-1554-42B2-B2FB-3E8914D8BCA3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{C2EA2B36-9D61-4983-BCC3-8A39ED623BAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C2EA2B36-9D61-4983-BCC3-8A39ED623BAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C2EA2B36-9D61-4983-BCC3-8A39ED623BAB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{235AC280-1554-42B2-B2FB-3E8914D8BCA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{235AC280-1554-42B2-B2FB-3E8914D8BCA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{235AC280-1554-42B2-B2FB-3E8914D8BCA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{235AC280-1554-42B2-B2FB-3E8914D8BCA3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
