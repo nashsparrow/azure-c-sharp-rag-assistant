@@ -27,7 +27,8 @@ namespace AzureCSharpRAGAssistant.Api.Services
 
             await containerClient.CreateIfNotExistsAsync();
 
-            var blobClient = containerClient.GetBlobClient(file.FileName);
+            var blobName = $"documents/{file.FileName}";
+            var blobClient = containerClient.GetBlobClient(blobName);
 
             using var stream = file.OpenReadStream();
             var result = await blobClient.UploadAsync(stream, overwrite: true);
