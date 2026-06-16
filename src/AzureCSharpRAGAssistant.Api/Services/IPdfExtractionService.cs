@@ -7,6 +7,6 @@ namespace AzureCSharpRAGAssistant.Api.Services
 {
     public interface IPdfExtractionService
     {
-        Task ExtractPdf();
+        Task<string> ExtractPdfs();
     }
 }

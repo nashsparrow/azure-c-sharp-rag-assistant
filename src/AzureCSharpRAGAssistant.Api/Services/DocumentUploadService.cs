@@ -11,19 +11,19 @@ namespace AzureCSharpRAGAssistant.Api.Services
 {
     public class DocumentUploadService : IDocumentUploadService
     {
-        private AzureStorageSettings _storageSettings { get; set; }
+        private AzureStorageSettings StorageSettings { get; set; }
 
         public DocumentUploadService(IOptions<AzureStorageSettings> storageSettings)
         {
-            _storageSettings = storageSettings.Value;
+            StorageSettings = storageSettings.Value;
         }
 
         public async Task<Response<BlobContentInfo>> UploadDocument(IFormFile file)
         {
             ValidateFile(file);
 
-            var blobServiceClient = new BlobServiceClient(_storageSettings.ConnectionString);
-            var containerClient = blobServiceClient.GetBlobContainerClient(_storageSettings.ContainerName);
+            var blobServiceClient = new BlobServiceClient(StorageSettings.ConnectionString);
+            var containerClient = blobServiceClient.GetBlobContainerClient(StorageSettings.ContainerName);
 
             await containerClient.CreateIfNotExistsAsync();
 
