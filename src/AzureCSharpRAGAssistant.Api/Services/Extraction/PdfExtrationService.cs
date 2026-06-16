@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AzureCSharpRAGAssistant.Api.Services.Storage;
 using UglyToad.PdfPig;
 using UglyToad.PdfPig.Writer;
 
@@ -11,16 +12,16 @@ namespace AzureCSharpRAGAssistant.Api.Services
 {
     public class PdfExtrationService : IPdfExtractionService
     {
-        private IDocumentDownloadService DocumentDownloadService { get; set; }
+        private IFileStorageService FileStorageService { get; set; }
 
-        public PdfExtrationService(IDocumentDownloadService documentDownloadService)
+        public PdfExtrationService(IFileStorageService fileStorageService)
         {
-            DocumentDownloadService = documentDownloadService;
+            FileStorageService = fileStorageService;
         }
 
         public async Task<string> ExtractPdfs()
         {
-            var documents = await DocumentDownloadService.DownloadAllDocuments("documents");
+            var documents = await FileStorageService.DownloadAllDocuments("documents");
             var pdfText = new StringBuilder();
 
             foreach (var document in documents)

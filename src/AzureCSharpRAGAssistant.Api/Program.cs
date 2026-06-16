@@ -1,5 +1,6 @@
 using AzureCSharpRAGAssistant.Api.Contracts;
 using AzureCSharpRAGAssistant.Api.Services;
+using AzureCSharpRAGAssistant.Api.Services.Storage;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,7 +16,7 @@ builder.Services.Configure<AzureOpenAISettings>(
     builder.Configuration.GetSection("AzureOpenAI"));
 
 // Add services to the container.
-builder.Services.AddScoped<IDocumentUploadService, DocumentUploadService>();
+builder.Services.AddScoped<IFileStorageService, BlobStorageService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

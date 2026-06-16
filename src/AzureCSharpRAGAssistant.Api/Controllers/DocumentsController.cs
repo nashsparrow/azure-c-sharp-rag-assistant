@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using AzureCSharpRAGAssistant.Api.Contracts;
 using AzureCSharpRAGAssistant.Api.Services;
+using AzureCSharpRAGAssistant.Api.Services.Storage;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -11,19 +12,19 @@ namespace AzureCSharpRAGAssistant.Api.Controllers
     public class DocumentsController : ControllerBase
     {
         private readonly ILogger<DocumentsController> _logger;
-        private readonly IDocumentUploadService _documentUploadService;
+        private readonly IFileStorageService _fileStorageService;
 
-        public DocumentsController(ILogger<DocumentsController> logger, IDocumentUploadService documentUploadService)
+        public DocumentsController(ILogger<DocumentsController> logger, IFileStorageService fileStorageService)
         {
             _logger = logger;
-            _documentUploadService = documentUploadService;
+            _fileStorageService = fileStorageService;
         }
 
         [HttpPost("upload")]
         public async Task<ActionResult> DocumentUpload([FromForm] DocumentUploadRequest request)
         {
             Console.WriteLine("uploading");
-            var result = await _documentUploadService.UploadDocument(request.File);
+            var result = await _fileStorageService.UploadDocument(request.File);
             return Ok(result);
         }
     }
