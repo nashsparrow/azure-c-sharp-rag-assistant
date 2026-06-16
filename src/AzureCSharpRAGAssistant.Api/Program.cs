@@ -1,5 +1,6 @@
 using AzureCSharpRAGAssistant.Api.Contracts;
 using AzureCSharpRAGAssistant.Api.Services;
+using AzureCSharpRAGAssistant.Api.Services.Processing;
 using AzureCSharpRAGAssistant.Api.Services.Storage;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,8 +16,14 @@ builder.Services.Configure<AzureSearchSettings>(
 builder.Services.Configure<AzureOpenAISettings>(
     builder.Configuration.GetSection("AzureOpenAI"));
 
+builder.Services.Configure<AzureOpenAISettings>(
+    builder.Configuration.GetSection("Folders"));
+
 // Add services to the container.
 builder.Services.AddScoped<IFileStorageService, BlobStorageService>();
+builder.Services.AddScoped<ITextCleanupService, TextCleanupService>();
+builder.Services.AddScoped<IPdfExtractionService, PdfExtrationService>();
+builder.Services.AddScoped<IDocumentProcessingService, DocumentProcessingService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
