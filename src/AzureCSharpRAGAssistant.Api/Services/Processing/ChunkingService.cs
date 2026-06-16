@@ -9,7 +9,7 @@ namespace AzureCSharpRAGAssistant.Api.Services.Processing
 {
     public class ChunkingService : IChunkingService
     {
-        public List<Chunk> ChunkText(string text)
+        public List<Chunk>? ChunkText(string fileName, int pageNumber, string text)
         {
             var chunks = new List<Chunk>();
 
@@ -40,6 +40,8 @@ namespace AzureCSharpRAGAssistant.Api.Services.Processing
 
                 chunks.Add(new Chunk
                 {
+                    FileName = fileName,
+                    PageNumber = pageNumber, 
                     Text = chunkText
                 });
 

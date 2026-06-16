@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AzureCSharpRAGAssistant.Api.Contracts.Settings;
+using AzureCSharpRAGAssistant.Api.Models;
 using AzureCSharpRAGAssistant.Api.Services.Storage;
 
 namespace AzureCSharpRAGAssistant.Api.Services.Processing
@@ -14,22 +15,25 @@ namespace AzureCSharpRAGAssistant.Api.Services.Processing
         private ITextCleanupService TextCleanupService { get; set; }
         private IFileStorageService FileStorageService { get; set; }
 
+        private IChunkingService ChunkingService {get; set; }
+
         private FolderSettings FolderSettings { get; set; }
 
         public DocumentProcessingService(IPdfExtractionService pdfExtractionService, ITextCleanupService textCleanupService, IFileStorageService fileStorageService,
-         FolderSettings folderSettings)
+         FolderSettings folderSettings, IChunkingService chunkingService)
         {
             PdfExtractionService = pdfExtractionService;
             TextCleanupService = textCleanupService;
             FileStorageService = fileStorageService;
             FolderSettings = folderSettings;
+            ChunkingService = chunkingService;
         }
 
-        public async Task<string> ProcessDocuments()
+        public async Task<List<Chunk>> ProcessDocuments()
         {
             // Download Files
             var files = await FileStorageService.DownloadAllDocuments(FolderSettings.DocumentsFolder);
-
+            var chunks = new List<Chunk>();
             foreach (var file in files)
             {
                 var text = new StringBuilder();
@@ -41,13 +45,16 @@ namespace AzureCSharpRAGAssistant.Api.Services.Processing
                     foreach (var page in doc.GetPages())
                     {
                         var cleanedText = TextCleanupService.CleanupText(page.Text);
-                        text.Append(page.Text);
-                    }
+                        var chunkedText = ChunkingService.ChunkText(file.FileName, page.Number, cleanedText);
 
+                        if (chunkedText != null)
+                        {
+                            chunks.AddRange(chunkedText);
+                        }
+                    }
                 }
             }
-            
-
+            return chunks;
         }
     }
 }

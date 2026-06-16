@@ -24,6 +24,7 @@ builder.Services.AddScoped<IFileStorageService, BlobStorageService>();
 builder.Services.AddScoped<ITextCleanupService, TextCleanupService>();
 builder.Services.AddScoped<IPdfExtractionService, PdfExtrationService>();
 builder.Services.AddScoped<IDocumentProcessingService, DocumentProcessingService>();
+builder.Services.AddScoped<IChunkingService, ChunkingService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
