@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AzureCSharpRAGAssistant.Api.Contracts.Settings;
 using AzureCSharpRAGAssistant.Api.Models;
 using AzureCSharpRAGAssistant.Api.Services.Storage;
+using Microsoft.Extensions.Options;
 
 namespace AzureCSharpRAGAssistant.Api.Services.Processing
 {
@@ -20,12 +21,12 @@ namespace AzureCSharpRAGAssistant.Api.Services.Processing
         private FolderSettings FolderSettings { get; set; }
 
         public DocumentProcessingService(IPdfExtractionService pdfExtractionService, ITextCleanupService textCleanupService, IFileStorageService fileStorageService,
-         FolderSettings folderSettings, IChunkingService chunkingService)
+         IOptions<FolderSettings> folderSettings, IChunkingService chunkingService)
         {
             PdfExtractionService = pdfExtractionService;
             TextCleanupService = textCleanupService;
             FileStorageService = fileStorageService;
-            FolderSettings = folderSettings;
+            FolderSettings = folderSettings.Value;
             ChunkingService = chunkingService;
         }
 

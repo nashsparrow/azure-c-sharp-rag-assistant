@@ -14,5 +14,6 @@ namespace AzureCSharpRAGAssistant.Api.Models
         public int PageNumber {get; set;}
         public string Text {get; set;} = string.Empty;
         public int CharCount => Text.Length;
+        public float[] Embeddings {get; set;} = [];
     }
 }

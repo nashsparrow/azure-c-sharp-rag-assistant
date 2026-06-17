@@ -6,6 +6,7 @@ using Azure;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using AzureCSharpRAGAssistant.Api.Contracts;
+using Microsoft.Extensions.Options;
 
 namespace AzureCSharpRAGAssistant.Api.Services.Storage
 {
@@ -13,9 +14,9 @@ namespace AzureCSharpRAGAssistant.Api.Services.Storage
     {
         private AzureStorageSettings StorageSettings { get; set; }
 
-        public BlobStorageService(AzureStorageSettings storageSettings)
+        public BlobStorageService(IOptions<AzureStorageSettings> storageSettings)
         {
-            StorageSettings = storageSettings;
+            StorageSettings = storageSettings.Value;
         }
 
         public async Task<List<BlobFileResult>> DownloadAllDocuments(string folderName)
