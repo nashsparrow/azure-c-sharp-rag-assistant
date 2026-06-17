@@ -2,6 +2,7 @@ using AzureCSharpRAGAssistant.Api.Contracts;
 using AzureCSharpRAGAssistant.Api.Contracts.Settings;
 using AzureCSharpRAGAssistant.Api.Services;
 using AzureCSharpRAGAssistant.Api.Services.Embedding;
+using AzureCSharpRAGAssistant.Api.Services.Indexing;
 using AzureCSharpRAGAssistant.Api.Services.Processing;
 using AzureCSharpRAGAssistant.Api.Services.Storage;
 
@@ -28,6 +29,7 @@ builder.Services.AddScoped<IPdfExtractionService, PdfExtrationService>();
 builder.Services.AddScoped<IDocumentProcessingService, DocumentProcessingService>();
 builder.Services.AddScoped<IChunkingService, ChunkingService>();
 builder.Services.AddScoped<IEmbeddingService, EmbeddingService>();
+builder.Services.AddScoped<ISearchIndexManagementService, SearchIndexManagementService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -35,6 +37,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var indexManager = scope.ServiceProvider.GetRequiredService<ISearchIndexManagementService>();
+    await indexManager.EnsureIndexExistsAsync();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

@@ -13,20 +13,20 @@ namespace AzureCSharpRAGAssistant.Api.Services.Indexing
 {
     public class SearchIndexService : ISearchIndexService
     {
-        public SearchClient SearchClient { get; set; }
-        public AzureSearchSettings SearchSettings { get; set; }
+        private readonly SearchClient _searchClient;
+        private readonly AzureSearchSettings _searchSettings;
 
         public SearchIndexService(IOptions<AzureSearchSettings> searchSettings)
         {
-            SearchSettings = searchSettings.Value;
-            SearchClient = new SearchClient(new Uri(SearchSettings.Endpoint),
-            SearchSettings.IndexName,
-            new Azure.AzureKeyCredential(SearchSettings.ApiKey));
+            _searchSettings = searchSettings.Value;
+            _searchClient = new SearchClient(new Uri(_searchSettings.Endpoint),
+            _searchSettings.IndexName,
+            new Azure.AzureKeyCredential(_searchSettings.ApiKey));
         }
 
         public async Task<IndexDocumentsResult> IndexChunksAsync(IEnumerable<Chunk> chunks)
         {
-            var result = await SearchClient.UploadDocumentsAsync(chunks);
+            var result = await _searchClient.UploadDocumentsAsync(chunks);
             return result;
         }
     }

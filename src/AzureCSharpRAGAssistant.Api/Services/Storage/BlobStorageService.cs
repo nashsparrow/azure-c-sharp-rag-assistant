@@ -12,17 +12,17 @@ namespace AzureCSharpRAGAssistant.Api.Services.Storage
 {
     public class BlobStorageService : IFileStorageService
     {
-        private AzureStorageSettings StorageSettings { get; set; }
+        private readonly AzureStorageSettings _storageSettings;
 
         public BlobStorageService(IOptions<AzureStorageSettings> storageSettings)
         {
-            StorageSettings = storageSettings.Value;
+            _storageSettings = storageSettings.Value;
         }
 
         public async Task<List<BlobFileResult>> DownloadAllDocuments(string folderName)
         {
-            var blobServiceClient = new BlobServiceClient(StorageSettings.ConnectionString);
-            var containerClient = blobServiceClient.GetBlobContainerClient(StorageSettings.ContainerName);
+            var blobServiceClient = new BlobServiceClient(_storageSettings.ConnectionString);
+            var containerClient = blobServiceClient.GetBlobContainerClient(_storageSettings.ContainerName);
 
             var files = new List<BlobFileResult>();
             var folderPrefix = $"{folderName}/";
@@ -41,8 +41,8 @@ namespace AzureCSharpRAGAssistant.Api.Services.Storage
 
         public async Task<BlobFileResult> DownloadDocument(string folderName, string fileName)
         {
-            var blobServiceClient = new BlobServiceClient(StorageSettings.ConnectionString);
-            var containerClient = blobServiceClient.GetBlobContainerClient(StorageSettings.ContainerName);
+            var blobServiceClient = new BlobServiceClient(_storageSettings.ConnectionString);
+            var containerClient = blobServiceClient.GetBlobContainerClient(_storageSettings.ContainerName);
 
             var blobPath = $"{folderName}/{fileName}";
             var blobClient = containerClient.GetBlobClient(blobPath);
@@ -56,8 +56,8 @@ namespace AzureCSharpRAGAssistant.Api.Services.Storage
         {
             ValidateFile(file);
 
-            var blobServiceClient = new BlobServiceClient(StorageSettings.ConnectionString);
-            var containerClient = blobServiceClient.GetBlobContainerClient(StorageSettings.ContainerName);
+            var blobServiceClient = new BlobServiceClient(_storageSettings.ConnectionString);
+            var containerClient = blobServiceClient.GetBlobContainerClient(_storageSettings.ContainerName);
 
             await containerClient.CreateIfNotExistsAsync();
 

@@ -10,30 +10,30 @@ namespace AzureCSharpRAGAssistant.Api.Services.Processing
 {
     public class DocumentProcessingService : IDocumentProcessingService
     {
-        private IPdfExtractionService PdfExtractionService { get; set; }
-        private ITextCleanupService TextCleanupService { get; set; }
-        private IFileStorageService FileStorageService { get; set; }
-        private IChunkingService ChunkingService { get; set; }
-        private IEmbeddingService EmbeddingService { get; set; }
-        private ISearchIndexService SearchIndexService { get; set; }
-        private FolderSettings FolderSettings { get; set; }
+        private readonly IPdfExtractionService _pdfExtractionService;
+        private readonly ITextCleanupService _textCleanupService;
+        private readonly IFileStorageService _fileStorageService;
+        private readonly IChunkingService _chunkingService;
+        private readonly IEmbeddingService _embeddingService;
+        private readonly ISearchIndexService _searchIndexService;
+        private readonly FolderSettings _folderSettings;
 
         public DocumentProcessingService(IPdfExtractionService pdfExtractionService, ITextCleanupService textCleanupService, IFileStorageService fileStorageService,
          IOptions<FolderSettings> folderSettings, IChunkingService chunkingService, IEmbeddingService embeddingService, ISearchIndexService searchIndexService)
         {
-            PdfExtractionService = pdfExtractionService;
-            TextCleanupService = textCleanupService;
-            FileStorageService = fileStorageService;
-            FolderSettings = folderSettings.Value;
-            ChunkingService = chunkingService;
-            EmbeddingService = embeddingService;
-            SearchIndexService = searchIndexService;
+            _pdfExtractionService = pdfExtractionService;
+            _textCleanupService = textCleanupService;
+            _fileStorageService = fileStorageService;
+            _folderSettings = folderSettings.Value;
+            _chunkingService = chunkingService;
+            _embeddingService = embeddingService;
+            _searchIndexService = searchIndexService;
         }
 
         public async Task<List<Chunk>> ProcessAllDocuments()
         {
             // Download Files
-            var files = await FileStorageService.DownloadAllDocuments(FolderSettings.DocumentsFolder);
+            var files = await _fileStorageService.DownloadAllDocuments(_folderSettings.DocumentsFolder);
             var chunks = new List<Chunk>();
             foreach (var file in files)
             {
@@ -45,7 +45,7 @@ namespace AzureCSharpRAGAssistant.Api.Services.Processing
 
         public async Task<List<Chunk>> ProcessDocument(string fileName)
         {
-            var file = await FileStorageService.DownloadDocument(FolderSettings.DocumentsFolder, fileName);
+            var file = await _fileStorageService.DownloadDocument(_folderSettings.DocumentsFolder, fileName);
             var chunks = await Process(file, fileName);
             return chunks;
             
@@ -60,25 +60,25 @@ namespace AzureCSharpRAGAssistant.Api.Services.Processing
 
             if (string.Equals(extension, ".pdf", StringComparison.OrdinalIgnoreCase))
             {
-                var pages = PdfExtractionService.ExtractPdfPages(file);
+                var pages = _pdfExtractionService.ExtractPdfPages(file);
                 foreach (var page in pages)
                 {
                     int chunkIndex = 0;
-                    var cleanedText = TextCleanupService.CleanupText(page.Text);
-                    var chunkedArray = ChunkingService.ChunkText(file.FileName, page.PageNumber, cleanedText);
+                    var cleanedText = _textCleanupService.CleanupText(page.Text);
+                    var chunkedArray = _chunkingService.ChunkText(file.FileName, page.PageNumber, cleanedText);
 
                     if (chunkedArray != null)
                     {
                         foreach (var chunk in chunkedArray)
                         {
                             chunkIndex++;
-                            chunk.ContentVector = await EmbeddingService.GenerateEmbeddings(chunk.Content);
+                            chunk.ContentVector = await _embeddingService.GenerateEmbeddings(chunk.Content);
                             chunk.FileId = fileId.ToString();
                             chunk.ChunkIndex = chunkIndex;
                             chunks.Add(chunk);
                         }
 
-                        var res = await SearchIndexService.IndexChunksAsync(chunkedArray);
+                        var res = await _searchIndexService.IndexChunksAsync(chunkedArray);
                     }
                 }
             }

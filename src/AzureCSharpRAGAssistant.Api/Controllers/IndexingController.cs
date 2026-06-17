@@ -11,17 +11,17 @@ namespace AzureCSharpRAGAssistant.Api.Controllers
     [Route("api/[controller]")]
     public class IndexingController : ControllerBase
     {
-        private IDocumentProcessingService DocumentProcessingService { get; set; }
+        private readonly IDocumentProcessingService _documentProcessingService;
         public IndexingController(IDocumentProcessingService documentProcessingService)
         {
-            DocumentProcessingService = documentProcessingService;
+            _documentProcessingService = documentProcessingService;
         }
 
         [HttpPost("run")]
         public async Task<ActionResult> RunIndexing()
         {
             Console.WriteLine(" Indexing started..");
-            var result = await DocumentProcessingService.ProcessAllDocuments();
+            var result = await _documentProcessingService.ProcessAllDocuments();
             return Ok(result);
         }
     }

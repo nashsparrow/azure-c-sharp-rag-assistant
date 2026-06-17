@@ -13,25 +13,25 @@ namespace AzureCSharpRAGAssistant.Api.Services.Embedding
 {
     public class EmbeddingService : IEmbeddingService
     {
-        private EmbeddingClient EmbeddingClient { get; set; }
-        private AzureOpenAISettings AzureOpenAISettings { get; set; }
+        private readonly EmbeddingClient _embeddingClient;
+        private readonly AzureOpenAISettings _azureOpenAISettings;
 
 
 
         public EmbeddingService(IOptions<AzureOpenAISettings> openAISettings)
         {
-            AzureOpenAISettings = openAISettings.Value;
+            _azureOpenAISettings = openAISettings.Value;
 
             var azureClient = new AzureOpenAIClient(
-                new Uri(AzureOpenAISettings.Endpoint),
-                new ApiKeyCredential(AzureOpenAISettings.ApiKey));
+                new Uri(_azureOpenAISettings.Endpoint),
+                new ApiKeyCredential(_azureOpenAISettings.ApiKey));
 
-            EmbeddingClient = azureClient.GetEmbeddingClient(AzureOpenAISettings.EmbeddingDeployment);
+            _embeddingClient = azureClient.GetEmbeddingClient(_azureOpenAISettings.EmbeddingDeployment);
         }
 
         public async Task<float[]> GenerateEmbeddings(string text)
         {
-            OpenAIEmbedding embedding = await EmbeddingClient.GenerateEmbeddingAsync(text);
+            OpenAIEmbedding embedding = await _embeddingClient.GenerateEmbeddingAsync(text);
             return embedding.ToFloats().ToArray();
         }
     }

@@ -14,13 +14,6 @@ namespace AzureCSharpRAGAssistant.Api.Services
 {
     public class PdfExtrationService : IPdfExtractionService
     {
-        private IFileStorageService FileStorageService { get; set; }
-
-        public PdfExtrationService(IFileStorageService fileStorageService)
-        {
-            FileStorageService = fileStorageService;
-        }
-
         public IEnumerable<PdfPage> ExtractPdfPages(BlobFileResult document)
         {
             using var pdf = PdfDocument.Open(document.Content);
