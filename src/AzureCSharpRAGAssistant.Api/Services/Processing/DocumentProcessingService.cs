@@ -34,8 +34,10 @@ namespace AzureCSharpRAGAssistant.Api.Services.Processing
             var chunks = new List<Chunk>();
             foreach (var file in files)
             {
+                var fileId = Guid.NewGuid();
                 var text = new StringBuilder();
                 var extension = Path.GetExtension(file.FileName);
+                int chunkIndex = 0;
 
                 if (string.Equals(extension, ".pdf", StringComparison.OrdinalIgnoreCase))
                 {
@@ -49,7 +51,10 @@ namespace AzureCSharpRAGAssistant.Api.Services.Processing
                         {
                             foreach (var chunk in chunkedArray)
                             {
+                                chunkIndex++;
                                 chunk.Embeddings = await EmbeddingService.GenerateEmbeddings(chunk.Text);
+                                chunk.FileId = fileId;
+                                chunk.ChunkIndex = chunkIndex;
                                 chunks.Add(chunk);
                             }
                         }

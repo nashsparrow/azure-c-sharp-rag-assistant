@@ -7,10 +7,10 @@ namespace AzureCSharpRAGAssistant.Api.Models
 {
     public class Chunk
     {
-        public Guid FileId {get; set;} = new Guid();
+        public Guid FileId {get; set;}
         public string FileName {get; set;} = string.Empty;
-        public Guid ChunkId {get; set;} = new Guid();
-        public string ChunkIndex {get; set;} = string.Empty;
+        public Guid ChunkId {get; set;} = Guid.NewGuid();
+        public int ChunkIndex {get; set;}
         public int PageNumber {get; set;}
         public string Text {get; set;} = string.Empty;
         public int CharCount => Text.Length;
