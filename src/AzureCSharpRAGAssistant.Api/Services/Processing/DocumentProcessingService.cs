@@ -1,12 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using AzureCSharpRAGAssistant.Api.Contracts.Settings;
 using AzureCSharpRAGAssistant.Api.Models;
 using AzureCSharpRAGAssistant.Api.Services.Storage;
 using Microsoft.Extensions.Options;
+using System.Text;
 
 namespace AzureCSharpRAGAssistant.Api.Services.Processing
 {
@@ -42,11 +38,11 @@ namespace AzureCSharpRAGAssistant.Api.Services.Processing
 
                 if (string.Equals(extension, ".pdf", StringComparison.OrdinalIgnoreCase))
                 {
-                    var doc = PdfExtractionService.ExtractPdf(file);
-                    foreach (var page in doc.GetPages())
+                    var pages = PdfExtractionService.ExtractPdfPages(file);
+                    foreach (var page in pages)
                     {
                         var cleanedText = TextCleanupService.CleanupText(page.Text);
-                        var chunkedText = ChunkingService.ChunkText(file.FileName, page.Number, cleanedText);
+                        var chunkedText = ChunkingService.ChunkText(file.FileName, page.PageNumber, cleanedText);
 
                         if (chunkedText != null)
                         {

@@ -1,4 +1,5 @@
 using AzureCSharpRAGAssistant.Api.Contracts;
+using AzureCSharpRAGAssistant.Api.Contracts.Settings;
 using AzureCSharpRAGAssistant.Api.Services;
 using AzureCSharpRAGAssistant.Api.Services.Processing;
 using AzureCSharpRAGAssistant.Api.Services.Storage;
@@ -16,7 +17,7 @@ builder.Services.Configure<AzureSearchSettings>(
 builder.Services.Configure<AzureOpenAISettings>(
     builder.Configuration.GetSection("AzureOpenAI"));
 
-builder.Services.Configure<AzureOpenAISettings>(
+builder.Services.Configure<FolderSettings>(
     builder.Configuration.GetSection("Folders"));
 
 // Add services to the container.

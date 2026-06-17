@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AzureCSharpRAGAssistant.Api.Contracts;
+using AzureCSharpRAGAssistant.Api.Models;
 using AzureCSharpRAGAssistant.Api.Services.Storage;
 using UglyToad.PdfPig;
 using UglyToad.PdfPig.Writer;
@@ -20,10 +21,18 @@ namespace AzureCSharpRAGAssistant.Api.Services
             FileStorageService = fileStorageService;
         }
 
-        public PdfDocument ExtractPdf(BlobFileResult document)
+        public IEnumerable<PdfPage> ExtractPdfPages(BlobFileResult document)
         {
-            using var doc = PdfDocument.Open(document.Content);
-            return doc;
+            using var pdf = PdfDocument.Open(document.Content);
+            
+            foreach (var page in pdf.GetPages())
+            {
+                yield return new PdfPage
+                {
+                    PageNumber = page.Number,
+                    Text = page.Text
+                };
+            }
         }
     }
 }
