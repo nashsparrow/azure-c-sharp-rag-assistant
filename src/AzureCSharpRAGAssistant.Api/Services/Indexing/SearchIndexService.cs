@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Azure.Search.Documents;
+using Azure.Search.Documents.Models;
 using AzureCSharpRAGAssistant.Api.Contracts;
 using AzureCSharpRAGAssistant.Api.Models;
 using Microsoft.AspNetCore.Authentication;
@@ -23,9 +24,10 @@ namespace AzureCSharpRAGAssistant.Api.Services.Indexing
             new Azure.AzureKeyCredential(SearchSettings.ApiKey));
         }
 
-        public async Task IndexChunksAsync(IEnumerable<Chunk> chunks)
+        public async Task<IndexDocumentsResult> IndexChunksAsync(IEnumerable<Chunk> chunks)
         {
-            await SearchClient.UploadDocumentsAsync(chunks);
+            var result = await SearchClient.UploadDocumentsAsync(chunks);
+            return result;
         }
     }
 }

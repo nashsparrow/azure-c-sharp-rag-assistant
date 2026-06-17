@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using AzureCSharpRAGAssistant.Api.Contracts;
 using AzureCSharpRAGAssistant.Api.Services;
+using AzureCSharpRAGAssistant.Api.Services.Processing;
 using AzureCSharpRAGAssistant.Api.Services.Storage;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -14,10 +15,14 @@ namespace AzureCSharpRAGAssistant.Api.Controllers
         private readonly ILogger<DocumentsController> _logger;
         private readonly IFileStorageService _fileStorageService;
 
-        public DocumentsController(ILogger<DocumentsController> logger, IFileStorageService fileStorageService)
+        public IDocumentProcessingService DocumentProcessingService { get; set; }
+
+        public DocumentsController(ILogger<DocumentsController> logger, IFileStorageService fileStorageService,
+         IDocumentProcessingService documentProcessingService)
         {
             _logger = logger;
             _fileStorageService = fileStorageService;
+            DocumentProcessingService = documentProcessingService;
         }
 
         [HttpPost("upload")]
@@ -25,6 +30,11 @@ namespace AzureCSharpRAGAssistant.Api.Controllers
         {
             Console.WriteLine("uploading");
             var result = await _fileStorageService.UploadDocument(request.File);
+
+            if (request.Indexing)
+            {
+                var res = await DocumentProcessingService.ProcessDocument(request.File.FileName);
+            }
             return Ok(result);
         }
     }
