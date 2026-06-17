@@ -1,5 +1,6 @@
 using AzureCSharpRAGAssistant.Api.Contracts.Settings;
 using AzureCSharpRAGAssistant.Api.Models;
+using AzureCSharpRAGAssistant.Api.Services.Embedding;
 using AzureCSharpRAGAssistant.Api.Services.Storage;
 using Microsoft.Extensions.Options;
 using System.Text;
@@ -11,19 +12,19 @@ namespace AzureCSharpRAGAssistant.Api.Services.Processing
         private IPdfExtractionService PdfExtractionService { get; set; }
         private ITextCleanupService TextCleanupService { get; set; }
         private IFileStorageService FileStorageService { get; set; }
-
-        private IChunkingService ChunkingService {get; set; }
-
+        private IChunkingService ChunkingService { get; set; }
+        private IEmbeddingService EmbeddingService { get; set; }
         private FolderSettings FolderSettings { get; set; }
 
         public DocumentProcessingService(IPdfExtractionService pdfExtractionService, ITextCleanupService textCleanupService, IFileStorageService fileStorageService,
-         IOptions<FolderSettings> folderSettings, IChunkingService chunkingService)
+         IOptions<FolderSettings> folderSettings, IChunkingService chunkingService, IEmbeddingService embeddingService)
         {
             PdfExtractionService = pdfExtractionService;
             TextCleanupService = textCleanupService;
             FileStorageService = fileStorageService;
             FolderSettings = folderSettings.Value;
             ChunkingService = chunkingService;
+            EmbeddingService = embeddingService;
         }
 
         public async Task<List<Chunk>> ProcessDocuments()
@@ -42,11 +43,15 @@ namespace AzureCSharpRAGAssistant.Api.Services.Processing
                     foreach (var page in pages)
                     {
                         var cleanedText = TextCleanupService.CleanupText(page.Text);
-                        var chunkedText = ChunkingService.ChunkText(file.FileName, page.PageNumber, cleanedText);
+                        var chunkedArray = ChunkingService.ChunkText(file.FileName, page.PageNumber, cleanedText);
 
-                        if (chunkedText != null)
+                        if (chunkedArray != null)
                         {
-                            chunks.AddRange(chunkedText);
+                            foreach (var chunk in chunkedArray)
+                            {
+                                chunk.Embeddings = await EmbeddingService.GenerateEmbeddings(chunk.Text);
+                                chunks.Add(chunk);
+                            }
                         }
                     }
                 }

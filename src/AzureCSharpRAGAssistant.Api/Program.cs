@@ -1,6 +1,7 @@
 using AzureCSharpRAGAssistant.Api.Contracts;
 using AzureCSharpRAGAssistant.Api.Contracts.Settings;
 using AzureCSharpRAGAssistant.Api.Services;
+using AzureCSharpRAGAssistant.Api.Services.Embedding;
 using AzureCSharpRAGAssistant.Api.Services.Processing;
 using AzureCSharpRAGAssistant.Api.Services.Storage;
 
@@ -26,6 +27,7 @@ builder.Services.AddScoped<ITextCleanupService, TextCleanupService>();
 builder.Services.AddScoped<IPdfExtractionService, PdfExtrationService>();
 builder.Services.AddScoped<IDocumentProcessingService, DocumentProcessingService>();
 builder.Services.AddScoped<IChunkingService, ChunkingService>();
+builder.Services.AddScoped<IEmbeddingService, EmbeddingService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
