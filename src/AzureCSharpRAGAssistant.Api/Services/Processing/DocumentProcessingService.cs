@@ -52,8 +52,8 @@ namespace AzureCSharpRAGAssistant.Api.Services.Processing
                             foreach (var chunk in chunkedArray)
                             {
                                 chunkIndex++;
-                                chunk.Embeddings = await EmbeddingService.GenerateEmbeddings(chunk.Text);
-                                chunk.FileId = fileId;
+                                chunk.ContentVector = await EmbeddingService.GenerateEmbeddings(chunk.Content);
+                                chunk.FileId = fileId.ToString();
                                 chunk.ChunkIndex = chunkIndex;
                                 chunks.Add(chunk);
                             }

@@ -42,7 +42,7 @@ namespace AzureCSharpRAGAssistant.Api.Services.Processing
                 {
                     FileName = fileName,
                     PageNumber = pageNumber, 
-                    Text = chunkText
+                    Content = chunkText
                 });
 
                 previousLastSentence = GetLastSentence(chunkText);
