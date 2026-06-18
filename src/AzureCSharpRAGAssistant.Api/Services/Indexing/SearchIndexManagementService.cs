@@ -14,9 +14,11 @@ namespace AzureCSharpRAGAssistant.Api.Services.Indexing
     {
         private readonly SearchIndexClient _searchIndexClient;
         private readonly AzureSearchSettings _searchSettings;
+        private readonly ILogger<SearchIndexManagementService> _logger;
 
-        public SearchIndexManagementService(IOptions<AzureSearchSettings> searchSettings)
+        public SearchIndexManagementService(IOptions<AzureSearchSettings> searchSettings, ILogger<SearchIndexManagementService> logger)
         {
+            _logger = logger;
             _searchSettings = searchSettings.Value;
             _searchIndexClient = new SearchIndexClient(
                 new Uri(_searchSettings.Endpoint), 
@@ -27,6 +29,7 @@ namespace AzureCSharpRAGAssistant.Api.Services.Indexing
         {
             try
             {
+                _logger.LogInformation(" Azure Search Index | Search for Index {IndexName} Started.", _searchSettings.IndexName);
                 await _searchIndexClient.GetIndexAsync(_searchSettings.IndexName);
                 return;
             }
@@ -68,6 +71,7 @@ namespace AzureCSharpRAGAssistant.Api.Services.Indexing
             };
 
             await _searchIndexClient.CreateIndexAsync(index);
+            _logger.LogInformation(" Azure Search Index | New Index : {IndexName} Created.", _searchSettings.IndexName);
         }
     }
 }

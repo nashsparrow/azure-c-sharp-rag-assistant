@@ -22,6 +22,9 @@ builder.Services.Configure<AzureOpenAISettings>(
 builder.Services.Configure<FolderSettings>(
     builder.Configuration.GetSection("Folders"));
 
+builder.Services.Configure<AzureApplicationInsightsSettings>(
+    builder.Configuration.GetSection("ApplicationInsights"));
+
 // Add services to the container.
 builder.Services.AddScoped<IFileStorageService, BlobStorageService>();
 builder.Services.AddScoped<ITextCleanupService, TextCleanupService>();
@@ -32,8 +35,9 @@ builder.Services.AddScoped<IEmbeddingService, EmbeddingService>();
 builder.Services.AddScoped<ISearchIndexManagementService, SearchIndexManagementService>();
 builder.Services.AddScoped<ISearchIndexService, SearchIndexService>();
 
+builder.Services.AddApplicationInsightsTelemetry();
+
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -41,6 +45,7 @@ var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
+    // This will search the index in Azure Search, if it does not exist it will create new index
     var indexManager = scope.ServiceProvider.GetRequiredService<ISearchIndexManagementService>();
     await indexManager.EnsureIndexExistsAsync();
 }
