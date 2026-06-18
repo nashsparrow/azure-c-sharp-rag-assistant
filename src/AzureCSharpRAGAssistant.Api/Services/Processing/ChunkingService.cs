@@ -1,9 +1,19 @@
+using AzureCSharpRAGAssistant.Api.Contracts.Settings;
 using AzureCSharpRAGAssistant.Api.Models;
+using Microsoft.Extensions.Options;
+using System.Text.RegularExpressions;
 
 namespace AzureCSharpRAGAssistant.Api.Services.Processing
 {
     public class ChunkingService : IChunkingService
     {
+        private readonly ChunkSettings _chunkSettings;
+
+        public ChunkingService(IOptions<ChunkSettings> chunkSettings)
+        {
+            _chunkSettings = chunkSettings.Value;
+        }
+
         public List<Chunk>? ChunkText(string fileName, int pageNumber, string text)
         {
             var chunks = new List<Chunk>();
@@ -13,56 +23,71 @@ namespace AzureCSharpRAGAssistant.Api.Services.Processing
                 return chunks;
             }
 
-            var words = text.Split(
-                new[] { ' ', '\r', '\n', '\t' },
-                StringSplitOptions.RemoveEmptyEntries);
-
-            const int chunkSize = 500;
-            string previousLastSentence = string.Empty;
-
-            for (int i = 0; i < words.Length; i += chunkSize)
+            var sentences = SplitSentences(text);
+            if (sentences.Count == 0)
             {
-                var currentWords = words
-                    .Skip(i)
-                    .Take(chunkSize);
+                return chunks;
+            }
 
-                var chunkText = string.Join(" ", currentWords);
+            var maxChunkLength = Math.Max(_chunkSettings.ChunkSize * 2, 1);
+            var startIndex = 0;
 
-                if (!string.IsNullOrWhiteSpace(previousLastSentence))
+            while (startIndex < sentences.Count)
+            {
+                var chunkSentences = new List<string>();
+                var currentIndex = startIndex;
+
+                while (currentIndex < sentences.Count)
                 {
-                    chunkText = previousLastSentence + " " + chunkText;
+                    var candidateSentences = chunkSentences.Append(sentences[currentIndex]);
+                    var candidateText = string.Join(" ", candidateSentences);
+
+                    if (chunkSentences.Count > 0 && candidateText.Length > maxChunkLength)
+                    {
+                        break;
+                    }
+
+                    chunkSentences.Add(sentences[currentIndex]);
+                    currentIndex++;
                 }
 
                 chunks.Add(new Chunk
                 {
                     FileName = fileName,
-                    PageNumber = pageNumber, 
-                    Content = chunkText
+                    PageNumber = pageNumber,
+                    Content = string.Join(" ", chunkSentences)
                 });
 
-                previousLastSentence = GetLastSentence(chunkText);
+                if (currentIndex >= sentences.Count)
+                {
+                    break;
+                }
+
+                startIndex = chunkSentences.Count > 1
+                    ? currentIndex - 1
+                    : currentIndex;
             }
 
             return chunks;
         }
 
-        private static string GetLastSentence(string text)
+        private static List<string> SplitSentences(string text)
         {
             if (string.IsNullOrWhiteSpace(text))
             {
-                return string.Empty;
+                return [];
             }
 
-            var sentences = text.Split(
-                new[] { '.', '!', '?' },
-                StringSplitOptions.RemoveEmptyEntries);
-
-            if (sentences.Length == 0)
+            var matches = Regex.Matches(text, @"[^.!?]+[.!?]|[^.!?]+$");
+            if (matches.Count == 0)
             {
-                return string.Empty;
+                return [];
             }
 
-            return sentences[^1].Trim() + ".";
+            return matches
+                .Select(match => match.Value.Trim())
+                .Where(sentence => !string.IsNullOrWhiteSpace(sentence))
+                .ToList();
         }
     }
 }

@@ -25,6 +25,9 @@ builder.Services.Configure<FolderSettings>(
 builder.Services.Configure<AzureApplicationInsightsSettings>(
     builder.Configuration.GetSection("ApplicationInsights"));
 
+builder.Services.Configure<ChunkSettings>(
+    builder.Configuration.GetSection("ChunkSettings"));
+
 // Add services to the container.
 builder.Services.AddScoped<IFileStorageService, BlobStorageService>();
 builder.Services.AddScoped<ITextCleanupService, TextCleanupService>();
