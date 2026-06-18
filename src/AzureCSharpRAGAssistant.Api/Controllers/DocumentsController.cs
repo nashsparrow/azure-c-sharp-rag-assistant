@@ -28,13 +28,12 @@ namespace AzureCSharpRAGAssistant.Api.Controllers
         [HttpPost("upload")]
         public async Task<ActionResult> DocumentUpload([FromForm] DocumentUploadRequest request)
         {
+            _logger.LogInformation("Uploading File {FileName} with Indexing: {Indexing}.", request.File.FileName, request.Indexing);
             var result = await _fileStorageService.UploadDocument(request.File);
 
             if (request.Indexing)
             {
-                _logger.LogInformation("Indexing File {FileName} Started.", request.File.FileName);
                 var res = await DocumentProcessingService.ProcessDocument(request.File.FileName);
-                _logger.LogInformation("Indexing File {FileName} Completed.", request.File.FileName);
             }
             return Ok(result);
         }

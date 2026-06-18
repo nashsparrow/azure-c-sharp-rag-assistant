@@ -16,8 +16,11 @@ namespace AzureCSharpRAGAssistant.Api.Services.Indexing
         private readonly SearchClient _searchClient;
         private readonly AzureSearchSettings _searchSettings;
 
-        public SearchIndexService(IOptions<AzureSearchSettings> searchSettings)
+        private readonly ILogger<SearchIndexService> _logger;
+
+        public SearchIndexService(IOptions<AzureSearchSettings> searchSettings, ILogger<SearchIndexService> logger)
         {
+            _logger = logger;
             _searchSettings = searchSettings.Value;
             _searchClient = new SearchClient(new Uri(_searchSettings.Endpoint),
             _searchSettings.IndexName,
@@ -26,7 +29,9 @@ namespace AzureCSharpRAGAssistant.Api.Services.Indexing
 
         public async Task<IndexDocumentsResult> IndexChunksAsync(IEnumerable<Chunk> chunks)
         {
+            _logger.LogInformation("Indexing Started.");
             var result = await _searchClient.UploadDocumentsAsync(chunks);
+            _logger.LogInformation("Indexing Completed.");
             return result;
         }
     }
