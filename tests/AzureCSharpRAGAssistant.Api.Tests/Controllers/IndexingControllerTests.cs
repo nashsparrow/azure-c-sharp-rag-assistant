@@ -1,15 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Azure;
 using AzureCSharpRAGAssistant.Api.Controllers;
 using AzureCSharpRAGAssistant.Api.Models;
 using AzureCSharpRAGAssistant.Api.Services.Processing;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using Xunit.Sdk;
 
 namespace AzureCSharpRAGAssistant.Api.Tests.Controllers
 {

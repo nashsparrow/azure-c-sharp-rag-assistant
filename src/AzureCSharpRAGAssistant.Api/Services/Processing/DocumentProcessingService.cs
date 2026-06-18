@@ -4,7 +4,6 @@ using AzureCSharpRAGAssistant.Api.Services.Embedding;
 using AzureCSharpRAGAssistant.Api.Services.Indexing;
 using AzureCSharpRAGAssistant.Api.Services.Storage;
 using Microsoft.Extensions.Options;
-using System.Text;
 
 namespace AzureCSharpRAGAssistant.Api.Services.Processing
 {

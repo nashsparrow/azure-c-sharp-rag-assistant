@@ -1,13 +1,8 @@
-using System;
-using System.ClientModel;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Threading.Tasks;
 using Azure.AI.OpenAI;
 using AzureCSharpRAGAssistant.Api.Contracts;
 using Microsoft.Extensions.Options;
 using OpenAI.Embeddings;
+using System.ClientModel;
 
 namespace AzureCSharpRAGAssistant.Api.Services.Embedding
 {

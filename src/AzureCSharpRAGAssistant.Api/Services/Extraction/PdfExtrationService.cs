@@ -1,13 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using AzureCSharpRAGAssistant.Api.Contracts;
 using AzureCSharpRAGAssistant.Api.Models;
-using AzureCSharpRAGAssistant.Api.Services.Storage;
 using UglyToad.PdfPig;
-using UglyToad.PdfPig.Writer;
 
 
 namespace AzureCSharpRAGAssistant.Api.Services

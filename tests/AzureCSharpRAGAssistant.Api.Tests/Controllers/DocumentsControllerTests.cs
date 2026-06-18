@@ -1,20 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Azure;
+using Azure.Storage.Blobs.Models;
+using AzureCSharpRAGAssistant.Api.Contracts;
 using AzureCSharpRAGAssistant.Api.Controllers;
 using AzureCSharpRAGAssistant.Api.Services.Processing;
 using AzureCSharpRAGAssistant.Api.Services.Storage;
-using Castle.Core.Logging;
-using Moq;
-using Microsoft.Extensions.Logging;
-using System.Text;
-using Microsoft.AspNetCore.Http;
-using AzureCSharpRAGAssistant.Api.Contracts;
-using Azure;
-using Azure.Storage.Blobs.Models;
-using Microsoft.AspNetCore.Mvc;
 using AzureCSharpRAGAssistant.Api.Tests.Helpers;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Moq;
 
 namespace AzureCSharpRAGAssistant.Api.Tests.Controllers
 {

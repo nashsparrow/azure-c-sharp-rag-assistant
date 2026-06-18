@@ -1,10 +1,7 @@
-using System.Threading.Tasks;
 using AzureCSharpRAGAssistant.Api.Contracts;
-using AzureCSharpRAGAssistant.Api.Services;
 using AzureCSharpRAGAssistant.Api.Services.Processing;
 using AzureCSharpRAGAssistant.Api.Services.Storage;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace AzureCSharpRAGAssistant.Api.Controllers
 {
