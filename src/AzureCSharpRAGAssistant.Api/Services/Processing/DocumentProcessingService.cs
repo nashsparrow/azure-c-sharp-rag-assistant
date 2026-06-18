@@ -64,20 +64,23 @@ namespace AzureCSharpRAGAssistant.Api.Services.Processing
                 {
                     int chunkIndex = 0;
                     var cleanedText = _textCleanupService.CleanupText(page.Text);
-                    var chunkedArray = _chunkingService.ChunkText(file.FileName, page.PageNumber, cleanedText);
-
-                    if (chunkedArray != null)
+                    if (cleanedText != null) 
                     {
-                        foreach (var chunk in chunkedArray)
-                        {
-                            chunkIndex++;
-                            chunk.ContentVector = await _embeddingService.GenerateEmbeddings(chunk.Content);
-                            chunk.FileId = fileId.ToString();
-                            chunk.ChunkIndex = chunkIndex;
-                            chunks.Add(chunk);
-                        }
+                        var chunkedArray = _chunkingService.ChunkText(file.FileName, page.PageNumber, cleanedText);
 
-                        var res = await _searchIndexService.IndexChunksAsync(chunkedArray);
+                        if (chunkedArray != null)
+                        {
+                            foreach (var chunk in chunkedArray)
+                            {
+                                chunkIndex++;
+                                chunk.ContentVector = await _embeddingService.GenerateEmbeddings(chunk.Content);
+                                chunk.FileId = fileId.ToString();
+                                chunk.ChunkIndex = chunkIndex;
+                                chunks.Add(chunk);
+                            }
+
+                            var res = await _searchIndexService.IndexChunksAsync(chunkedArray);
+                        }
                     }
                 }
             }

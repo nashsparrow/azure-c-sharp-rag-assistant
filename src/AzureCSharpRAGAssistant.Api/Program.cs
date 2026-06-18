@@ -28,7 +28,7 @@ builder.Services.Configure<AzureApplicationInsightsSettings>(
 // Add services to the container.
 builder.Services.AddScoped<IFileStorageService, BlobStorageService>();
 builder.Services.AddScoped<ITextCleanupService, TextCleanupService>();
-builder.Services.AddScoped<IPdfExtractionService, PdfExtrationService>();
+builder.Services.AddScoped<IPdfExtractionService, PdfExtractionService>();
 builder.Services.AddScoped<IDocumentProcessingService, DocumentProcessingService>();
 builder.Services.AddScoped<IChunkingService, ChunkingService>();
 builder.Services.AddScoped<IEmbeddingService, EmbeddingService>();

@@ -5,7 +5,7 @@ using UglyToad.PdfPig;
 
 namespace AzureCSharpRAGAssistant.Api.Services
 {
-    public class PdfExtrationService : IPdfExtractionService
+    public class PdfExtractionService : IPdfExtractionService
     {
         public IEnumerable<PdfPage> ExtractPdfPages(BlobFileResult document)
         {

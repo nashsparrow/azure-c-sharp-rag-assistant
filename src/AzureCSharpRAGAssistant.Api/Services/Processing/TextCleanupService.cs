@@ -4,10 +4,10 @@ namespace AzureCSharpRAGAssistant.Api.Services.Processing
 {
     public class TextCleanupService : ITextCleanupService
     {
-        public string CleanupText(string text)
+        public string? CleanupText(string text)
         {
             if (string.IsNullOrWhiteSpace(text))
-                return string.Empty;
+                return null;
 
             text = text.Replace("/r", "/n");
 
@@ -22,6 +22,9 @@ namespace AzureCSharpRAGAssistant.Api.Services.Processing
 
             // join lines inside paragraphs
             text = Regex.Replace(text, @"(?<!\n)\n(?!\n)", " ");
+            
+            if (string.IsNullOrWhiteSpace(text))
+                return null;
             
             return text.Trim();
         }
