@@ -20,7 +20,6 @@ namespace AzureCSharpRAGAssistant.Api.Controllers
         [HttpPost("run")]
         public async Task<ActionResult> RunIndexing()
         {
-            Console.WriteLine(" Indexing started..");
             var result = await _documentProcessingService.ProcessAllDocuments();
             return Ok(result);
         }
