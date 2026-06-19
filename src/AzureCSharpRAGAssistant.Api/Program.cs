@@ -1,16 +1,23 @@
 using AzureCSharpRAGAssistant.Api.Contracts;
 using AzureCSharpRAGAssistant.Api.Contracts.Settings;
+using AzureCSharpRAGAssistant.Api.Data;
 using AzureCSharpRAGAssistant.Api.Middleware;
 using AzureCSharpRAGAssistant.Api.Services;
 using AzureCSharpRAGAssistant.Api.Services.Chat;
 using AzureCSharpRAGAssistant.Api.Services.ContextBuilder;
+using AzureCSharpRAGAssistant.Api.Services.DocumentRecords;
 using AzureCSharpRAGAssistant.Api.Services.Embedding;
 using AzureCSharpRAGAssistant.Api.Services.Indexing;
 using AzureCSharpRAGAssistant.Api.Services.Processing;
 using AzureCSharpRAGAssistant.Api.Services.Storage;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddDbContext<AppDBContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped<IAppDBContext>(sp => sp.GetRequiredService<AppDBContext>());
 
 // Register Settings
 builder.Services.Configure<AzureStorageSettings>(
@@ -42,6 +49,7 @@ builder.Services.AddScoped<ISearchIndexManagementService, SearchIndexManagementS
 builder.Services.AddScoped<ISearchIndexService, SearchIndexService>();
 builder.Services.AddScoped<IContextBuilderService, ContextBuilderService>();
 builder.Services.AddScoped<IChatService, ChatService>();
+builder.Services.AddScoped<IDocumentRecordsService, DocumentRecordsService>();
 
 builder.Services.AddApplicationInsightsTelemetry();
 
