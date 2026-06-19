@@ -15,6 +15,7 @@ namespace AzureCSharpRAGAssistant.Api.Tests.Middleware
             _loggerMock = new Mock<ILogger<CorrelationIdMiddleware>>();
         }
 
+        [Fact]
         public async Task Test_TheNextDelegateIsCalled()
         {
             var context = new DefaultHttpContext();

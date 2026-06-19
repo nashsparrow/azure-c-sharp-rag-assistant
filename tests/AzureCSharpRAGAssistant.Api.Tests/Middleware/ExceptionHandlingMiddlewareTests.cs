@@ -14,7 +14,7 @@ namespace AzureCSharpRAGAssistant.Api.Tests.Middleware
         }
 
         [Fact]
-        public async void Test_InvokeAsync_CallNext_WhenNoException()
+        public async Task Test_InvokeAsync_CallNext_WhenNoException()
         {
             var context = new DefaultHttpContext();
             var nextCalled = false;

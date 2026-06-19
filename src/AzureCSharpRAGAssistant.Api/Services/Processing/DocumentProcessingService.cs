@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using AzureCSharpRAGAssistant.Api.Contracts.Settings;
 using AzureCSharpRAGAssistant.Api.Models;
 using AzureCSharpRAGAssistant.Api.Services.Embedding;
@@ -53,7 +54,7 @@ namespace AzureCSharpRAGAssistant.Api.Services.Processing
         public async Task<List<Chunk>> Process(Contracts.BlobFileResult file, string fileName)
         {
             var chunks = new List<Chunk>();
-            var fileId = Guid.NewGuid();
+            var fileId = CreateStableDocumentId(file.Content);
             var extension = Path.GetExtension(fileName);
             
 
@@ -85,6 +86,12 @@ namespace AzureCSharpRAGAssistant.Api.Services.Processing
                 }
             }
             return chunks;
+        }
+
+        private static string CreateStableDocumentId(byte[] content)
+        {
+            var hash = SHA256.HashData(content);
+            return Convert.ToHexString(hash).ToLowerInvariant();
         }
     }
 }

@@ -58,7 +58,7 @@ namespace AzureCSharpRAGAssistant.Api.Tests.Middleware
                     It.Is<It.IsAnyType>((v, t) =>
                         v.ToString()!.Contains("Incoming Request") &&
                         v.ToString()!.Contains("POST") &&
-                        v.ToString()!.Contains("/api/query/query")),
+                        v.ToString()!.Contains("/api/test")),
                     It.IsAny<Exception?>(),
                     It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
@@ -70,7 +70,7 @@ namespace AzureCSharpRAGAssistant.Api.Tests.Middleware
                     It.Is<It.IsAnyType>((v, t) =>
                         v.ToString()!.Contains("Requet Completed") &&
                         v.ToString()!.Contains("POST") &&
-                        v.ToString()!.Contains("/api/query/query") &&
+                        v.ToString()!.Contains("/api/test") &&
                         v.ToString()!.Contains("200")),
                     It.IsAny<Exception?>(),
                     It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
