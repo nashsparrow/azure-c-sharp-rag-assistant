@@ -27,9 +27,8 @@ namespace AzureCSharpRAGAssistant.Api.Tests.Middleware
                 return Task.CompletedTask;
             };
 
-            var middleware = new RequestResponseLoggingMiddleware(next, _loggerMock.Object);
 
-            await middleware.InvokeAsync(context);
+            await new RequestResponseLoggingMiddleware(next, _loggerMock.Object).InvokeAsync(context);
 
             Assert.True(nextCalled);
             Assert.Equal(StatusCodes.Status200OK, context.Response.StatusCode);
@@ -41,11 +40,9 @@ namespace AzureCSharpRAGAssistant.Api.Tests.Middleware
             var context = new DefaultHttpContext();
             context.Request.Method = "POST";
             context.Request.Path = "/api/test";
-            var nextCalled = false; 
 
             RequestDelegate next = (HttpContext context) =>
             {
-                nextCalled = true;
                 context.Response.StatusCode = StatusCodes.Status200OK;
                 return Task.CompletedTask;
             };

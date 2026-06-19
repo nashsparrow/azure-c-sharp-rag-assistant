@@ -2,6 +2,7 @@ using Azure.Search.Documents;
 using Azure.Search.Documents.Models;
 using AzureCSharpRAGAssistant.Api.Contracts;
 using AzureCSharpRAGAssistant.Api.Models;
+using AzureCSharpRAGAssistant.Api.Services.Embedding;
 using Microsoft.Extensions.Options;
 using System.Globalization;
 
@@ -11,12 +12,13 @@ namespace AzureCSharpRAGAssistant.Api.Services.Indexing
     {
         private readonly SearchClient _searchClient;
         private readonly AzureSearchSettings _searchSettings;
-
+        private readonly IEmbeddingService _embeddingService;
         private readonly ILogger<SearchIndexService> _logger;
 
-        public SearchIndexService(IOptions<AzureSearchSettings> searchSettings, ILogger<SearchIndexService> logger)
+        public SearchIndexService(IOptions<AzureSearchSettings> searchSettings, ILogger<SearchIndexService> logger, IEmbeddingService embeddingService)
         {
             _logger = logger;
+            _embeddingService = embeddingService;
             _searchSettings = searchSettings.Value;
             _searchClient = new SearchClient(new Uri(_searchSettings.Endpoint),
             _searchSettings.IndexName,
@@ -33,9 +35,10 @@ namespace AzureCSharpRAGAssistant.Api.Services.Indexing
 
         public async Task<List<Chunk>> SearchChunksAsync(string question)
         {
+            var questionVector = await _embeddingService.GenerateEmbeddings(question);
             var options = new SearchOptions
             {
-                Size = 5,
+                Size = _searchSettings.Top_K,
                 IncludeTotalCount = true
             };
 
@@ -45,6 +48,14 @@ namespace AzureCSharpRAGAssistant.Api.Services.Indexing
             options.Select.Add("chunkIndex");
             options.Select.Add("pageNumber");
             options.Select.Add("content");
+
+            options.VectorSearch = new VectorSearchOptions();
+            options.VectorSearch.Queries.Add(
+                new VectorizedQuery(questionVector)
+                {
+                    KNearestNeighborsCount = _searchSettings.Top_K,
+                    Fields = {"contentVector"}
+                });
 
             var response = await _searchClient.SearchAsync<SearchDocument>(question, options);
 
