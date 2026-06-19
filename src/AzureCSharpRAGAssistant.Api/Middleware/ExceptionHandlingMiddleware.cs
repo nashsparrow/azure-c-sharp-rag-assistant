@@ -1,5 +1,6 @@
 using System.Net;
 using System.Text.Json;
+using AzureCSharpRAGAssistant.Api.Exceptions;
 
 namespace AzureCSharpRAGAssistant.Api.Middleware
 {
@@ -35,6 +36,7 @@ namespace AzureCSharpRAGAssistant.Api.Middleware
             {
                 InvalidDataException => (int)HttpStatusCode.BadRequest,
                 ArgumentException => (int)HttpStatusCode.BadRequest,
+                FileUploadValidationException => (int)HttpStatusCode.BadRequest,
                 _ => (int)HttpStatusCode.InternalServerError
             };
 

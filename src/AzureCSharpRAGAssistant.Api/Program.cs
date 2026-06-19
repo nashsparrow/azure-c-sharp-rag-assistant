@@ -4,6 +4,7 @@ using AzureCSharpRAGAssistant.Api.Data;
 using AzureCSharpRAGAssistant.Api.Middleware;
 using AzureCSharpRAGAssistant.Api.Services;
 using AzureCSharpRAGAssistant.Api.Services.Chat;
+using AzureCSharpRAGAssistant.Api.Services.ChatHistories;
 using AzureCSharpRAGAssistant.Api.Services.ContextBuilder;
 using AzureCSharpRAGAssistant.Api.Services.DocumentRecords;
 using AzureCSharpRAGAssistant.Api.Services.Embedding;
@@ -49,6 +50,7 @@ builder.Services.AddScoped<ISearchIndexManagementService, SearchIndexManagementS
 builder.Services.AddScoped<ISearchIndexService, SearchIndexService>();
 builder.Services.AddScoped<IContextBuilderService, ContextBuilderService>();
 builder.Services.AddScoped<IChatService, ChatService>();
+builder.Services.AddScoped<IChatHistoriesService, ChatHistoriesService>();
 builder.Services.AddScoped<IDocumentRecordsService, DocumentRecordsService>();
 
 builder.Services.AddApplicationInsightsTelemetry();
