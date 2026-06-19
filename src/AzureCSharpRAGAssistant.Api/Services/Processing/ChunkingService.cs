@@ -1,6 +1,7 @@
 using AzureCSharpRAGAssistant.Api.Contracts.Settings;
 using AzureCSharpRAGAssistant.Api.Models;
 using Microsoft.Extensions.Options;
+using PragmaticSegmenterNet;
 using System.Text.RegularExpressions;
 
 namespace AzureCSharpRAGAssistant.Api.Services.Processing
@@ -14,80 +15,55 @@ namespace AzureCSharpRAGAssistant.Api.Services.Processing
             _chunkSettings = chunkSettings.Value;
         }
 
-        public List<Chunk>? ChunkText(string fileName, int pageNumber, string text)
+        public IReadOnlyList<string> GetSentences(string text)
         {
-            var chunks = new List<Chunk>();
+            var sentences = Segmenter.Segment(
+                text,
+                Language.English,
+                cleanText: true,
+                documentType: DocumentType.Pdf);
 
-            if (string.IsNullOrWhiteSpace(text))
-            {
-                return chunks;
-            }
-
-            var sentences = SplitSentences(text);
-            if (sentences.Count == 0)
-            {
-                return chunks;
-            }
-
-            var maxChunkLength = Math.Max(_chunkSettings.ChunkSize * 2, 1);
-            var startIndex = 0;
-
-            while (startIndex < sentences.Count)
-            {
-                var chunkSentences = new List<string>();
-                var currentIndex = startIndex;
-
-                while (currentIndex < sentences.Count)
-                {
-                    var candidateSentences = chunkSentences.Append(sentences[currentIndex]);
-                    var candidateText = string.Join(" ", candidateSentences);
-
-                    if (chunkSentences.Count > 0 && candidateText.Length > maxChunkLength)
-                    {
-                        break;
-                    }
-
-                    chunkSentences.Add(sentences[currentIndex]);
-                    currentIndex++;
-                }
-
-                chunks.Add(new Chunk
-                {
-                    FileName = fileName,
-                    PageNumber = pageNumber,
-                    Content = string.Join(" ", chunkSentences)
-                });
-
-                if (currentIndex >= sentences.Count)
-                {
-                    break;
-                }
-
-                startIndex = chunkSentences.Count > 1
-                    ? currentIndex - 1
-                    : currentIndex;
-            }
-
-            return chunks;
+            return sentences;
         }
 
-        private static List<string> SplitSentences(string text)
+        public List<Chunk>? ChunkText(string fileName, int pageNumber, string text)
         {
-            if (string.IsNullOrWhiteSpace(text))
+            //This method will overlap one sentence between each chunk of the page
+            //This logic is implemented that the chunk text size is one sentence over than the chunk limit.
+            
+            var chunks = new List<Chunk>();
+            var sentences = GetSentences(text);
+            var maxChunkLength = _chunkSettings.ChunkSize;
+            var chunkLength = 0;
+            var chunkText = string.Empty;
+
+            foreach (var sentence in sentences)
             {
-                return [];
+                chunkText += (chunkText == string.Empty) ? sentence : " " + sentence;
+                chunkLength += sentence.Length;
+                
+                if (chunkLength > maxChunkLength)
+                {
+                    chunks.Add(new Chunk
+                    {
+                        FileName = fileName,
+                        PageNumber = pageNumber,
+                        Content = chunkText
+                    });
+
+                    chunkLength = 0;
+                    chunkText = sentence;
+                }
             }
 
-            var matches = Regex.Matches(text, @"[^.!?]+[.!?]|[^.!?]+$");
-            if (matches.Count == 0)
+            chunks.Add(new Chunk
             {
-                return [];
-            }
+                FileName = fileName,
+                PageNumber = pageNumber,
+                Content = chunkText
+            });
 
-            return matches
-                .Select(match => match.Value.Trim())
-                .Where(sentence => !string.IsNullOrWhiteSpace(sentence))
-                .ToList();
+            return chunks;
         }
     }
 }
