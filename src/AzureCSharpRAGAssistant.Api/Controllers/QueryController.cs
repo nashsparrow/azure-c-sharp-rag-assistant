@@ -26,7 +26,8 @@ namespace AzureCSharpRAGAssistant.Api.Controllers
         {
             var result = await _searchIndexService.SearchChunksAsync(request.Question);
             var context = _contextBuilderService.BuildContext(result);
-            var chatResult = _chatService.ChatCompletion(request.Question, context);
+            var chatResult = await _chatService.ChatCompletion(request.Question, context);
+
             return Ok(chatResult);
         }
     }

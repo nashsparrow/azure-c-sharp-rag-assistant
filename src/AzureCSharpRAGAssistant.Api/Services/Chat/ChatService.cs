@@ -28,9 +28,12 @@ namespace AzureCSharpRAGAssistant.Api.Services.Chat
                 new SystemChatMessage(_azureOpenAISettings.SystemChatMessage),
                 new UserChatMessage(
                     $"""
-                    Context: {context.Context}
+                    Retrieved context: {context.Context}
+                    --------------------
 
                     Question: {question}
+
+                    Based only on the retrieved context, provide the answer.
                     """
                 )
             };
