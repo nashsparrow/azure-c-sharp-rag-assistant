@@ -1,5 +1,6 @@
 using AzureCSharpRAGAssistant.Api.Contracts;
 using AzureCSharpRAGAssistant.Api.Contracts.Settings;
+using AzureCSharpRAGAssistant.Api.Middleware;
 using AzureCSharpRAGAssistant.Api.Services;
 using AzureCSharpRAGAssistant.Api.Services.Chat;
 using AzureCSharpRAGAssistant.Api.Services.ContextBuilder;
@@ -65,6 +66,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseAuthorization();
 
