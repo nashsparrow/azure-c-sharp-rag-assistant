@@ -54,7 +54,9 @@ namespace AzureCSharpRAGAssistant.Api.Services.Indexing
             {
                 if (result.Document is not null)
                 {
-                    chunks.Add(MapChunk(result.Document));
+                    var chunk = MapChunk(result.Document);
+                    chunk.Score = result.Score;
+                    chunks.Add(chunk);
                 }
             }
 

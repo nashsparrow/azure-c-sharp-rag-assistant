@@ -6,5 +6,6 @@ namespace AzureCSharpRAGAssistant.Api.Contracts
         public string ApiKey { get; set; } = string.Empty;
         public string EmbeddingDeployment { get; set; } = string.Empty;
         public string ChatDeployment { get; set; } = string.Empty;
+        public string SystemChatMessage { get; set; } = string.Empty;
     }
 }

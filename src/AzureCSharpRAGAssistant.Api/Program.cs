@@ -1,6 +1,7 @@
 using AzureCSharpRAGAssistant.Api.Contracts;
 using AzureCSharpRAGAssistant.Api.Contracts.Settings;
 using AzureCSharpRAGAssistant.Api.Services;
+using AzureCSharpRAGAssistant.Api.Services.ContextBuilder;
 using AzureCSharpRAGAssistant.Api.Services.Embedding;
 using AzureCSharpRAGAssistant.Api.Services.Indexing;
 using AzureCSharpRAGAssistant.Api.Services.Processing;
@@ -37,6 +38,7 @@ builder.Services.AddScoped<IChunkingService, ChunkingService>();
 builder.Services.AddScoped<IEmbeddingService, EmbeddingService>();
 builder.Services.AddScoped<ISearchIndexManagementService, SearchIndexManagementService>();
 builder.Services.AddScoped<ISearchIndexService, SearchIndexService>();
+builder.Services.AddScoped<IContextBuilderService, ContextBuilderService>();
 
 builder.Services.AddApplicationInsightsTelemetry();
 

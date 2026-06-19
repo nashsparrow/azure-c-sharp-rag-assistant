@@ -10,5 +10,6 @@ namespace AzureCSharpRAGAssistant.Api.Models
         public string Content {get; set;} = string.Empty;
         public int CharCount => Content.Length;
         public float[] ContentVector {get; set;} = [];
+        public double? Score {get;set;}
     }
 }
