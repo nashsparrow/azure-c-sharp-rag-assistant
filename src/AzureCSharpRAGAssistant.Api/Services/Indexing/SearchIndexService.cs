@@ -3,6 +3,7 @@ using Azure.Search.Documents.Models;
 using AzureCSharpRAGAssistant.Api.Contracts;
 using AzureCSharpRAGAssistant.Api.Models;
 using Microsoft.Extensions.Options;
+using System.Globalization;
 
 namespace AzureCSharpRAGAssistant.Api.Services.Indexing
 {
@@ -45,19 +46,56 @@ namespace AzureCSharpRAGAssistant.Api.Services.Indexing
             options.Select.Add("pageNumber");
             options.Select.Add("content");
 
-            var response = await _searchClient.SearchAsync<Chunk>(question, options);
+            var response = await _searchClient.SearchAsync<SearchDocument>(question, options);
 
             var chunks = new List<Chunk>();
 
-            await foreach (SearchResult<Chunk> result in response.Value.GetResultsAsync())
+            await foreach (SearchResult<SearchDocument> result in response.Value.GetResultsAsync())
             {
                 if (result.Document is not null)
                 {
-                    chunks.Add(result.Document);
+                    chunks.Add(MapChunk(result.Document));
                 }
             }
 
             return chunks;
+        }
+
+        private static Chunk MapChunk(SearchDocument document)
+        {
+            return new Chunk
+            {
+                Id = GetString(document, "id"),
+                FileId = GetString(document, "fileId"),
+                FileName = GetString(document, "fileName"),
+                ChunkIndex = GetInt(document, "chunkIndex"),
+                PageNumber = GetInt(document, "pageNumber"),
+                Content = GetString(document, "content")
+            };
+        }
+
+        private static string GetString(SearchDocument document, string key)
+        {
+            return document.TryGetValue(key, out var value) && value is not null
+                ? Convert.ToString(value, CultureInfo.InvariantCulture) ?? string.Empty
+                : string.Empty;
+        }
+
+        private static int GetInt(SearchDocument document, string key)
+        {
+            if (!document.TryGetValue(key, out var value) || value is null)
+            {
+                return 0;
+            }
+
+            return value switch
+            {
+                int intValue => intValue,
+                long longValue => (int)longValue,
+                double doubleValue => (int)doubleValue,
+                float floatValue => (int)floatValue,
+                _ => Convert.ToInt32(value, CultureInfo.InvariantCulture)
+            };
         }
     }
 }

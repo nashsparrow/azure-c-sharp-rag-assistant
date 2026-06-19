@@ -1,6 +1,7 @@
 using AzureCSharpRAGAssistant.Api.Contracts;
 using AzureCSharpRAGAssistant.Api.Models;
 using UglyToad.PdfPig;
+using UglyToad.PdfPig.DocumentLayoutAnalysis.TextExtractor;
 
 
 namespace AzureCSharpRAGAssistant.Api.Services
@@ -16,7 +17,12 @@ namespace AzureCSharpRAGAssistant.Api.Services
                 yield return new PdfPage
                 {
                     PageNumber = page.Number,
-                    Text = page.Text
+                    Text = ContentOrderTextExtractor.GetText(page, new ContentOrderTextExtractor.Options
+                    {
+                        ReplaceWhitespaceWithSpace = true,
+                        SeparateParagraphsWithDoubleNewline = false,
+                        NegativeGapAsWhitespace = true
+                    })
                 };
             }
         }
