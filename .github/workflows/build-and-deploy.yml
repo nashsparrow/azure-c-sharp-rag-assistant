@@ -1,9 +1,13 @@
 name: Build and Deploy Rag Backend
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
+
+#on:
+#  push:
+#    branches:
+#      - main
+
 
 jobs:
   validate:
