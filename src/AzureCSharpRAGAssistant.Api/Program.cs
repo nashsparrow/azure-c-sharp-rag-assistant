@@ -63,6 +63,31 @@ var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
+    var logger = scope.ServiceProvider
+        .GetRequiredService<ILoggerFactory>()
+        .CreateLogger("Startup");
+
+    const int maxMigrationAttempts = 10;
+
+    for (var attempt = 1; attempt <= maxMigrationAttempts; attempt++)
+    {
+        try
+        {
+            var dbContext = scope.ServiceProvider.GetRequiredService<AppDBContext>();
+            await dbContext.Database.MigrateAsync();
+            break;
+        }
+        catch (Exception ex) when (attempt < maxMigrationAttempts)
+        {
+            logger.LogWarning(ex,
+                "Database migration attempt {Attempt} of {MaxAttempts} failed. Retrying in 5 seconds.",
+                attempt,
+                maxMigrationAttempts);
+
+            await Task.Delay(TimeSpan.FromSeconds(5));
+        }
+    }
+
     // This will search the index in Azure Search, if it does not exist it will create new index
     var indexManager = scope.ServiceProvider.GetRequiredService<ISearchIndexManagementService>();
     await indexManager.EnsureIndexExistsAsync();

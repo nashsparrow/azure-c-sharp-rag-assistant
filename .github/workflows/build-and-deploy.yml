@@ -1,0 +1,64 @@
+name: Build and Deploy Rag Backend
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore
+        run: dotnet restore AzureCSharpRAGAssistant.sln
+
+      - name: Build
+        run: dotnet build AzureCSharpRAGAssistant.sln --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test AzureCSharpRAGAssistant.sln --configuration Release --no-build
+
+  deploy:
+    needs: validate
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log into GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GIT_TOKEN }}
+
+      - name: Build Docker Image
+        run: docker build -t ghcr.io/${{ github.repository_owner }}/azure-csharp-rag-api:latest .
+
+      - name: Push Docker Image
+        run: docker push ghcr.io/${{ github.repository_owner }}/azure-csharp-rag-api:latest
+
+      - name: Deploy to Azure VM
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USERNAME }}
+          key: ${{ secrets.VM_SSH_KEY }}
+          script: |
+            cd ${{ secrets.VM_APP_PATH }}
+            docker compose pull
+            docker compose up -d
