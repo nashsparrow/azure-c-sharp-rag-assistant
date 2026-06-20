@@ -28,7 +28,6 @@ Thumbs.db
 
 # Local environment and secrets overrides
 .env
-.env.*
 appsettings.Local.json
 appsettings.*.local.json
 secrets.json
