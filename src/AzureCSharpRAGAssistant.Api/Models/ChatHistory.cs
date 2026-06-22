@@ -7,7 +7,6 @@ namespace AzureCSharpRAGAssistant.Api.Models
         public string Question { get; set; } = string.Empty;
         public string Status { get; set; } = string.Empty;
         public string Answer { get; set; } = string.Empty;
-
         public string Context { get; set; } = string.Empty;
         public List<Chunk> Chunks { get; set; } = new List<Chunk>();
         public bool Testing { get; set; } = false;

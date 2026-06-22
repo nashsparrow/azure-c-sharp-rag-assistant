@@ -16,6 +16,10 @@ namespace AzureCSharpRAGAssistant.Api.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<DocumentRecord>()
+                .HasIndex(x => x.ContentHash)
+                .IsUnique();
+
             modelBuilder.Entity<ChatHistory>()
                 .Property(x => x.Chunks)
                 .HasColumnType("jsonb")
