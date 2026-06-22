@@ -5,5 +5,7 @@ namespace AzureCSharpRAGAssistant.Api.Services.Chat
     public interface IChatService
     {
         public Task<string> ChatCompletion(string question, ContextBuildResult context);
+
+        public Task<string> ChatPipeline(string question);
     }
 }
