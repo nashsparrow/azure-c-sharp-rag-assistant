@@ -1,12 +1,13 @@
 using AzureCSharpRAGAssistant.Api.Contracts;
 using AzureCSharpRAGAssistant.Api.Contracts.Settings;
 using AzureCSharpRAGAssistant.Api.Data;
+using AzureCSharpRAGAssistant.Api.Filters;
 using AzureCSharpRAGAssistant.Api.Middleware;
 using AzureCSharpRAGAssistant.Api.Services;
 using AzureCSharpRAGAssistant.Api.Services.Chat;
 using AzureCSharpRAGAssistant.Api.Services.ChatHistories;
 using AzureCSharpRAGAssistant.Api.Services.ContextBuilder;
-using AzureCSharpRAGAssistant.Api.Services.DocumentRecords;
+using AzureCSharpRAGAssistant.Api.Services.Documents;
 using AzureCSharpRAGAssistant.Api.Services.Embedding;
 using AzureCSharpRAGAssistant.Api.Services.Indexing;
 using AzureCSharpRAGAssistant.Api.Services.Processing;
@@ -52,6 +53,9 @@ builder.Services.AddScoped<IContextBuilderService, ContextBuilderService>();
 builder.Services.AddScoped<IChatService, ChatService>();
 builder.Services.AddScoped<IChatHistoriesService, ChatHistoriesService>();
 builder.Services.AddScoped<IDocumentRecordsService, DocumentRecordsService>();
+builder.Services.AddScoped<IDocumentsUploadService, DocumentsUploadService>();
+
+builder.Services.AddScoped<ValidateFileUploadFilter>();
 
 builder.Services.AddApplicationInsightsTelemetry();
 

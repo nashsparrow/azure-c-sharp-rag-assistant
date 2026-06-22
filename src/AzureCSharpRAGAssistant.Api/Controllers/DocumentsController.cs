@@ -1,6 +1,6 @@
 using AzureCSharpRAGAssistant.Api.Contracts;
-using AzureCSharpRAGAssistant.Api.Services.Processing;
-using AzureCSharpRAGAssistant.Api.Services.Storage;
+using AzureCSharpRAGAssistant.Api.Filters;
+using AzureCSharpRAGAssistant.Api.Services.Documents;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AzureCSharpRAGAssistant.Api.Controllers
@@ -9,30 +9,19 @@ namespace AzureCSharpRAGAssistant.Api.Controllers
     [Route("api/[controller]")]
     public class DocumentsController : ControllerBase
     {
-        private readonly ILogger<DocumentsController> _logger;
-        private readonly IFileStorageService _fileStorageService;
+        private readonly IDocumentsUploadService _documentsUploadService;
 
-        public IDocumentProcessingService DocumentProcessingService { get; set; }
-
-        public DocumentsController(ILogger<DocumentsController> logger, IFileStorageService fileStorageService,
-         IDocumentProcessingService documentProcessingService)
+        public DocumentsController(IDocumentsUploadService documentsUploadService)
         {
-            _logger = logger;
-            _fileStorageService = fileStorageService;
-            DocumentProcessingService = documentProcessingService;
+            _documentsUploadService = documentsUploadService;
         }
 
         [HttpPost("upload")]
+        [ServiceFilter(typeof(ValidateFileUploadFilter))]
         public async Task<ActionResult> DocumentUpload([FromForm] DocumentUploadRequest request)
         {
-            _logger.LogInformation("Uploading File {FileName} with Indexing: {Indexing}.", request.File.FileName, request.Indexing);
-            var result = await _fileStorageService.UploadDocument(request.File);
-
-            if (request.Indexing)
-            {
-                var res = await DocumentProcessingService.ProcessDocument(request.File.FileName);
-            }
-            return Ok(result);
+            var document = await _documentsUploadService.UploadDocument(request);
+            return Ok(document);
         }
     }
 }

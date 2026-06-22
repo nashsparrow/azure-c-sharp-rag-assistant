@@ -2,6 +2,7 @@ using Azure;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using AzureCSharpRAGAssistant.Api.Contracts;
+using AzureCSharpRAGAssistant.Api.Services.Documents;
 using Microsoft.Extensions.Options;
 
 namespace AzureCSharpRAGAssistant.Api.Services.Storage
@@ -26,15 +27,15 @@ namespace AzureCSharpRAGAssistant.Api.Services.Storage
             var files = new List<BlobFileResult>();
             var folderPrefix = $"{folderName}/";
 
-            await foreach (var blobItem in containerClient.GetBlobsAsync(traits: Azure.Storage.Blobs.Models.BlobTraits.None,
-             states: Azure.Storage.Blobs.Models.BlobStates.None, prefix: folderPrefix, cancellationToken: default))
+            await foreach (var blobItem in containerClient.GetBlobsAsync(traits: BlobTraits.None,
+             states: BlobStates.None, prefix: folderPrefix, cancellationToken: default))
             {
                 _logger.LogInformation("Downloading File: {FileName}", blobItem.Name);
                 var blobClient = containerClient.GetBlobClient(blobItem.Name);
                 var download = await blobClient.DownloadContentAsync();
                 _logger.LogInformation("Downloading File: {FileName} Completed", blobItem.Name);
 
-                files.Add(new BlobFileResult { FileName = blobItem.Name, Content = download.Value.Content.ToArray()});
+                files.Add(new BlobFileResult { FileName = blobItem.Name, Content = download.Value.Content.ToArray() });
             }
 
             return files;
@@ -52,14 +53,12 @@ namespace AzureCSharpRAGAssistant.Api.Services.Storage
             var download = await blobClient.DownloadContentAsync();
             _logger.LogInformation("Downloading File: {FileName} Completed", fileName);
 
-            return new BlobFileResult { FileName = fileName, Content = download.Value.Content.ToArray()};
+            return new BlobFileResult { FileName = fileName, Content = download.Value.Content.ToArray() };
         }
 
         public async Task<Response<BlobContentInfo>> UploadDocument(IFormFile file)
         {
             _logger.LogInformation("Uploading File: {FileName}", file.FileName);
-            ValidateFile(file);
-
             var blobServiceClient = new BlobServiceClient(_storageSettings.ConnectionString);
             var containerClient = blobServiceClient.GetBlobContainerClient(_storageSettings.ContainerName);
 
@@ -70,26 +69,10 @@ namespace AzureCSharpRAGAssistant.Api.Services.Storage
 
             using var stream = file.OpenReadStream();
             var result = await blobClient.UploadAsync(stream, overwrite: true);
+
             _logger.LogInformation("Uploading File: {FileName} Completed", file.FileName);
+
             return result;
-        }
-
-        private void ValidateFile(IFormFile file)
-        {
-            ArgumentNullException.ThrowIfNull(file);
-
-            if (file.Length == 0)
-            {
-                _logger.LogError("The uploaded file: {FileName} is empty.", file.FileName);
-                throw new InvalidDataException("The uploaded file is empty.");
-                
-            }
-
-            if (string.IsNullOrWhiteSpace(file.FileName))
-            {
-                _logger.LogError("The uploaded file must have a file name.");
-                throw new InvalidDataException("The uploaded file must have a file name.");
-            }
         }
     }
 }

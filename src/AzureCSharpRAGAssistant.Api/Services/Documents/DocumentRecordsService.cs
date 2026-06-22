@@ -1,9 +1,8 @@
-using System.Globalization;
 using AzureCSharpRAGAssistant.Api.Data;
 using AzureCSharpRAGAssistant.Api.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace AzureCSharpRAGAssistant.Api.Services.DocumentRecords
+namespace AzureCSharpRAGAssistant.Api.Services.Documents
 {
     public class DocumentRecordsService : IDocumentRecordsService
     {
@@ -22,6 +21,25 @@ namespace AzureCSharpRAGAssistant.Api.Services.DocumentRecords
             await _dbContext.SaveChangesAsync(cancellationToken);
 
             return document;
+        }
+
+        public async Task<DocumentRecord?> UpdateAsync(DocumentRecord document, CancellationToken cancellationToken = default)
+        {
+            var existingDocument = await _dbContext.Documents
+                .FirstOrDefaultAsync(x => x.Id == document.Id, cancellationToken);
+
+            if (existingDocument is null)
+            {
+                return null;
+            }
+
+            existingDocument.FileName = document.FileName;
+            existingDocument.ContentHash = document.ContentHash;
+            existingDocument.Indexed = document.Indexed;
+
+            await _dbContext.SaveChangesAsync(cancellationToken);
+
+            return existingDocument;
         }
 
         public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
@@ -44,6 +62,12 @@ namespace AzureCSharpRAGAssistant.Api.Services.DocumentRecords
         {
             return await _dbContext.Documents
                 .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+        }
+
+        public async Task<DocumentRecord?> GetByContentHashAsync(string contentHash, CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.Documents
+                .FirstOrDefaultAsync(x => x.ContentHash.Equals(contentHash), cancellationToken);
         }
 
         public async Task<IReadOnlyList<DocumentRecord>> SearchAsync(string? fileName, CancellationToken cancellationToken = default)
