@@ -32,7 +32,7 @@ namespace AzureCSharpRAGAssistant.Api.Tests.Services.Processing
             _embeddingServiceMock = new Mock<IEmbeddingService>();
             _searchIndexServiceMock = new Mock<ISearchIndexService>();
 
-            _folderSettings = Options.Create ( new FolderSettings { DocumentsFolder = "test", OutputFolder = "output"});
+            _folderSettings = Options.Create(new FolderSettings { DocumentsFolder = "test", OutputFolder = "output" });
 
             _documentProcessingService = new DocumentProcessingService(_pdfExtractionServiceMock.Object, _textCleanupServiceMock.Object,
              _fileStorageServiceMock.Object, _folderSettings, _chunkingServiceMock.Object, _embeddingServiceMock.Object, _searchIndexServiceMock.Object);
@@ -65,7 +65,7 @@ namespace AzureCSharpRAGAssistant.Api.Tests.Services.Processing
 
             _fileStorageServiceMock.Setup(x => x.DownloadDocument(_folderSettings.Value.DocumentsFolder, It.IsAny<string>()))
                 .ReturnsAsync(blobFile);
-            
+
             _pdfExtractionServiceMock.Setup(x => x.ExtractPdfPages(blobFile))
                 .Returns(pages);
 
@@ -87,13 +87,14 @@ namespace AzureCSharpRAGAssistant.Api.Tests.Services.Processing
 
             var result = await _documentProcessingService.ProcessDocument(fileName);
 
-            Assert.Single(result);
-            Assert.Equal(fileName, result[0].FileName);
-            Assert.Equal(1, result[0].PageNumber);
-            Assert.Equal("cleaned chunk content", result[0].Content);
-            Assert.Equal(1, result[0].ChunkIndex);
-            Assert.NotEmpty(result[0].FileId);
-            Assert.Equal(2, result[0].ContentVector.Length);
+            var chunks = result.Chunks;
+            Assert.Single(result.Chunks);
+            Assert.Equal(fileName, chunks[0].FileName);
+            Assert.Equal(1, chunks[0].PageNumber);
+            Assert.Equal("cleaned chunk content", chunks[0].Content);
+            Assert.Equal(1, chunks[0].ChunkIndex);
+            Assert.NotEmpty(chunks[0].FileId);
+            Assert.Equal(2, chunks[0].ContentVector.Length);
 
             _fileStorageServiceMock.Verify(x => x.DownloadDocument(_folderSettings.Value.DocumentsFolder, fileName), Times.Once);
             _pdfExtractionServiceMock.Verify(x => x.ExtractPdfPages(blobFile), Times.Once);

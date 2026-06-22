@@ -1,3 +1,4 @@
+using AzureCSharpRAGAssistant.Api.Contracts.Results;
 using AzureCSharpRAGAssistant.Api.Controllers;
 using AzureCSharpRAGAssistant.Api.Models;
 using AzureCSharpRAGAssistant.Api.Services.Processing;
@@ -11,12 +12,12 @@ namespace AzureCSharpRAGAssistant.Api.Tests.Controllers
         private readonly Mock<IDocumentProcessingService> _documentProcessingServiceMock;
         private readonly IndexingController _indexingController;
 
-        
+
         public IndexingControllerTests()
         {
             _documentProcessingServiceMock = new Mock<IDocumentProcessingService>();
 
-            _documentProcessingServiceMock.Setup(x => x.ProcessAllDocuments()).ReturnsAsync(new List<Chunk>());
+            _documentProcessingServiceMock.Setup(x => x.ProcessAllDocuments()).ReturnsAsync(Mock.Of<DocumentProcessingResult>());
             _indexingController = new IndexingController(_documentProcessingServiceMock.Object);
         }
 

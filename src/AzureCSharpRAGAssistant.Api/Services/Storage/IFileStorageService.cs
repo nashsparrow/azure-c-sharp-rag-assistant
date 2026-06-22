@@ -9,6 +9,8 @@ namespace AzureCSharpRAGAssistant.Api.Services.Storage
 
         Task<List<BlobFileResult>> DownloadAllDocuments(string folderName);
 
-        Task<Azure.Response<BlobContentInfo>> UploadDocument(IFormFile file);
+        Task<Azure.Response<BlobContentInfo>> UploadDocument(IFormFile file, string folderName);
+
+        Task DeleteDocument(string folderName, string fileName);
     }
 }

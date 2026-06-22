@@ -1,11 +1,12 @@
+using AzureCSharpRAGAssistant.Api.Contracts.Results;
 using AzureCSharpRAGAssistant.Api.Models;
 
 namespace AzureCSharpRAGAssistant.Api.Services.Processing
 {
     public interface IDocumentProcessingService
     {
-        Task<List<Chunk>> ProcessAllDocuments();
+        Task<DocumentProcessingResult> ProcessAllDocuments();
 
-        Task<List<Chunk>> ProcessDocument(string fileName);
+        Task<DocumentProcessingResult> ProcessDocument(string fileName);
     }
 }

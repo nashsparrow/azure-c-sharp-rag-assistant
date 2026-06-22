@@ -2,7 +2,7 @@ using Azure;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using AzureCSharpRAGAssistant.Api.Contracts;
-using AzureCSharpRAGAssistant.Api.Services.Documents;
+using AzureCSharpRAGAssistant.Api.Contracts.Settings;
 using Microsoft.Extensions.Options;
 
 namespace AzureCSharpRAGAssistant.Api.Services.Storage
@@ -11,11 +11,13 @@ namespace AzureCSharpRAGAssistant.Api.Services.Storage
     {
         private readonly AzureStorageSettings _storageSettings;
         private readonly ILogger<BlobStorageService> _logger;
+        private readonly FolderSettings _folderSettings;
 
-        public BlobStorageService(IOptions<AzureStorageSettings> storageSettings, ILogger<BlobStorageService> logger)
+        public BlobStorageService(IOptions<AzureStorageSettings> storageSettings, ILogger<BlobStorageService> logger, IOptions<FolderSettings> folderSettings)
         {
             _logger = logger;
             _storageSettings = storageSettings.Value;
+            _folderSettings = folderSettings.Value;
         }
 
         public async Task<List<BlobFileResult>> DownloadAllDocuments(string folderName)
@@ -56,7 +58,7 @@ namespace AzureCSharpRAGAssistant.Api.Services.Storage
             return new BlobFileResult { FileName = fileName, Content = download.Value.Content.ToArray() };
         }
 
-        public async Task<Response<BlobContentInfo>> UploadDocument(IFormFile file)
+        public async Task<Response<BlobContentInfo>> UploadDocument(IFormFile file, string folderName)
         {
             _logger.LogInformation("Uploading File: {FileName}", file.FileName);
             var blobServiceClient = new BlobServiceClient(_storageSettings.ConnectionString);
@@ -64,7 +66,7 @@ namespace AzureCSharpRAGAssistant.Api.Services.Storage
 
             await containerClient.CreateIfNotExistsAsync();
 
-            var blobName = $"documents/{file.FileName}";
+            var blobName = $"{folderName}/{file.FileName}";
             var blobClient = containerClient.GetBlobClient(blobName);
 
             using var stream = file.OpenReadStream();
@@ -73,6 +75,17 @@ namespace AzureCSharpRAGAssistant.Api.Services.Storage
             _logger.LogInformation("Uploading File: {FileName} Completed", file.FileName);
 
             return result;
+        }
+
+        public async Task DeleteDocument(string folderName, string fileName)
+        {
+            var blobServiceClient = new BlobServiceClient(_storageSettings.ConnectionString);
+            var containerClient = blobServiceClient.GetBlobContainerClient(_storageSettings.ContainerName);
+
+            var blobPath = $"{_folderSettings.DocumentsFolder}/{fileName}";
+            var blobClient = containerClient.GetBlobClient(blobPath);
+
+            await blobClient.DeleteIfExistsAsync();
         }
     }
 }

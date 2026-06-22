@@ -6,6 +6,5 @@ namespace AzureCSharpRAGAssistant.Api.Services.Documents
     public interface IDocumentsUploadService
     {
         Task<DocumentRecord> UploadDocument(DocumentUploadRequest request);
-        Task ValidateDuplicateDocument(string contentHash);
     }
 }

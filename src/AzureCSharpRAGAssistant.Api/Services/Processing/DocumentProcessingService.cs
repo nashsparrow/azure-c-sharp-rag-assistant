@@ -1,4 +1,5 @@
 using System.Security.Cryptography;
+using AzureCSharpRAGAssistant.Api.Contracts.Results;
 using AzureCSharpRAGAssistant.Api.Contracts.Settings;
 using AzureCSharpRAGAssistant.Api.Models;
 using AzureCSharpRAGAssistant.Api.Services.Embedding;
@@ -30,7 +31,7 @@ namespace AzureCSharpRAGAssistant.Api.Services.Processing
             _searchIndexService = searchIndexService;
         }
 
-        public async Task<List<Chunk>> ProcessAllDocuments()
+        public async Task<DocumentProcessingResult> ProcessAllDocuments()
         {
             // Download Files
             var files = await _fileStorageService.DownloadAllDocuments(_folderSettings.DocumentsFolder);
@@ -40,15 +41,15 @@ namespace AzureCSharpRAGAssistant.Api.Services.Processing
                 var chunkArray = await Process(file, file.FileName);
                 chunks.AddRange(chunkArray);
             }
-            return chunks;
+            return new DocumentProcessingResult { Succeeded = true, Chunks = chunks };
         }
 
-        public async Task<List<Chunk>> ProcessDocument(string fileName)
+        public async Task<DocumentProcessingResult> ProcessDocument(string fileName)
         {
             var file = await _fileStorageService.DownloadDocument(_folderSettings.DocumentsFolder, fileName);
             var chunks = await Process(file, fileName);
-            return chunks;
-            
+            return new DocumentProcessingResult { Succeeded = true, Chunks = chunks };
+
         }
 
         public async Task<List<Chunk>> Process(Contracts.BlobFileResult file, string fileName)
@@ -56,7 +57,7 @@ namespace AzureCSharpRAGAssistant.Api.Services.Processing
             var chunks = new List<Chunk>();
             var fileId = CreateStableDocumentId(file.Content);
             var extension = Path.GetExtension(fileName);
-            
+
 
             if (string.Equals(extension, ".pdf", StringComparison.OrdinalIgnoreCase))
             {
@@ -65,7 +66,7 @@ namespace AzureCSharpRAGAssistant.Api.Services.Processing
                 {
                     int chunkIndex = 0;
                     var cleanedText = _textCleanupService.CleanupText(page.Text);
-                    if (cleanedText != null) 
+                    if (cleanedText != null)
                     {
                         var chunkedArray = _chunkingService.ChunkText(file.FileName, page.PageNumber, cleanedText);
 
