@@ -3,6 +3,7 @@ using AzureCSharpRAGAssistant.Api.Helpers;
 using AzureCSharpRAGAssistant.Api.SemanticKernel.Factory;
 using AzureCSharpRAGAssistant.Api.SemanticKernel.Plugins;
 using Microsoft.SemanticKernel;
+using Microsoft.SemanticKernel.Connectors.OpenAI;
 
 namespace AzureCSharpRAGAssistant.Api.SemanticKernel.Services
 {
@@ -21,9 +22,15 @@ namespace AzureCSharpRAGAssistant.Api.SemanticKernel.Services
         {
             var kernel = _kernelFactory.CreateKernel(_documentSearchPlugin);
             var prompt = await ResourceHelper.ReadEmbeddedResourceAsync("AzureCSharpRAGAssistant.Api.SemanticKernel.Prompts.assistant.txt");
+
+            var settings = new OpenAIPromptExecutionSettings
+            {
+                FunctionChoiceBehavior = FunctionChoiceBehavior.Auto()
+            };
+
             var result = await kernel.InvokePromptAsync(
                 prompt,
-                new KernelArguments
+                new KernelArguments(settings)
                 {
                     ["question"] = question
                 }

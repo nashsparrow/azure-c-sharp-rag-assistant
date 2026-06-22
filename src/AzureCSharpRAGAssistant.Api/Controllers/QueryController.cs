@@ -19,7 +19,7 @@ namespace AzureCSharpRAGAssistant.Api.Controllers
         }
 
         [HttpPost("chat")]
-        public async Task<ActionResult> Query([FromForm] QueryRequest request)
+        public async Task<ActionResult> Query([FromBody] QueryRequest request)
         {
             var chatResult = await _chatService.ChatPipeline(request.Question);
             return Ok(
@@ -31,7 +31,7 @@ namespace AzureCSharpRAGAssistant.Api.Controllers
         }
 
         [HttpPost("chat/sk")]
-        public async Task<ActionResult> QueryWithSemanticKernel([FromForm] QueryRequest request)
+        public async Task<ActionResult> QueryWithSemanticKernel([FromBody] QueryRequest request)
         {
             var chatResult = await _sKAnswerService.AnswerAsync(request.Question);
             return Ok(
