@@ -1,6 +1,5 @@
 using AzureCSharpRAGAssistant.Api.Contracts.Results;
 using AzureCSharpRAGAssistant.Api.Controllers;
-using AzureCSharpRAGAssistant.Api.Models;
 using AzureCSharpRAGAssistant.Api.Services.Processing;
 using Microsoft.AspNetCore.Mvc;
 using Moq;

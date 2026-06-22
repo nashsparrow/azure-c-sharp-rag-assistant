@@ -25,23 +25,41 @@ builder.Services.AddDbContext<AppDBContext>(options =>
 builder.Services.AddScoped<IAppDBContext>(sp => sp.GetRequiredService<AppDBContext>());
 
 // Register Settings
-builder.Services.Configure<AzureStorageSettings>(
-    builder.Configuration.GetSection("AzureStorage"));
+builder.Services
+    .AddOptions<AzureStorageSettings>()
+    .Bind(builder.Configuration.GetSection("AzureStorage"))
+    .ValidateDataAnnotations()
+    .ValidateOnStart();
 
-builder.Services.Configure<AzureSearchSettings>(
-    builder.Configuration.GetSection("AzureSearch"));
+builder.Services
+    .AddOptions<AzureSearchSettings>()
+    .Bind(builder.Configuration.GetSection("AzureSearch"))
+    .ValidateDataAnnotations()
+    .ValidateOnStart();
 
-builder.Services.Configure<AzureOpenAISettings>(
-    builder.Configuration.GetSection("AzureOpenAI"));
+builder.Services
+    .AddOptions<AzureOpenAISettings>()
+    .Bind(builder.Configuration.GetSection("AzureOpenAI"))
+    .ValidateDataAnnotations()
+    .ValidateOnStart();
 
-builder.Services.Configure<FolderSettings>(
-    builder.Configuration.GetSection("Folders"));
+builder.Services
+    .AddOptions<FolderSettings>()
+    .Bind(builder.Configuration.GetSection("Folders"))
+    .ValidateDataAnnotations()
+    .ValidateOnStart();
 
-builder.Services.Configure<AzureApplicationInsightsSettings>(
-    builder.Configuration.GetSection("ApplicationInsights"));
+builder.Services
+    .AddOptions<AzureApplicationInsightsSettings>()
+    .Bind(builder.Configuration.GetSection("ApplicationInsights"))
+    .ValidateDataAnnotations()
+    .ValidateOnStart();
 
-builder.Services.Configure<ChunkSettings>(
-    builder.Configuration.GetSection("ChunkSettings"));
+builder.Services
+    .AddOptions<ChunkSettings>()
+    .Bind(builder.Configuration.GetSection("ChunkSettings"))
+    .ValidateDataAnnotations()
+    .ValidateOnStart();
 
 // Add services to the container.
 builder.Services.AddScoped<IFileStorageService, BlobStorageService>();
