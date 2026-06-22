@@ -1,4 +1,3 @@
-using System.Security.Cryptography;
 using AzureCSharpRAGAssistant.Api.Contracts;
 using AzureCSharpRAGAssistant.Api.Exceptions;
 using AzureCSharpRAGAssistant.Api.Services.Documents;
