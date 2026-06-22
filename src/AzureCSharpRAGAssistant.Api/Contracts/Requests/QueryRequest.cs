@@ -5,7 +5,7 @@ namespace AzureCSharpRAGAssistant.Api.Contracts.Requests
     public class QueryRequest
     {
         [Required]
-        [StringLength(maximumLength: 500, MinimumLength = 100)]
+        [StringLength(maximumLength: 500, MinimumLength = 10)]
         public string Question { get; set; } = string.Empty;
     }
 }
