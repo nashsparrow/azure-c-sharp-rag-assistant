@@ -13,5 +13,6 @@ namespace AzureCSharpRAGAssistant.Api.Models
         public bool Testing { get; set; } = false;
         public string TestName { get; set; } = string.Empty;
         public string TestRunName { get; set; } = string.Empty;
+        public bool SKPath { get; set; } = false;
     }
 }
