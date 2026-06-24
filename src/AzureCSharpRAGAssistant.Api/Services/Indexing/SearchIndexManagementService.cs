@@ -45,6 +45,7 @@ namespace AzureCSharpRAGAssistant.Api.Services.Indexing
                 await _searchIndexClient.GetIndexAsync(_searchSettings.IntegrationTestIndexName);
 
                 await DeleteIndexAsync(_searchSettings.IntegrationTestIndexName);
+                await EnsureProvidedIndexExistAsync(_searchSettings.IntegrationTestIndexName);
                 return;
             }
             catch (RequestFailedException ex) when (ex.Status == 404)
@@ -52,7 +53,7 @@ namespace AzureCSharpRAGAssistant.Api.Services.Indexing
             }
 
             await EnsureProvidedIndexExistAsync(_searchSettings.IntegrationTestIndexName);
-            _logger.LogInformation(" Azure Search Index |  Test Index : {IndexName} Created.", _searchSettings.IndexName);
+            _logger.LogInformation(" Azure Search Index |  Test Index : {IndexName} Created.", _searchSettings.IntegrationTestIndexName);
         }
 
         private async Task EnsureProvidedIndexExistAsync(string indexName)
@@ -75,7 +76,7 @@ namespace AzureCSharpRAGAssistant.Api.Services.Indexing
                 }
             };
 
-            var index = new SearchIndex(_searchSettings.IndexName, fields)
+            var index = new SearchIndex(indexName, fields)
             {
                 VectorSearch = new VectorSearch
                 {

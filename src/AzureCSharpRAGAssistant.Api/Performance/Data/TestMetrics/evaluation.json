@@ -1,0 +1,1472 @@
+{
+  "datasetName": "synthetic_three_pdf_retrieval_evaluation_latest",
+  "version": "1.1",
+  "description": "Chunk-size independent retrieval evaluation set generated from the latest uploaded PDFs. Use this same file against 250, 350, 500, or other chunk sizes.",
+  "sourceFiles": [
+    {
+      "paperId": "paper_1",
+      "fileName": "paper_1_quantum_agriculture.pdf",
+      "title": "Quantum Agriculture for Martian Soil"
+    },
+    {
+      "paperId": "paper_2",
+      "fileName": "paper_2_coral_drones.pdf",
+      "title": "Autonomous Ocean Drones for Coral Monitoring"
+    },
+    {
+      "paperId": "paper_3",
+      "fileName": "paper_3_battery_discovery.pdf",
+      "title": "AI-Assisted Battery Discovery"
+    }
+  ],
+  "recommendedMetrics": {
+    "kValues": [
+      1,
+      3,
+      5,
+      10
+    ],
+    "metrics": [
+      "Recall@K",
+      "Precision@K",
+      "MRR",
+      "StrictMultiHopRecall",
+      "BoundaryFactRecall",
+      "CrossDocumentRecall",
+      "NoAnswerFalsePositiveRate"
+    ]
+  },
+  "scoringNotes": {
+    "expectedChunkContains": "Each inner array is one evidence unit. A retrieved chunk is relevant if it contains all strings in an evidence unit and matches the expected source when provided.",
+    "single_hop": "Pass Recall@K if any expected evidence unit appears in top K.",
+    "multi_hop": "Pass StrictMultiHopRecall if all expected evidence units appear in top K.",
+    "precision": "Relevant retrieved chunks divided by K.",
+    "mrr": "Reciprocal rank of the first relevant chunk.",
+    "boundary": "Passes when boundaryTermsMustBeTogether appear together in a retrieved chunk.",
+    "no_answer": "False positive if retriever returns confident evidence for a fact that is not present."
+  },
+  "tests": [
+    {
+      "id": "RET-001",
+      "categories": [
+        "single_hop",
+        "numeric"
+      ],
+      "difficulty": "easy",
+      "question": "What percentage reduction in water consumption was achieved by the Martian irrigation system?",
+      "expectedFacts": [
+        "The irrigation system reduced water consumption by 37%."
+      ],
+      "expectedChunkContains": [
+        [
+          "37%",
+          "water consumption"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_1_quantum_agriculture.pdf"
+      }
+    },
+    {
+      "id": "RET-002",
+      "categories": [
+        "single_hop",
+        "numeric"
+      ],
+      "difficulty": "easy",
+      "question": "How much did tomato yields increase in the Martian greenhouse simulations?",
+      "expectedFacts": [
+        "Tomato yields increased by 22%."
+      ],
+      "expectedChunkContains": [
+        [
+          "tomato yields",
+          "22%"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_1_quantum_agriculture.pdf"
+      }
+    },
+    {
+      "id": "RET-003",
+      "categories": [
+        "single_hop",
+        "entity"
+      ],
+      "difficulty": "easy",
+      "question": "Which university developed the quantum-enhanced irrigation system?",
+      "expectedFacts": [
+        "The University of New Copenhagen developed the fictional quantum-enhanced irrigation system."
+      ],
+      "expectedChunkContains": [
+        [
+          "University of New Copenhagen",
+          "quantum-enhanced irrigation system"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_1_quantum_agriculture.pdf"
+      }
+    },
+    {
+      "id": "RET-004",
+      "categories": [
+        "single_hop",
+        "entity"
+      ],
+      "difficulty": "easy",
+      "question": "Where were the Martian agriculture experiments conducted?",
+      "expectedFacts": [
+        "The experiments were conducted inside the Borealis Dome in Iceland."
+      ],
+      "expectedChunkContains": [
+        [
+          "Borealis Dome",
+          "Iceland"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_1_quantum_agriculture.pdf"
+      }
+    },
+    {
+      "id": "RET-005",
+      "categories": [
+        "single_hop",
+        "entity"
+      ],
+      "difficulty": "easy",
+      "question": "What kind of soil was used in the Borealis Dome experiments?",
+      "expectedFacts": [
+        "The experiments used simulated Martian regolith."
+      ],
+      "expectedChunkContains": [
+        [
+          "simulated Martian regolith"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_1_quantum_agriculture.pdf"
+      }
+    },
+    {
+      "id": "RET-006",
+      "categories": [
+        "single_hop",
+        "entity"
+      ],
+      "difficulty": "easy",
+      "question": "Who led the Martian agriculture project?",
+      "expectedFacts": [
+        "The project was led by Dr. Helena Sorensen."
+      ],
+      "expectedChunkContains": [
+        [
+          "Dr.",
+          "Helena Sorensen"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_1_quantum_agriculture.pdf"
+      }
+    },
+    {
+      "id": "RET-007",
+      "categories": [
+        "single_hop",
+        "numeric"
+      ],
+      "difficulty": "easy",
+      "question": "How many research institutions were involved in the Martian agriculture project?",
+      "expectedFacts": [
+        "The project involved six research institutions."
+      ],
+      "expectedChunkContains": [
+        [
+          "six",
+          "research institutions"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_1_quantum_agriculture.pdf"
+      }
+    },
+    {
+      "id": "RET-008",
+      "categories": [
+        "single_hop",
+        "numeric"
+      ],
+      "difficulty": "easy",
+      "question": "How often did moisture sensors collect readings?",
+      "expectedFacts": [
+        "Moisture sensors collected readings every fifteen minutes."
+      ],
+      "expectedChunkContains": [
+        [
+          "Moisture sensors",
+          "fifteen minutes"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_1_quantum_agriculture.pdf"
+      }
+    },
+    {
+      "id": "RET-009",
+      "categories": [
+        "single_hop"
+      ],
+      "difficulty": "medium",
+      "question": "What did the quantum-assisted prediction model dynamically adjust?",
+      "expectedFacts": [
+        "The model dynamically adjusted watering frequency and volume."
+      ],
+      "expectedChunkContains": [
+        [
+          "dynamically adjusted",
+          "watering frequency",
+          "volume"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_1_quantum_agriculture.pdf"
+      }
+    },
+    {
+      "id": "RET-010",
+      "categories": [
+        "single_hop"
+      ],
+      "difficulty": "medium",
+      "question": "What plant and environmental factors did researchers monitor during the Martian agriculture experiment?",
+      "expectedFacts": [
+        "Researchers monitored plant health, biomass growth, nutrient retention, and environmental stability."
+      ],
+      "expectedChunkContains": [
+        [
+          "plant health",
+          "biomass growth",
+          "nutrient retention",
+          "environmental stability"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_1_quantum_agriculture.pdf"
+      }
+    },
+    {
+      "id": "RET-011",
+      "categories": [
+        "single_hop",
+        "numeric"
+      ],
+      "difficulty": "easy",
+      "question": "How much funding did the Martian agriculture project receive?",
+      "expectedFacts": [
+        "The project received €12 million from the Nordic Space Farming Initiative."
+      ],
+      "expectedChunkContains": [
+        [
+          "€12 million",
+          "Nordic Space Farming Initiative"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_1_quantum_agriculture.pdf"
+      }
+    },
+    {
+      "id": "RET-012",
+      "categories": [
+        "single_hop"
+      ],
+      "difficulty": "medium",
+      "question": "What did researchers observe about predictive irrigation?",
+      "expectedFacts": [
+        "Researchers observed that predictive irrigation reduced resource waste while maintaining crop consistency."
+      ],
+      "expectedChunkContains": [
+        [
+          "predictive irrigation",
+          "reduced resource waste",
+          "crop consistency"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_1_quantum_agriculture.pdf"
+      }
+    },
+    {
+      "id": "RET-013",
+      "categories": [
+        "paraphrase",
+        "numeric"
+      ],
+      "difficulty": "medium",
+      "question": "Which crop experiment cut water use by more than one third?",
+      "expectedFacts": [
+        "The Martian quantum-enhanced irrigation experiment reduced water consumption by 37%."
+      ],
+      "expectedChunkContains": [
+        [
+          "quantum-enhanced irrigation",
+          "37%"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_1_quantum_agriculture.pdf"
+      }
+    },
+    {
+      "id": "RET-014",
+      "categories": [
+        "paraphrase"
+      ],
+      "difficulty": "medium",
+      "question": "What study used fake Martian soil inside an Icelandic dome?",
+      "expectedFacts": [
+        "The Martian agriculture experiments used simulated Martian regolith inside the Borealis Dome in Iceland."
+      ],
+      "expectedChunkContains": [
+        [
+          "Borealis Dome",
+          "simulated Martian regolith"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_1_quantum_agriculture.pdf"
+      }
+    },
+    {
+      "id": "RET-015",
+      "categories": [
+        "multi_hop",
+        "strict_multi_hop"
+      ],
+      "difficulty": "hard",
+      "question": "Who led the study that reduced water consumption by 37%?",
+      "expectedFacts": [
+        "The study reduced water consumption by 37%.",
+        "The project was led by Dr. Helena Sorensen."
+      ],
+      "expectedChunkContains": [
+        [
+          "37%",
+          "water consumption"
+        ],
+        [
+          "Helena Sorensen"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_1_quantum_agriculture.pdf"
+      }
+    },
+    {
+      "id": "RET-016",
+      "categories": [
+        "multi_hop",
+        "strict_multi_hop"
+      ],
+      "difficulty": "hard",
+      "question": "Which funding source supported the project conducted in the Borealis Dome?",
+      "expectedFacts": [
+        "The experiments were conducted inside the Borealis Dome in Iceland.",
+        "The project received €12 million from the Nordic Space Farming Initiative."
+      ],
+      "expectedChunkContains": [
+        [
+          "Borealis Dome",
+          "Iceland"
+        ],
+        [
+          "Nordic Space Farming Initiative"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_1_quantum_agriculture.pdf"
+      }
+    },
+    {
+      "id": "RET-017",
+      "categories": [
+        "boundary"
+      ],
+      "difficulty": "hard",
+      "question": "Who led the project that used simulated Martian regolith?",
+      "expectedFacts": [
+        "The project used simulated Martian regolith and was led by Dr. Helena Sorensen."
+      ],
+      "expectedChunkContains": [
+        [
+          "simulated Martian regolith",
+          "Helena Sorensen"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_1_quantum_agriculture.pdf"
+      },
+      "boundaryTermsMustBeTogether": [
+        "simulated Martian regolith",
+        "Helena Sorensen"
+      ]
+    },
+    {
+      "id": "RET-018",
+      "categories": [
+        "boundary"
+      ],
+      "difficulty": "hard",
+      "question": "What model adjusted watering frequency and volume?",
+      "expectedFacts": [
+        "A quantum-assisted prediction model dynamically adjusted watering frequency and volume."
+      ],
+      "expectedChunkContains": [
+        [
+          "quantum-assisted prediction model",
+          "watering frequency",
+          "volume"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_1_quantum_agriculture.pdf"
+      },
+      "boundaryTermsMustBeTogether": [
+        "quantum-assisted prediction model",
+        "watering frequency",
+        "volume"
+      ]
+    },
+    {
+      "id": "RET-019",
+      "categories": [
+        "single_hop",
+        "entity"
+      ],
+      "difficulty": "easy",
+      "question": "What was the name of the coral monitoring drone network?",
+      "expectedFacts": [
+        "The drone network was called CoralEye."
+      ],
+      "expectedChunkContains": [
+        [
+          "CoralEye",
+          "drone network"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_2_coral_drones.pdf"
+      }
+    },
+    {
+      "id": "RET-020",
+      "categories": [
+        "single_hop",
+        "numeric"
+      ],
+      "difficulty": "easy",
+      "question": "How many Pacific Ocean locations did CoralEye monitor?",
+      "expectedFacts": [
+        "CoralEye monitored reef health across 42 Pacific Ocean locations."
+      ],
+      "expectedChunkContains": [
+        [
+          "42 Pacific Ocean locations"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_2_coral_drones.pdf"
+      }
+    },
+    {
+      "id": "RET-021",
+      "categories": [
+        "single_hop",
+        "numeric"
+      ],
+      "difficulty": "easy",
+      "question": "How much earlier did the CoralEye system detect coral bleaching events?",
+      "expectedFacts": [
+        "The system detected bleaching events 17 days earlier than traditional survey approaches."
+      ],
+      "expectedChunkContains": [
+        [
+          "bleaching events",
+          "17 days earlier"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_2_coral_drones.pdf"
+      }
+    },
+    {
+      "id": "RET-022",
+      "categories": [
+        "single_hop"
+      ],
+      "difficulty": "medium",
+      "question": "What kind of image analysis did CoralEye combine with autonomous sensing?",
+      "expectedFacts": [
+        "CoralEye combined autonomous sensing with machine-learning-based image analysis."
+      ],
+      "expectedChunkContains": [
+        [
+          "autonomous sensing",
+          "machine-learning-based image analysis"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_2_coral_drones.pdf"
+      }
+    },
+    {
+      "id": "RET-023",
+      "categories": [
+        "single_hop"
+      ],
+      "difficulty": "medium",
+      "question": "Why are traditional coral monitoring approaches difficult?",
+      "expectedFacts": [
+        "Traditional monitoring often requires extensive fieldwork, specialized equipment, and substantial travel costs."
+      ],
+      "expectedChunkContains": [
+        [
+          "extensive fieldwork",
+          "specialized equipment",
+          "substantial travel costs"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_2_coral_drones.pdf"
+      }
+    },
+    {
+      "id": "RET-024",
+      "categories": [
+        "single_hop",
+        "entity"
+      ],
+      "difficulty": "easy",
+      "question": "What power system did each drone use?",
+      "expectedFacts": [
+        "Each drone used a hybrid solar-wave power system."
+      ],
+      "expectedChunkContains": [
+        [
+          "hybrid solar-wave power system"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_2_coral_drones.pdf"
+      }
+    },
+    {
+      "id": "RET-025",
+      "categories": [
+        "single_hop",
+        "numeric"
+      ],
+      "difficulty": "easy",
+      "question": "How long could each drone operate continuously?",
+      "expectedFacts": [
+        "Each drone could operate continuously for up to 11 months."
+      ],
+      "expectedChunkContains": [
+        [
+          "operating continuously",
+          "11 months"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_2_coral_drones.pdf"
+      }
+    },
+    {
+      "id": "RET-026",
+      "categories": [
+        "single_hop"
+      ],
+      "difficulty": "medium",
+      "question": "What types of data did the CoralEye drones capture?",
+      "expectedFacts": [
+        "The drones captured high-resolution imagery, environmental measurements, and reef health indicators."
+      ],
+      "expectedChunkContains": [
+        [
+          "high-resolution imagery",
+          "environmental measurements",
+          "reef health indicators"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_2_coral_drones.pdf"
+      }
+    },
+    {
+      "id": "RET-027",
+      "categories": [
+        "single_hop"
+      ],
+      "difficulty": "medium",
+      "question": "Where was CoralEye data transmitted for processing?",
+      "expectedFacts": [
+        "Data was transmitted to centralized processing systems."
+      ],
+      "expectedChunkContains": [
+        [
+          "Data was transmitted",
+          "centralized processing systems"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_2_coral_drones.pdf"
+      }
+    },
+    {
+      "id": "RET-028",
+      "categories": [
+        "single_hop",
+        "numeric"
+      ],
+      "difficulty": "easy",
+      "question": "What image-classification accuracy did ReefNet-V5 achieve?",
+      "expectedFacts": [
+        "ReefNet-V5 achieved an image-classification accuracy of 94.8%."
+      ],
+      "expectedChunkContains": [
+        [
+          "ReefNet-V5",
+          "94.8%"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_2_coral_drones.pdf"
+      }
+    },
+    {
+      "id": "RET-029",
+      "categories": [
+        "single_hop"
+      ],
+      "difficulty": "medium",
+      "question": "What did persistent monitoring enable in the coral drone study?",
+      "expectedFacts": [
+        "Persistent monitoring enabled earlier detection of bleaching events and provided long-term trend visibility."
+      ],
+      "expectedChunkContains": [
+        [
+          "Persistent monitoring",
+          "earlier detection",
+          "long-term trend visibility"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_2_coral_drones.pdf"
+      }
+    },
+    {
+      "id": "RET-030",
+      "categories": [
+        "single_hop"
+      ],
+      "difficulty": "medium",
+      "question": "What improvements did researchers expect from autonomous marine sensing networks?",
+      "expectedFacts": [
+        "Researchers concluded autonomous marine sensing networks could improve response times, increase observational coverage, and reduce dependence on infrequent manual surveys."
+      ],
+      "expectedChunkContains": [
+        [
+          "improve response times",
+          "increase observational coverage",
+          "reduce dependence"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_2_coral_drones.pdf"
+      }
+    },
+    {
+      "id": "RET-031",
+      "categories": [
+        "paraphrase",
+        "numeric"
+      ],
+      "difficulty": "medium",
+      "question": "Which marine monitoring system gave researchers more than two weeks of extra warning?",
+      "expectedFacts": [
+        "The CoralEye drone network detected coral bleaching events 17 days earlier."
+      ],
+      "expectedChunkContains": [
+        [
+          "CoralEye",
+          "17 days earlier"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_2_coral_drones.pdf"
+      }
+    },
+    {
+      "id": "RET-032",
+      "categories": [
+        "paraphrase"
+      ],
+      "difficulty": "medium",
+      "question": "What autonomous reef project tried to reduce dependence on manual surveys?",
+      "expectedFacts": [
+        "The CoralEye initiative explored autonomous systems and researchers concluded they could reduce dependence on infrequent manual surveys."
+      ],
+      "expectedChunkContains": [
+        [
+          "CoralEye",
+          "manual surveys"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_2_coral_drones.pdf"
+      }
+    },
+    {
+      "id": "RET-033",
+      "categories": [
+        "multi_hop",
+        "strict_multi_hop"
+      ],
+      "difficulty": "hard",
+      "question": "How long could the drones operate and what image-classification accuracy did ReefNet-V5 achieve?",
+      "expectedFacts": [
+        "Drones could operate for up to 11 months.",
+        "ReefNet-V5 achieved 94.8% image-classification accuracy."
+      ],
+      "expectedChunkContains": [
+        [
+          "11 months"
+        ],
+        [
+          "ReefNet-V5",
+          "94.8%"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_2_coral_drones.pdf"
+      }
+    },
+    {
+      "id": "RET-034",
+      "categories": [
+        "multi_hop",
+        "strict_multi_hop"
+      ],
+      "difficulty": "hard",
+      "question": "What power system supported the drones and what data did they capture?",
+      "expectedFacts": [
+        "Each drone used a hybrid solar-wave power system.",
+        "The drones captured high-resolution imagery, environmental measurements, and reef health indicators."
+      ],
+      "expectedChunkContains": [
+        [
+          "hybrid solar-wave power system"
+        ],
+        [
+          "high-resolution imagery",
+          "environmental measurements",
+          "reef health indicators"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_2_coral_drones.pdf"
+      }
+    },
+    {
+      "id": "RET-035",
+      "categories": [
+        "boundary"
+      ],
+      "difficulty": "hard",
+      "question": "Which power system enabled operation for up to 11 months?",
+      "expectedFacts": [
+        "A hybrid solar-wave power system enabled operation for up to 11 months."
+      ],
+      "expectedChunkContains": [
+        [
+          "hybrid solar-wave power system",
+          "11 months"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_2_coral_drones.pdf"
+      },
+      "boundaryTermsMustBeTogether": [
+        "hybrid solar-wave power system",
+        "11 months"
+      ]
+    },
+    {
+      "id": "RET-036",
+      "categories": [
+        "boundary"
+      ],
+      "difficulty": "hard",
+      "question": "Which model achieved 94.8% accuracy?",
+      "expectedFacts": [
+        "ReefNet-V5 achieved 94.8% image-classification accuracy."
+      ],
+      "expectedChunkContains": [
+        [
+          "ReefNet-V5",
+          "94.8%"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_2_coral_drones.pdf"
+      },
+      "boundaryTermsMustBeTogether": [
+        "ReefNet-V5",
+        "94.8%"
+      ]
+    },
+    {
+      "id": "RET-037",
+      "categories": [
+        "single_hop",
+        "entity"
+      ],
+      "difficulty": "easy",
+      "question": "What was the name of the AI-assisted battery discovery platform?",
+      "expectedFacts": [
+        "The platform was called ElectroMind."
+      ],
+      "expectedChunkContains": [
+        [
+          "ElectroMind",
+          "platform"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_3_battery_discovery.pdf"
+      }
+    },
+    {
+      "id": "RET-038",
+      "categories": [
+        "single_hop",
+        "numeric"
+      ],
+      "difficulty": "easy",
+      "question": "How many candidate battery compounds did ElectroMind evaluate?",
+      "expectedFacts": [
+        "ElectroMind evaluated 8.2 million candidate battery compounds."
+      ],
+      "expectedChunkContains": [
+        [
+          "8.2 million",
+          "candidate battery compounds"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_3_battery_discovery.pdf"
+      }
+    },
+    {
+      "id": "RET-039",
+      "categories": [
+        "single_hop"
+      ],
+      "difficulty": "medium",
+      "question": "What was the goal of the ElectroMind project?",
+      "expectedFacts": [
+        "The project aimed to accelerate materials discovery by reducing exhaustive laboratory screening."
+      ],
+      "expectedChunkContains": [
+        [
+          "accelerate materials discovery",
+          "laboratory screening"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_3_battery_discovery.pdf"
+      }
+    },
+    {
+      "id": "RET-040",
+      "categories": [
+        "single_hop"
+      ],
+      "difficulty": "medium",
+      "question": "What battery research process is traditionally time-consuming?",
+      "expectedFacts": [
+        "Discovering new battery chemistries is traditionally time-consuming and involves years of experimentation and validation."
+      ],
+      "expectedChunkContains": [
+        [
+          "battery chemistries",
+          "years of experimentation",
+          "validation"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_3_battery_discovery.pdf"
+      }
+    },
+    {
+      "id": "RET-041",
+      "categories": [
+        "single_hop"
+      ],
+      "difficulty": "medium",
+      "question": "What techniques did ElectroMind combine to identify promising compounds?",
+      "expectedFacts": [
+        "ElectroMind combined predictive modeling, chemical simulation, and ranking algorithms."
+      ],
+      "expectedChunkContains": [
+        [
+          "predictive modeling",
+          "chemical simulation",
+          "ranking algorithms"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_3_battery_discovery.pdf"
+      }
+    },
+    {
+      "id": "RET-042",
+      "categories": [
+        "single_hop",
+        "numeric"
+      ],
+      "difficulty": "easy",
+      "question": "How much electricity did ElectroMind training consume?",
+      "expectedFacts": [
+        "Training consumed approximately 3.1 GWh of electricity."
+      ],
+      "expectedChunkContains": [
+        [
+          "3.1 GWh",
+          "electricity"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_3_battery_discovery.pdf"
+      }
+    },
+    {
+      "id": "RET-043",
+      "categories": [
+        "single_hop",
+        "numeric"
+      ],
+      "difficulty": "easy",
+      "question": "How long did ElectroMind training last?",
+      "expectedFacts": [
+        "Training lasted over a nine-month period."
+      ],
+      "expectedChunkContains": [
+        [
+          "nine-month period"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_3_battery_discovery.pdf"
+      }
+    },
+    {
+      "id": "RET-044",
+      "categories": [
+        "single_hop"
+      ],
+      "difficulty": "medium",
+      "question": "What did the ElectroMind platform do after analyzing candidate materials?",
+      "expectedFacts": [
+        "The platform generated performance estimates and prioritized compounds for laboratory testing."
+      ],
+      "expectedChunkContains": [
+        [
+          "generated performance estimates",
+          "prioritized compounds",
+          "laboratory testing"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_3_battery_discovery.pdf"
+      }
+    },
+    {
+      "id": "RET-045",
+      "categories": [
+        "single_hop",
+        "entity"
+      ],
+      "difficulty": "easy",
+      "question": "What battery chemistry did the system identify?",
+      "expectedFacts": [
+        "The system identified a lithium-sodium hybrid chemistry."
+      ],
+      "expectedChunkContains": [
+        [
+          "lithium-sodium hybrid chemistry"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_3_battery_discovery.pdf"
+      }
+    },
+    {
+      "id": "RET-046",
+      "categories": [
+        "single_hop",
+        "numeric"
+      ],
+      "difficulty": "easy",
+      "question": "How much did the lithium-sodium hybrid chemistry increase energy density?",
+      "expectedFacts": [
+        "The lithium-sodium hybrid chemistry increased energy density by 28%."
+      ],
+      "expectedChunkContains": [
+        [
+          "lithium-sodium hybrid chemistry",
+          "28%"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_3_battery_discovery.pdf"
+      }
+    },
+    {
+      "id": "RET-047",
+      "categories": [
+        "single_hop",
+        "entity"
+      ],
+      "difficulty": "easy",
+      "question": "Where were the final validation experiments conducted?",
+      "expectedFacts": [
+        "Final validation experiments were conducted at the Zurich Energy Laboratory in Switzerland."
+      ],
+      "expectedChunkContains": [
+        [
+          "Zurich Energy Laboratory",
+          "Switzerland"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_3_battery_discovery.pdf"
+      }
+    },
+    {
+      "id": "RET-048",
+      "categories": [
+        "single_hop"
+      ],
+      "difficulty": "medium",
+      "question": "What did researchers conclude about AI-driven discovery platforms?",
+      "expectedFacts": [
+        "Researchers concluded that AI-driven discovery platforms could shorten development cycles and improve efficiency in advanced materials research."
+      ],
+      "expectedChunkContains": [
+        [
+          "AI-driven discovery platforms",
+          "shorten development cycles",
+          "advanced materials research"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_3_battery_discovery.pdf"
+      }
+    },
+    {
+      "id": "RET-049",
+      "categories": [
+        "paraphrase",
+        "numeric"
+      ],
+      "difficulty": "medium",
+      "question": "Which battery formulation improved storage density by nearly thirty percent?",
+      "expectedFacts": [
+        "A lithium-sodium hybrid chemistry increased energy density by 28%."
+      ],
+      "expectedChunkContains": [
+        [
+          "lithium-sodium hybrid chemistry",
+          "28%"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_3_battery_discovery.pdf"
+      }
+    },
+    {
+      "id": "RET-050",
+      "categories": [
+        "paraphrase"
+      ],
+      "difficulty": "medium",
+      "question": "What AI system screened millions of battery materials before lab testing?",
+      "expectedFacts": [
+        "ElectroMind evaluated 8.2 million candidate battery compounds and prioritized compounds for laboratory testing."
+      ],
+      "expectedChunkContains": [
+        [
+          "ElectroMind",
+          "8.2 million"
+        ],
+        [
+          "prioritized compounds",
+          "laboratory testing"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_3_battery_discovery.pdf"
+      }
+    },
+    {
+      "id": "RET-051",
+      "categories": [
+        "multi_hop",
+        "strict_multi_hop"
+      ],
+      "difficulty": "hard",
+      "question": "How many compounds were evaluated and how much electricity did training consume?",
+      "expectedFacts": [
+        "ElectroMind evaluated 8.2 million candidate battery compounds.",
+        "Training consumed approximately 3.1 GWh of electricity."
+      ],
+      "expectedChunkContains": [
+        [
+          "8.2 million",
+          "candidate battery compounds"
+        ],
+        [
+          "3.1 GWh",
+          "electricity"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_3_battery_discovery.pdf"
+      }
+    },
+    {
+      "id": "RET-052",
+      "categories": [
+        "multi_hop",
+        "strict_multi_hop"
+      ],
+      "difficulty": "hard",
+      "question": "Which chemistry improved energy density and where was it validated?",
+      "expectedFacts": [
+        "A lithium-sodium hybrid chemistry increased energy density by 28%.",
+        "Final validation experiments were conducted at the Zurich Energy Laboratory in Switzerland."
+      ],
+      "expectedChunkContains": [
+        [
+          "lithium-sodium hybrid chemistry",
+          "28%"
+        ],
+        [
+          "Zurich Energy Laboratory",
+          "Switzerland"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_3_battery_discovery.pdf"
+      }
+    },
+    {
+      "id": "RET-053",
+      "categories": [
+        "boundary"
+      ],
+      "difficulty": "hard",
+      "question": "Which chemistry increased energy density by 28%?",
+      "expectedFacts": [
+        "The lithium-sodium hybrid chemistry increased energy density by 28%."
+      ],
+      "expectedChunkContains": [
+        [
+          "lithium-sodium hybrid chemistry",
+          "28%"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_3_battery_discovery.pdf"
+      },
+      "boundaryTermsMustBeTogether": [
+        "lithium-sodium hybrid chemistry",
+        "28%"
+      ]
+    },
+    {
+      "id": "RET-054",
+      "categories": [
+        "boundary"
+      ],
+      "difficulty": "hard",
+      "question": "Where were the final validation experiments for the 28% energy-density result conducted?",
+      "expectedFacts": [
+        "The 28% energy-density result was validated at the Zurich Energy Laboratory in Switzerland."
+      ],
+      "expectedChunkContains": [
+        [
+          "28%",
+          "Zurich Energy Laboratory",
+          "Switzerland"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_3_battery_discovery.pdf"
+      },
+      "boundaryTermsMustBeTogether": [
+        "28%",
+        "Zurich Energy Laboratory",
+        "Switzerland"
+      ]
+    },
+    {
+      "id": "RET-055",
+      "categories": [
+        "cross_document",
+        "entity"
+      ],
+      "difficulty": "hard",
+      "question": "Which paper involved Iceland and which involved Switzerland?",
+      "expectedFacts": [
+        "The Martian agriculture paper involved Iceland.",
+        "The battery discovery paper involved Switzerland."
+      ],
+      "expectedChunkContains": [
+        [
+          "Borealis Dome",
+          "Iceland"
+        ],
+        [
+          "Zurich Energy Laboratory",
+          "Switzerland"
+        ]
+      ]
+    },
+    {
+      "id": "RET-056",
+      "categories": [
+        "cross_document",
+        "numeric"
+      ],
+      "difficulty": "hard",
+      "question": "Compare the main percentage improvements in the Martian agriculture and battery discovery papers.",
+      "expectedFacts": [
+        "The Martian agriculture paper reported 37% water savings and 22% tomato yield improvement.",
+        "The battery paper reported a 28% energy-density improvement."
+      ],
+      "expectedChunkContains": [
+        [
+          "37%",
+          "22%"
+        ],
+        [
+          "28%",
+          "energy density"
+        ]
+      ]
+    },
+    {
+      "id": "RET-057",
+      "categories": [
+        "cross_document",
+        "numeric"
+      ],
+      "difficulty": "hard",
+      "question": "Which system operated for 11 months and which system trained for nine months?",
+      "expectedFacts": [
+        "The CoralEye drones operated for up to 11 months.",
+        "ElectroMind training lasted a nine-month period."
+      ],
+      "expectedChunkContains": [
+        [
+          "11 months",
+          "drone"
+        ],
+        [
+          "nine-month period"
+        ]
+      ]
+    },
+    {
+      "id": "RET-058",
+      "categories": [
+        "cross_document",
+        "entity"
+      ],
+      "difficulty": "hard",
+      "question": "Which project used a hybrid solar-wave power system and which used a quantum-assisted prediction model?",
+      "expectedFacts": [
+        "The coral drone project used a hybrid solar-wave power system.",
+        "The Martian agriculture project used a quantum-assisted prediction model."
+      ],
+      "expectedChunkContains": [
+        [
+          "hybrid solar-wave power system"
+        ],
+        [
+          "quantum-assisted prediction model"
+        ]
+      ]
+    },
+    {
+      "id": "RET-059",
+      "categories": [
+        "cross_document"
+      ],
+      "difficulty": "hard",
+      "question": "Which project focused on reef health and which focused on battery materials discovery?",
+      "expectedFacts": [
+        "The CoralEye project focused on reef health.",
+        "The ElectroMind project focused on battery materials discovery."
+      ],
+      "expectedChunkContains": [
+        [
+          "reef health",
+          "CoralEye"
+        ],
+        [
+          "battery compounds",
+          "ElectroMind"
+        ]
+      ]
+    },
+    {
+      "id": "RET-060",
+      "categories": [
+        "cross_document",
+        "numeric"
+      ],
+      "difficulty": "hard",
+      "question": "Which paper mentioned 42 locations and which mentioned six research institutions?",
+      "expectedFacts": [
+        "The coral drone paper mentioned 42 Pacific Ocean locations.",
+        "The Martian agriculture paper mentioned six research institutions."
+      ],
+      "expectedChunkContains": [
+        [
+          "42 Pacific Ocean locations"
+        ],
+        [
+          "six",
+          "research institutions"
+        ]
+      ]
+    },
+    {
+      "id": "RET-061",
+      "categories": [
+        "no_answer"
+      ],
+      "difficulty": "medium",
+      "question": "What color were the CoralEye drones?",
+      "expectedFacts": [],
+      "expectedChunkContains": [],
+      "expectedSource": {
+        "fileName": "paper_2_coral_drones.pdf"
+      },
+      "expectedAnswerBehavior": "no_relevant_evidence"
+    },
+    {
+      "id": "RET-062",
+      "categories": [
+        "no_answer"
+      ],
+      "difficulty": "medium",
+      "question": "Which GPU model was used to train ElectroMind?",
+      "expectedFacts": [],
+      "expectedChunkContains": [],
+      "expectedSource": {
+        "fileName": "paper_3_battery_discovery.pdf"
+      },
+      "expectedAnswerBehavior": "no_relevant_evidence"
+    },
+    {
+      "id": "RET-063",
+      "categories": [
+        "no_answer"
+      ],
+      "difficulty": "medium",
+      "question": "What was the pH level of the simulated Martian regolith?",
+      "expectedFacts": [],
+      "expectedChunkContains": [],
+      "expectedSource": {
+        "fileName": "paper_1_quantum_agriculture.pdf"
+      },
+      "expectedAnswerBehavior": "no_relevant_evidence"
+    },
+    {
+      "id": "RET-064",
+      "categories": [
+        "no_answer"
+      ],
+      "difficulty": "medium",
+      "question": "How many researchers worked on the CoralEye project?",
+      "expectedFacts": [],
+      "expectedChunkContains": [],
+      "expectedSource": {
+        "fileName": "paper_2_coral_drones.pdf"
+      },
+      "expectedAnswerBehavior": "no_relevant_evidence"
+    },
+    {
+      "id": "RET-065",
+      "categories": [
+        "no_answer"
+      ],
+      "difficulty": "medium",
+      "question": "What was the launch date of the Nordic Space Farming Initiative?",
+      "expectedFacts": [],
+      "expectedChunkContains": [],
+      "expectedSource": {
+        "fileName": "paper_1_quantum_agriculture.pdf"
+      },
+      "expectedAnswerBehavior": "no_relevant_evidence"
+    },
+    {
+      "id": "RET-066",
+      "categories": [
+        "no_answer"
+      ],
+      "difficulty": "medium",
+      "question": "What brand of laboratory sensors was used in the Martian agriculture study?",
+      "expectedFacts": [],
+      "expectedChunkContains": [],
+      "expectedSource": {
+        "fileName": "paper_1_quantum_agriculture.pdf"
+      },
+      "expectedAnswerBehavior": "no_relevant_evidence"
+    },
+    {
+      "id": "RET-067",
+      "categories": [
+        "no_answer"
+      ],
+      "difficulty": "medium",
+      "question": "What ocean depth did the CoralEye drones operate at?",
+      "expectedFacts": [],
+      "expectedChunkContains": [],
+      "expectedSource": {
+        "fileName": "paper_2_coral_drones.pdf"
+      },
+      "expectedAnswerBehavior": "no_relevant_evidence"
+    },
+    {
+      "id": "RET-068",
+      "categories": [
+        "no_answer"
+      ],
+      "difficulty": "medium",
+      "question": "What was the exact cost of the ElectroMind computing cluster?",
+      "expectedFacts": [],
+      "expectedChunkContains": [],
+      "expectedSource": {
+        "fileName": "paper_3_battery_discovery.pdf"
+      },
+      "expectedAnswerBehavior": "no_relevant_evidence"
+    }
+  ]
+}

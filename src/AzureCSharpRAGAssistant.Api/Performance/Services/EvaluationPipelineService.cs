@@ -6,6 +6,7 @@ using Azure.Search.Documents;
 using Azure.Search.Documents.Models;
 using AzureCSharpRAGAssistant.Api.Contracts;
 using AzureCSharpRAGAssistant.Api.Models;
+using AzureCSharpRAGAssistant.Api.Performance.Data.TestMetrics;
 using AzureCSharpRAGAssistant.Api.Performance.Helpers;
 using AzureCSharpRAGAssistant.Api.Services;
 using AzureCSharpRAGAssistant.Api.Services.Indexing;
@@ -44,6 +45,7 @@ namespace AzureCSharpRAGAssistant.Api.Performance.Services
         private readonly IChunkingService _chunkingService;
         private readonly SearchClient _searchClient;
         private readonly AzureOpenAISettings _azureOpenAISettings;
+        private readonly EvaluationDataset _evaluationDataset;
         private EmbeddingClient? IndexEmbeddingClient { get; set; } = null; //This is initiated as a property, so The evaluation can be run with different embedding models
         private AzureOpenAIClient AzureClient { get; }
         private ISearchIndexService _searchIndexService;
@@ -58,6 +60,7 @@ namespace AzureCSharpRAGAssistant.Api.Performance.Services
             _pdfExtractionService = pdfExtractionService;
             _chunkingService = chunkingService;
             _searchIndexService = searchIndexService;
+            _evaluationDataset = LoadEvaluationDataset();
 
             _searchClient = new SearchClient(
                 new Uri(_azureSearchSettings.Endpoint),
@@ -72,6 +75,28 @@ namespace AzureCSharpRAGAssistant.Api.Performance.Services
                 new ApiKeyCredential(_azureOpenAISettings.ApiKey));
 
             IndexEmbeddingClient = AzureClient.GetEmbeddingClient(_azureOpenAISettings.EmbeddingDeployment);
+        }
+
+        private static EvaluationDataset LoadEvaluationDataset()
+        {
+            var candidatePaths = new[]
+            {
+                Path.Combine(Directory.GetCurrentDirectory(), "Performance", "Data", "TestMetrics", "evaluation.json"),
+                Path.Combine(Directory.GetCurrentDirectory(), "src", "AzureCSharpRAGAssistant.Api", "Performance", "Data", "TestMetrics", "evaluation.json")
+            };
+
+            var datasetPath = candidatePaths.FirstOrDefault(File.Exists)
+                ?? throw new FileNotFoundException("Evaluation dataset file was not found.");
+
+            var json = File.ReadAllText(datasetPath);
+            var dataset = JsonSerializer.Deserialize<EvaluationDataset>(
+                json,
+                new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+
+            return dataset ?? throw new InvalidOperationException("Evaluation dataset file could not be deserialized.");
         }
 
         public async Task<IEnumerable<PdfPage>> ReadEvaluationFiles()
@@ -118,6 +143,7 @@ namespace AzureCSharpRAGAssistant.Api.Performance.Services
         public async Task<IEnumerable<Chunk>> ChunkPages(List<PdfPage> pages, int chunkSize)
         {
             var chunkList = new List<Chunk>();
+
             foreach (var page in pages)
             {
                 var chunk = _chunkingService.ChunkText(page.FileName, page.PageNumber, page.Text, chunkSize);
@@ -156,14 +182,43 @@ namespace AzureCSharpRAGAssistant.Api.Performance.Services
             var chunks = await ChunkPages(pages.ToList(), chunkSize);
 
             var chunkList = chunks.ToList();
+            await SaveCreatedChunksAsync(chunkList, embeddingModel!, chunkSize);
 
             if (embeddingModel != null)
             {
                 await SetEmbeddingsClient(embeddingModel);
             }
 
+            var fileName = chunkList[0].FileName;
+            var fileId = Guid.NewGuid().ToString();
+            var pageNumber = chunkList[0].PageNumber;
+            var chunkIndex = 0;
+
             foreach (var item in chunkList)
             {
+                if (fileName == item.FileName)
+                {
+                    if (pageNumber == item.PageNumber)
+                    {
+                        item.ChunkIndex = chunkIndex++;
+                    }
+                    else
+                    {
+                        pageNumber = item.PageNumber;
+                        chunkIndex = 0;
+                        item.ChunkIndex = chunkIndex++;
+                    }
+                    item.FileId = fileId;
+                }
+                else
+                {
+                    fileName = item.FileName;
+                    pageNumber = item.PageNumber;
+                    chunkIndex = 0;
+                    item.ChunkIndex = chunkIndex++;
+                    fileId = Guid.NewGuid().ToString();
+                    item.FileId = fileId;
+                }
                 item.ContentVector = await GenerateEmbeddings(item.Content);
             }
 
@@ -214,9 +269,15 @@ namespace AzureCSharpRAGAssistant.Api.Performance.Services
             await File.WriteAllTextAsync(filePath, summaryText);
         }
 
-        public async Task RunRecallEvaluation(int topK)
+        public async Task RunRecallEvaluation(StringBuilder stringBuilder, int topK)
         {
+            foreach (var test in _evaluationDataset.Tests)
+            {
+                if (test.Categories.Contains(EvaluationCategories.single_hop.ToString()))
+                {
 
+                }
+            }
         }
 
         public async Task RunAllEvaluations(bool runRecallEvaluations = true)
@@ -258,8 +319,6 @@ namespace AzureCSharpRAGAssistant.Api.Performance.Services
 
                     var createdChunks = await RunTestPipeLineFromChunking(pages, chunkSize, embeddingDeployment);
                     summaryBuilder.AppendLine($"Chunks created: {createdChunks.Count}");
-
-                    await SaveCreatedChunksAsync(createdChunks, embeddingDeployment, chunkSize);
                     summaryBuilder.AppendLine("Chunk output saved to results folder.");
 
                     //For each test in the tests
@@ -277,7 +336,7 @@ namespace AzureCSharpRAGAssistant.Api.Performance.Services
                             foreach (var scenario in scenarios)
                             {
                                 summaryBuilder.AppendLine($"Running recall scenario: {scenario.Name} with topK={scenario.TopK}");
-                                await RunRecallEvaluation(scenario.TopK);
+                                await RunRecallEvaluation(summaryBuilder, scenario.TopK);
                                 summaryBuilder.AppendLine($"Completed recall scenario: {scenario.Name}");
                             }
                         }
