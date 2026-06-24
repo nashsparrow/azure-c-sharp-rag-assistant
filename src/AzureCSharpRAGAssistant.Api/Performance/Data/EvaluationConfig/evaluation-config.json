@@ -1,0 +1,27 @@
+{
+  "Tests": [
+    {
+      "Name": "Recall@ Tests",
+      "Scenarios": [
+        { "Name": "Recall@10", "topK": 10 },
+        { "Name": "Recall@7", "topK": 7 },
+        { "Name": "Recall@5", "topK": 5 },
+        { "Name": "Recall@3", "topK": 3 },
+        { "Name": "Recall@1", "topK": 1 }
+      ]
+    },
+    {
+      "Name": "Precision@ Tests",
+      "Scenarios": [
+        { "Name": "Precision@10", "topK": 10 },
+        { "Name": "Precision@7", "topK": 7 },
+        { "Name": "Precision@5", "topK": 5 },
+        { "Name": "Precision@3", "topK": 3 },
+        { "Name": "Precision@1", "topK": 1 }
+      ]
+    }
+  ],
+  "EmbeddingDeployments":["text-embedding-3-small"],
+  "ChatDeployments":["gpt-4.1-mini"],
+  "ChunkSizes":[500]
+}

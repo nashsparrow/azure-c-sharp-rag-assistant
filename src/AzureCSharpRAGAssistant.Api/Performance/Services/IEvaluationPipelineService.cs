@@ -2,6 +2,6 @@ namespace AzureCSharpRAGAssistant.Api.Performance.Services
 {
     public interface IEvaluationPipelineService
     {
-        Task RunRecallTests();
+        Task RunAllEvaluations(bool runRecallEvaluations = true);
     }
 }
