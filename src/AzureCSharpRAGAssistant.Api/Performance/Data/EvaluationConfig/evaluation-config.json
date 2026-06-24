@@ -23,5 +23,5 @@
   ],
   "EmbeddingDeployments":["text-embedding-3-small"],
   "ChatDeployments":["gpt-4.1-mini"],
-  "ChunkSizes":[500]
+  "ChunkSizes":[250, 350, 500, 750, 1000]
 }

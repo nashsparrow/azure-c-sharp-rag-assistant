@@ -41,7 +41,7 @@ namespace AzureCSharpRAGAssistant.Api.Services.Indexing
         {
             try
             {
-                _logger.LogInformation(" Azure Search Index | Search for Text Index {IndexName} Started.", _searchSettings.IndexName);
+                _logger.LogInformation(" Azure Search Index | Search for Text Index {IndexName} Started.", _searchSettings.IntegrationTestIndexName);
                 await _searchIndexClient.GetIndexAsync(_searchSettings.IntegrationTestIndexName);
 
                 await DeleteIndexAsync(_searchSettings.IntegrationTestIndexName);

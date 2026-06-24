@@ -1,4 +1,5 @@
 using System.ClientModel;
+using System.Text;
 using System.Text.Json;
 using Azure.AI.OpenAI;
 using Azure.Search.Documents;
@@ -75,21 +76,43 @@ namespace AzureCSharpRAGAssistant.Api.Performance.Services
 
         public async Task<IEnumerable<PdfPage>> ReadEvaluationFiles()
         {
-            var fileList = new List<string> { "" };
-            var assembly = typeof(EvaluationPipelineService).Assembly;
-            var resourceName = "AzureCSharpRAGAssistant.Api.IntegrationTests.Services.Extraction.TestFiles.test_research_paper.pdf";
-
-            using var stream = assembly.GetManifestResourceStream(resourceName) ?? throw new InvalidOperationException($"Embedded resource '{resourceName}' not found.");
-            using var memoryStream = new MemoryStream();
-            stream.CopyTo(memoryStream);
-
-            var blobFile = new BlobFileResult
+            var fileList = new List<string>
             {
-                FileName = "sample_paper_loop_unrolling.pdf",
-                Content = memoryStream.ToArray()
+                "paper_1_quantum_agriculture.pdf",
+                "paper_2_coral_drones.pdf",
+                "paper_3_battery_discovery.pdf"
             };
 
-            return _pdfExtractionService.ExtractPdfPages(blobFile);
+            var assembly = typeof(EvaluationPipelineService).Assembly;
+            var pages = new List<PdfPage>();
+            var resourceNames = assembly.GetManifestResourceNames();
+
+            foreach (var fileName in fileList)
+            {
+                var resourceName = resourceNames.FirstOrDefault(name =>
+                    name.EndsWith(fileName, StringComparison.OrdinalIgnoreCase));
+
+                if (resourceName == null)
+                {
+                    throw new InvalidOperationException($"Embedded resource for '{fileName}' not found.");
+                }
+
+                using var stream = assembly.GetManifestResourceStream(resourceName)
+                    ?? throw new InvalidOperationException($"Embedded resource '{resourceName}' not found.");
+                using var memoryStream = new MemoryStream();
+                stream.CopyTo(memoryStream);
+
+                var blobFile = new BlobFileResult
+                {
+                    FileName = fileName,
+                    Content = memoryStream.ToArray()
+                };
+
+                var extractedPages = _pdfExtractionService.ExtractPdfPages(blobFile);
+                pages.AddRange(extractedPages);
+            }
+
+            return pages;
         }
 
         public async Task<IEnumerable<Chunk>> ChunkPages(List<PdfPage> pages, int chunkSize)
@@ -156,6 +179,41 @@ namespace AzureCSharpRAGAssistant.Api.Performance.Services
             return result;
         }
 
+        private static async Task SaveCreatedChunksAsync(IEnumerable<Chunk> createdChunks, string embeddingDeployment, int chunkSize)
+        {
+            var resultsDirectory = Path.Combine(Directory.GetCurrentDirectory(), "output", "result");
+            Directory.CreateDirectory(resultsDirectory);
+
+            var safeEmbeddingName = string.Concat(
+                embeddingDeployment.Select(character => Path.GetInvalidFileNameChars().Contains(character) ? '_' : character));
+
+            var fileName = $"{safeEmbeddingName}_chunksize_{chunkSize}.json ";
+            var filePath = Path.Combine(resultsDirectory, fileName);
+
+            var json = JsonSerializer.Serialize(
+                createdChunks,
+                new JsonSerializerOptions
+                {
+                    WriteIndented = true
+                });
+
+            await File.WriteAllTextAsync(filePath, json);
+        }
+
+        private static async Task SaveEvaluationSummaryAsync(string summaryText, string embeddingDeployment, int chunkSize)
+        {
+            var resultsDirectory = Path.Combine(Directory.GetCurrentDirectory(), "output", "result");
+            Directory.CreateDirectory(resultsDirectory);
+
+            var safeEmbeddingName = string.Concat(
+                embeddingDeployment.Select(character => Path.GetInvalidFileNameChars().Contains(character) ? '_' : character));
+
+            var fileName = $"{safeEmbeddingName}_chunksize_{chunkSize}_summary.txt";
+            var filePath = Path.Combine(resultsDirectory, fileName);
+
+            await File.WriteAllTextAsync(filePath, summaryText);
+        }
+
         public async Task RunRecallEvaluation(int topK)
         {
 
@@ -189,13 +247,26 @@ namespace AzureCSharpRAGAssistant.Api.Performance.Services
                 //For each chunksize in the config file
                 foreach (var chunkSize in config?.ChunkSizes!)
                 {
+                    var summaryBuilder = new StringBuilder();
+                    summaryBuilder.AppendLine($"Evaluation run started: {DateTime.UtcNow:O}");
+                    summaryBuilder.AppendLine($"Embedding deployment: {embeddingDeployment}");
+                    summaryBuilder.AppendLine($"Chunk size: {chunkSize}");
+
                     //refresh the test index as a new index for each chunk size
                     var result = await _builder.CreatePerformanceEnvironment();
+                    summaryBuilder.AppendLine($"Performance environment created: {result}");
+
                     var createdChunks = await RunTestPipeLineFromChunking(pages, chunkSize, embeddingDeployment);
+                    summaryBuilder.AppendLine($"Chunks created: {createdChunks.Count}");
+
+                    await SaveCreatedChunksAsync(createdChunks, embeddingDeployment, chunkSize);
+                    summaryBuilder.AppendLine("Chunk output saved to results folder.");
 
                     //For each test in the tests
                     foreach (var test in config?.Tests!)
                     {
+                        summaryBuilder.AppendLine($"Processing test: {test.Name}");
+
                         if (test.Name == "Recall@ Tests" && runRecallEvaluations)
                         {
                             var scenarios = test.Scenarios?
@@ -205,10 +276,15 @@ namespace AzureCSharpRAGAssistant.Api.Performance.Services
                             //For each scenario in each test category
                             foreach (var scenario in scenarios)
                             {
+                                summaryBuilder.AppendLine($"Running recall scenario: {scenario.Name} with topK={scenario.TopK}");
                                 await RunRecallEvaluation(scenario.TopK);
+                                summaryBuilder.AppendLine($"Completed recall scenario: {scenario.Name}");
                             }
                         }
                     }
+
+                    summaryBuilder.AppendLine($"Evaluation run completed: {DateTime.UtcNow:O}");
+                    await SaveEvaluationSummaryAsync(summaryBuilder.ToString(), embeddingDeployment, chunkSize);
                 }
             }
         }

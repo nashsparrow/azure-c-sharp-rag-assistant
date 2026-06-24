@@ -1,6 +1,5 @@
-using AzureCSharpRAGAssistant.Api.Contracts;
 using AzureCSharpRAGAssistant.Api.Filters;
-using AzureCSharpRAGAssistant.Api.Services.Documents;
+using AzureCSharpRAGAssistant.Api.Performance.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AzureCSharpRAGAssistant.Api.Controllers
@@ -9,19 +8,19 @@ namespace AzureCSharpRAGAssistant.Api.Controllers
     [Route("api/[controller]")]
     public class PerformanceController : ControllerBase
     {
-        private readonly IDocumentsUploadService _documentsUploadService;
+        private readonly IEvaluationPipelineService _evaluationPipelineService;
 
-        public PerformanceController(IDocumentsUploadService documentsUploadService)
+        public PerformanceController(IEvaluationPipelineService evaluationPipelineService)
         {
-            _documentsUploadService = documentsUploadService;
+            _evaluationPipelineService = evaluationPipelineService;
         }
 
-        [HttpPost("recallevaluation")]
+        [HttpPost("evaluation")]
         [ServiceFilter(typeof(ValidateFileUploadFilter))]
         public async Task<ActionResult> RecallEvaluation()
         {
-            var document = await _documentsUploadService.UploadDocument(request);
-            return Ok(document);
+            await _evaluationPipelineService.RunAllEvaluations(runRecallEvaluations: true);
+            return Ok("Test Executed");
         }
     }
 }

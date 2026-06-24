@@ -74,7 +74,7 @@ namespace AzureCSharpRAGAssistant.Api.Tests.Services.Processing
             .Returns("cleaned text");
 
             _chunkingServiceMock
-                .Setup(x => x.ChunkText(fileName, 1, "cleaned text"))
+                .Setup(x => x.ChunkText(fileName, 1, "cleaned text", 500))
                 .Returns(chunkList);
 
             _embeddingServiceMock
@@ -99,7 +99,7 @@ namespace AzureCSharpRAGAssistant.Api.Tests.Services.Processing
             _fileStorageServiceMock.Verify(x => x.DownloadDocument(_folderSettings.Value.DocumentsFolder, fileName), Times.Once);
             _pdfExtractionServiceMock.Verify(x => x.ExtractPdfPages(blobFile), Times.Once);
             _textCleanupServiceMock.Verify(x => x.CleanupText("raw page text"), Times.Once);
-            _chunkingServiceMock.Verify(x => x.ChunkText(fileName, 1, "cleaned text"), Times.Once);
+            _chunkingServiceMock.Verify(x => x.ChunkText(fileName, 1, "cleaned text", 500), Times.Once);
             _embeddingServiceMock.Verify(x => x.GenerateEmbeddings("cleaned chunk content"), Times.Once);
             _searchIndexServiceMock.Verify(x => x.IndexChunksAsync(It.IsAny<IEnumerable<Chunk>>()), Times.Once);
         }

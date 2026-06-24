@@ -8,6 +8,7 @@
   
   <ItemGroup>
     <EmbeddedResource Include="SemanticKernel\Prompts\assistant.txt" />
+    <EmbeddedResource Include="Performance\Data\Files\*.pdf" />
   </ItemGroup>
 
   <ItemGroup>

@@ -3,6 +3,7 @@ using AzureCSharpRAGAssistant.Api.Contracts.Settings;
 using AzureCSharpRAGAssistant.Api.Data;
 using AzureCSharpRAGAssistant.Api.Filters;
 using AzureCSharpRAGAssistant.Api.Middleware;
+using AzureCSharpRAGAssistant.Api.Performance.Services;
 using AzureCSharpRAGAssistant.Api.SemanticKernel.Factory;
 using AzureCSharpRAGAssistant.Api.SemanticKernel.Plugins;
 using AzureCSharpRAGAssistant.Api.SemanticKernel.Services;
@@ -78,6 +79,7 @@ builder.Services.AddScoped<IDocumentsUploadService, DocumentsUploadService>();
 builder.Services.AddScoped<IKernelFactory, KernelFactory>();
 builder.Services.AddScoped<DocumentSearchPlugin>();
 builder.Services.AddScoped<ISKAnswerService, SKAnswerService>();
+builder.Services.AddScoped<IEvaluationPipelineService, EvaluationPipelineService>();
 
 builder.Services.AddScoped<ValidateFileUploadFilter>();
 
