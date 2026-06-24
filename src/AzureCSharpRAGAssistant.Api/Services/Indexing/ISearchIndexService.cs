@@ -7,6 +7,6 @@ namespace AzureCSharpRAGAssistant.Api.Services.Indexing
     {
         Task<IndexDocumentsResult> IndexChunksAsync(IEnumerable<Chunk> chunks);
 
-        Task<List<Chunk>> SearchChunksAsync(string question);
+        Task<List<Chunk>> SearchChunksAsync(string question, int? topK = null);
     }
 }

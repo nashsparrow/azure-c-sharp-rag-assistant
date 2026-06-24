@@ -11,7 +11,7 @@ namespace AzureCSharpRAGAssistant.Api.Services
         public IEnumerable<PdfPage> ExtractPdfPages(BlobFileResult document)
         {
             using var pdf = PdfDocument.Open(document.Content);
-            
+
             foreach (var page in pdf.GetPages())
             {
                 yield return new PdfPage
@@ -22,7 +22,8 @@ namespace AzureCSharpRAGAssistant.Api.Services
                         ReplaceWhitespaceWithSpace = true,
                         SeparateParagraphsWithDoubleNewline = false,
                         NegativeGapAsWhitespace = true
-                    })
+                    }),
+                    FileName = document.FileName
                 };
             }
         }

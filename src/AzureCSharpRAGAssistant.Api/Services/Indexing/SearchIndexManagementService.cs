@@ -17,8 +17,8 @@ namespace AzureCSharpRAGAssistant.Api.Services.Indexing
             _logger = logger;
             _searchSettings = searchSettings.Value;
             _searchIndexClient = new SearchIndexClient(
-                new Uri(_searchSettings.Endpoint), 
-                new Azure.AzureKeyCredential(_searchSettings.ApiKey));
+                new Uri(_searchSettings.Endpoint),
+                new AzureKeyCredential(_searchSettings.ApiKey));
         }
 
         public async Task EnsureIndexExistsAsync()
@@ -33,6 +33,30 @@ namespace AzureCSharpRAGAssistant.Api.Services.Indexing
             {
             }
 
+            await EnsureProvidedIndexExistAsync(_searchSettings.IndexName);
+            _logger.LogInformation(" Azure Search Index | New Index : {IndexName} Created.", _searchSettings.IndexName);
+        }
+
+        public async Task EnsureTestIndexExistsAndNewAsync()
+        {
+            try
+            {
+                _logger.LogInformation(" Azure Search Index | Search for Text Index {IndexName} Started.", _searchSettings.IndexName);
+                await _searchIndexClient.GetIndexAsync(_searchSettings.IntegrationTestIndexName);
+
+                await DeleteIndexAsync(_searchSettings.IntegrationTestIndexName);
+                return;
+            }
+            catch (RequestFailedException ex) when (ex.Status == 404)
+            {
+            }
+
+            await EnsureProvidedIndexExistAsync(_searchSettings.IntegrationTestIndexName);
+            _logger.LogInformation(" Azure Search Index |  Test Index : {IndexName} Created.", _searchSettings.IndexName);
+        }
+
+        private async Task EnsureProvidedIndexExistAsync(string indexName)
+        {
             var fields = new List<SearchField>
             {
                 new SimpleField("id", SearchFieldDataType.String) { IsKey = true, IsFilterable = true },
@@ -67,7 +91,17 @@ namespace AzureCSharpRAGAssistant.Api.Services.Indexing
             };
 
             await _searchIndexClient.CreateIndexAsync(index);
-            _logger.LogInformation(" Azure Search Index | New Index : {IndexName} Created.", _searchSettings.IndexName);
+        }
+
+        public async Task DeleteIndexAsync(string indexName)
+        {
+            try
+            {
+                await _searchIndexClient.DeleteIndexAsync(indexName, default);
+            }
+            catch
+            {
+            }
         }
     }
 }

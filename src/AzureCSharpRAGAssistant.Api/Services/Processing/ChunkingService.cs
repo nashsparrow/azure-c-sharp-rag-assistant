@@ -2,7 +2,6 @@ using AzureCSharpRAGAssistant.Api.Contracts.Settings;
 using AzureCSharpRAGAssistant.Api.Models;
 using Microsoft.Extensions.Options;
 using PragmaticSegmenterNet;
-using System.Text.RegularExpressions;
 
 namespace AzureCSharpRAGAssistant.Api.Services.Processing
 {
@@ -26,14 +25,14 @@ namespace AzureCSharpRAGAssistant.Api.Services.Processing
             return sentences;
         }
 
-        public List<Chunk>? ChunkText(string fileName, int pageNumber, string text)
+        public List<Chunk>? ChunkText(string fileName, int pageNumber, string text, int? chunkSize = null)
         {
             //This method will overlap one sentence between each chunk of the page
             //This logic is implemented that the chunk text size is one sentence over than the chunk limit.
-            
+
             var chunks = new List<Chunk>();
             var sentences = GetSentences(text);
-            var maxChunkLength = _chunkSettings.ChunkSize;
+            var maxChunkLength = chunkSize ?? _chunkSettings.ChunkSize;
             var chunkLength = 0;
             var chunkText = string.Empty;
 
@@ -41,7 +40,7 @@ namespace AzureCSharpRAGAssistant.Api.Services.Processing
             {
                 chunkText += (chunkText == string.Empty) ? sentence : " " + sentence;
                 chunkLength += sentence.Length;
-                
+
                 if (chunkLength > maxChunkLength)
                 {
                     chunks.Add(new Chunk
