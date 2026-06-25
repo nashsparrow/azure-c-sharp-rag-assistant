@@ -231,7 +231,7 @@ namespace AzureCSharpRAGAssistant.Api.Performance.Services
 
         public async Task<List<Chunk>> SearchIndexes(string question, int topK)
         {
-            var result = await _searchIndexService.SearchChunksAsync(question, topK);
+            var result = await _searchIndexService.SearchChunksAsync(question, topK, true);
             return result;
         }
 
@@ -310,8 +310,8 @@ namespace AzureCSharpRAGAssistant.Api.Performance.Services
                     totalTests++;
                     var result = await SearchIndexes(test.Question, topK);
                     var compareResult = CompareChunks(test.ExpectedChunkContains, result);
-                    mRR_total = CalculateMRRValue(compareResult.rankForMRR);
-                    precision_total = CalculatePrecisionValue(compareResult.relevantChunks, topK);
+                    mRR_total += CalculateMRRValue(compareResult.rankForMRR);
+                    precision_total += CalculatePrecisionValue(compareResult.relevantChunks, topK);
 
                     switch (compareResult.result)
                     {
@@ -331,13 +331,13 @@ namespace AzureCSharpRAGAssistant.Api.Performance.Services
                 }
             }
 
-            var recallatValue = (float)partialyMatched + matchedAll / totalTests;
+            var recallatValue = ((float)partialyMatched + matchedAll) / totalTests;
             var mRRMean = mRR_total / totalTests;
             var precisionMean = precision_total / totalTests;
-            stringBuilder.Append($"Recall@{topK} : ratio: {recallatValue}");
-            stringBuilder.Append($"MRR@{topK} : ratio: {mRRMean}");
-            stringBuilder.Append($"Pricision@{topK} : ratio: {precisionMean}");
-            Console.WriteLine("Recall@{0} : percentace: {1}", topK, (float)partialyMatched + matchedAll / totalTests);
+            stringBuilder.Append($"Recall@{topK} : ratio: {recallatValue} percentage: {Math.Round(recallatValue * 100, 2)}%");
+            stringBuilder.Append($"MRR@{topK} : ratio: {mRRMean} percentage: {Math.Round(mRRMean * 100, 2)}%");
+            stringBuilder.Append($"Pricision@{topK} : ratio: {precisionMean} percentage: {Math.Round(precisionMean * 100, 2)}%");
+            Console.WriteLine("Recall@{0} : percentage: {1}", topK, recallatValue);
         }
 
         private (EvaluationResults result, float hitRatio, int rankForMRR, int relevantChunks) CompareChunks(List<List<string>> expectedChunkContains, List<Chunk> chunks)

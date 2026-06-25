@@ -11,6 +11,7 @@ namespace AzureCSharpRAGAssistant.Api.Services.Indexing
     public class SearchIndexService : ISearchIndexService
     {
         private readonly SearchClient _searchClient;
+        private readonly SearchClient _searchClientForPerformance;
         private readonly AzureSearchSettings _searchSettings;
         private readonly IEmbeddingService _embeddingService;
         private readonly ILogger<SearchIndexService> _logger;
@@ -26,6 +27,12 @@ namespace AzureCSharpRAGAssistant.Api.Services.Indexing
                 _searchSettings.IndexName,
                 new Azure.AzureKeyCredential(_searchSettings.ApiKey)
                 );
+
+            _searchClientForPerformance = new SearchClient(
+                new Uri(_searchSettings.Endpoint),
+                _searchSettings.IntegrationTestIndexName,
+                new Azure.AzureKeyCredential(_searchSettings.ApiKey)
+                );
         }
 
         public async Task<IndexDocumentsResult> IndexChunksAsync(IEnumerable<Chunk> chunks)
@@ -36,7 +43,7 @@ namespace AzureCSharpRAGAssistant.Api.Services.Indexing
             return result;
         }
 
-        public async Task<List<Chunk>> SearchChunksAsync(string question, int? topK = null)
+        public async Task<List<Chunk>> SearchChunksAsync(string question, int? topK = null, bool isPerformanceRun = false)
         {
             var questionVector = await _embeddingService.GenerateEmbeddings(question);
             var options = new SearchOptions
@@ -56,11 +63,13 @@ namespace AzureCSharpRAGAssistant.Api.Services.Indexing
             options.VectorSearch.Queries.Add(
                 new VectorizedQuery(questionVector)
                 {
-                    KNearestNeighborsCount = _searchSettings.Top_K,
+                    KNearestNeighborsCount = topK ?? _searchSettings.Top_K,
                     Fields = { "contentVector" }
                 });
 
-            var response = await _searchClient.SearchAsync<SearchDocument>(question, options);
+
+            var response = isPerformanceRun ? await _searchClientForPerformance.SearchAsync<SearchDocument>(question, options) :
+                await _searchClient.SearchAsync<SearchDocument>(question, options);
 
             var chunks = new List<Chunk>();
 
