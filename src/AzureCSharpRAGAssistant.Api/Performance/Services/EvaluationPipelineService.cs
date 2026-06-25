@@ -13,6 +13,7 @@ using AzureCSharpRAGAssistant.Api.Services.Indexing;
 using AzureCSharpRAGAssistant.Api.Services.Processing;
 using Microsoft.Extensions.Options;
 using OpenAI.Embeddings;
+using UglyToad.PdfPig.Outline;
 
 namespace AzureCSharpRAGAssistant.Api.Performance.Services
 {
@@ -269,14 +270,122 @@ namespace AzureCSharpRAGAssistant.Api.Performance.Services
             await File.WriteAllTextAsync(filePath, summaryText);
         }
 
+        public float CalculateMRRValue(int rankForMRR)
+        {
+            if (rankForMRR < 1)
+            {
+                return 0;
+            }
+            else
+            {
+                return 1 / (float)rankForMRR;
+            }
+        }
+
+        public float CalculatePrecisionValue(int relevantChunks, int topK)
+        {
+            if (relevantChunks < 1)
+            {
+                return 0;
+            }
+            else
+            {
+                return relevantChunks / (float)topK;
+            }
+        }
+
         public async Task RunRecallEvaluation(StringBuilder stringBuilder, int topK)
         {
+            var totalTests = 0;
+            var matchedAll = 0;
+            var partialyMatched = 0;
+            var matchedNone = 0;
+            var mRR_total = 0f;
+            var precision_total = 0f;
+
             foreach (var test in _evaluationDataset.Tests)
             {
                 if (test.Categories.Contains(EvaluationCategories.single_hop.ToString()))
                 {
+                    totalTests++;
+                    var result = await SearchIndexes(test.Question, topK);
+                    var compareResult = CompareChunks(test.ExpectedChunkContains, result);
+                    mRR_total = CalculateMRRValue(compareResult.rankForMRR);
+                    precision_total = CalculatePrecisionValue(compareResult.relevantChunks, topK);
 
+                    switch (compareResult.result)
+                    {
+                        case EvaluationResults.matched_non:
+                            matchedNone++;
+                            break;
+                        case EvaluationResults.all_matched:
+                            matchedAll++;
+                            break;
+                        case EvaluationResults.partially_matched:
+                            partialyMatched++;
+                            break;
+
+                        default:
+                            break;
+                    }
                 }
+            }
+
+            var recallatValue = (float)partialyMatched + matchedAll / totalTests;
+            var mRRMean = mRR_total / totalTests;
+            var precisionMean = precision_total / totalTests;
+            stringBuilder.Append($"Recall@{topK} : ratio: {recallatValue}");
+            stringBuilder.Append($"MRR@{topK} : ratio: {mRRMean}");
+            stringBuilder.Append($"Pricision@{topK} : ratio: {precisionMean}");
+            Console.WriteLine("Recall@{0} : percentace: {1}", topK, (float)partialyMatched + matchedAll / totalTests);
+        }
+
+        private (EvaluationResults result, float hitRatio, int rankForMRR, int relevantChunks) CompareChunks(List<List<string>> expectedChunkContains, List<Chunk> chunks)
+        {
+            var totalExpected = expectedChunkContains.Count();
+            var foundWords = new List<List<string>>();
+            var foundWordsCount = 0;
+            var chunkRank = 0;
+            var foundRank = -1;
+            var relevantChunks = 0;
+            foreach (var chunk in chunks)
+            {
+                chunkRank++;
+                foreach (var expectedWords in expectedChunkContains)
+                {
+                    var isMatch = expectedWords.All(word =>
+                        chunk.Content.Contains(word, StringComparison.OrdinalIgnoreCase));
+
+                    if (isMatch)
+                    {
+                        if (foundWords.Contains(expectedWords))
+                        {
+                            relevantChunks++;
+                            break;
+                        }
+                        else
+                        {
+                            foundWords.Add(expectedWords);
+                            relevantChunks++;
+                            foundRank = chunkRank;
+                            foundWordsCount++;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (foundWordsCount == totalExpected)
+            {
+                return (EvaluationResults.all_matched, 1, foundRank, relevantChunks);
+            }
+            else if (foundWordsCount == 0)
+            {
+                return (EvaluationResults.matched_non, 0, foundRank, relevantChunks);
+            }
+            else
+            {
+                return (EvaluationResults.partially_matched, (float)foundWordsCount / totalExpected, foundRank, relevantChunks);
             }
         }
 

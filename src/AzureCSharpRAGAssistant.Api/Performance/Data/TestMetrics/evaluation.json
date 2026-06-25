@@ -342,8 +342,7 @@
     {
       "id": "RET-015",
       "categories": [
-        "multi_hop",
-        "strict_multi_hop"
+        "multi_hop"
       ],
       "difficulty": "hard",
       "question": "Who led the study that reduced water consumption by 37%?",
@@ -367,8 +366,7 @@
     {
       "id": "RET-016",
       "categories": [
-        "multi_hop",
-        "strict_multi_hop"
+        "multi_hop"
       ],
       "difficulty": "hard",
       "question": "Which funding source supported the project conducted in the Borealis Dome?",
@@ -731,8 +729,7 @@
     {
       "id": "RET-033",
       "categories": [
-        "multi_hop",
-        "strict_multi_hop"
+        "multi_hop"
       ],
       "difficulty": "hard",
       "question": "How long could the drones operate and what image-classification accuracy did ReefNet-V5 achieve?",
@@ -756,8 +753,7 @@
     {
       "id": "RET-034",
       "categories": [
-        "multi_hop",
-        "strict_multi_hop"
+        "multi_hop"
       ],
       "difficulty": "hard",
       "question": "What power system supported the drones and what data did they capture?",
@@ -1124,8 +1120,7 @@
     {
       "id": "RET-051",
       "categories": [
-        "multi_hop",
-        "strict_multi_hop"
+        "multi_hop"
       ],
       "difficulty": "hard",
       "question": "How many compounds were evaluated and how much electricity did training consume?",
@@ -1150,8 +1145,7 @@
     {
       "id": "RET-052",
       "categories": [
-        "multi_hop",
-        "strict_multi_hop"
+        "multi_hop"
       ],
       "difficulty": "hard",
       "question": "Which chemistry improved energy density and where was it validated?",
