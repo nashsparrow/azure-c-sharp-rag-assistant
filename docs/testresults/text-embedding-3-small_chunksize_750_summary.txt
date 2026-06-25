@@ -1,0 +1,65 @@
+==============================================
+Evaluation run started: 2026-06-25T10:21:48.5052281Z
+Embedding deployment: text-embedding-3-small
+Chunk size: 750
+Performance environment created: True
+Chunks created: 105
+Chunk output saved to results folder.
+Processing test: @Tests
+
+Running Recall Precision MRR Hit Bounday False scenario: Recall@10 with topK=10
+Recall@10 : ratio: 0.80588233  percentage: 80.59%
+MRR@10 : ratio: 0.86470586  percentage: 86.47%
+Pricision@10 : ratio: 0.11294114 percentage: 11.29%
+Hit@10 : ratio: 0.9529412 percentage: 95.29%
+BoundaryRecall@10 : ratio: 0 percentage: 0%
+NoAnswerFalsePositive@10 : ratio: 1 percentage: 100%
+Recall@10,Pricision@10, MRR@10,Hit@10,BoundaryRecall@10,NoAnswerFalsePositive@10
+80.59,11.29,86.47,95.29,0,100
+Completed Recall Precision MRR Hit Bounday False scenario: Recall@10
+
+Running Recall Precision MRR Hit Bounday False scenario: Recall@7 with topK=7
+Recall@7 : ratio: 0.7941176  percentage: 79.41%
+MRR@7 : ratio: 0.85294116  percentage: 85.29%
+Pricision@7 : ratio: 0.15966386 percentage: 15.97%
+Hit@7 : ratio: 0.9411765 percentage: 94.12%
+BoundaryRecall@7 : ratio: 0 percentage: 0%
+NoAnswerFalsePositive@7 : ratio: 1 percentage: 100%
+Recall@7,Pricision@7, MRR@7,Hit@7,BoundaryRecall@7,NoAnswerFalsePositive@7
+79.41,15.97,85.29,94.12,0,100
+Completed Recall Precision MRR Hit Bounday False scenario: Recall@7
+
+Running Recall Precision MRR Hit Bounday False scenario: Recall@5 with topK=5
+Recall@5 : ratio: 0.7941176  percentage: 79.41%
+MRR@5 : ratio: 0.85294116  percentage: 85.29%
+Pricision@5 : ratio: 0.22352932 percentage: 22.35%
+Hit@5 : ratio: 0.9411765 percentage: 94.12%
+BoundaryRecall@5 : ratio: 0 percentage: 0%
+NoAnswerFalsePositive@5 : ratio: 1 percentage: 100%
+Recall@5,Pricision@5, MRR@5,Hit@5,BoundaryRecall@5,NoAnswerFalsePositive@5
+79.41,22.35,85.29,94.12,0,100
+Completed Recall Precision MRR Hit Bounday False scenario: Recall@5
+
+Running Recall Precision MRR Hit Bounday False scenario: Recall@3 with topK=3
+Recall@3 : ratio: 0.7941176  percentage: 79.41%
+MRR@3 : ratio: 0.85294116  percentage: 85.29%
+Pricision@3 : ratio: 0.37254894 percentage: 37.25%
+Hit@3 : ratio: 0.9411765 percentage: 94.12%
+BoundaryRecall@3 : ratio: 0 percentage: 0%
+NoAnswerFalsePositive@3 : ratio: 1 percentage: 100%
+Recall@3,Pricision@3, MRR@3,Hit@3,BoundaryRecall@3,NoAnswerFalsePositive@3
+79.41,37.25,85.29,94.12,0,100
+Completed Recall Precision MRR Hit Bounday False scenario: Recall@3
+
+Running Recall Precision MRR Hit Bounday False scenario: Recall@1 with topK=1
+Recall@1 : ratio: 0.7058824  percentage: 70.59%
+MRR@1 : ratio: 0.9411765  percentage: 94.12%
+Pricision@1 : ratio: 0.9411765 percentage: 94.12%
+Hit@1 : ratio: 0.9411765 percentage: 94.12%
+BoundaryRecall@1 : ratio: 0 percentage: 0%
+NoAnswerFalsePositive@1 : ratio: 1 percentage: 100%
+Recall@1,Pricision@1, MRR@1,Hit@1,BoundaryRecall@1,NoAnswerFalsePositive@1
+70.59,94.12,94.12,94.12,0,100
+Completed Recall Precision MRR Hit Bounday False scenario: Recall@1
+
+Evaluation run completed: 2026-06-25T10:28:37.6420063Z

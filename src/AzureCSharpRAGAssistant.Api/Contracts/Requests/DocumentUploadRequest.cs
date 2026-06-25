@@ -6,6 +6,6 @@ namespace AzureCSharpRAGAssistant.Api.Contracts
     {
         [Required]
         public IFormFile File { get; set; } = default!;
-        public bool Indexing { get; set; } = false;
+        public bool Indexing { get; set; } = true;
     }
 }
