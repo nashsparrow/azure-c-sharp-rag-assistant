@@ -78,6 +78,67 @@ The following table shows percentage-based evaluation results for the configured
   </tbody>
 </table>
 
+## System Architecture
+
+### Technology Used for the project
+
+- ASP.NET Core / .NET 8: used to build the backend API and orchestrate the document ingestion, indexing, retrieval, and chat workflows.
+- Azure Blob Storage: used to store uploaded PDF documents before and during processing.
+- Azure AI Search: used to index document chunks and perform vector-based retrieval for relevant context.
+- Azure OpenAI: used to generate embeddings for document chunks and user questions, and to generate grounded chat responses.
+- Semantic Kernel: used to provide an alternate plugin-based query path for context retrieval and answer generation.
+- PostgreSQL: used to persist document metadata and chat history.
+- Entity Framework Core: used as the ORM layer for database access and migrations.
+- PdfPig: used to extract text content from uploaded PDF files.
+- Docker / Docker Compose: used to run the API and PostgreSQL locally in a containerized setup.
+- Application Insights: used for telemetry and application monitoring.
+- xUnit and Moq: used for unit testing and dependency mocking in the test projects.
+
+### Architecture Diagrams
+
+#### The document upload pipeline.
+
+This diagram shows how a PDF document moves through the upload and indexing pipeline, from API request to blob storage, text extraction, chunk generation, embedding creation, and Azure AI Search indexing.
+
+<img src="docs/images/docupload-pipeline.png" alt="Document upload pipeline" width="900" />
+
+#### The question and answer pipeline.
+
+This diagram shows how a user question is processed through the standard RAG pipeline, including query embedding generation, chunk retrieval from Azure AI Search, context building, and answer generation using Azure OpenAI.
+
+<img src="docs/images/chatpipeline1.png" alt="Chat pipeline" width="900" />
+
+#### The question and answer pipeline with Semantic Kernel.
+
+This diagram shows how the Semantic Kernel-based query path works, including kernel creation, plugin registration, automatic plugin invocation, context retrieval, and final answer generation.
+
+<img src="docs/images/chatpipeline2.png" alt="Semantic Kernel chat pipeline" width="900" />
+
+### Data Flow Diagram
+
+
+#### DataFlow and Data Checks for Uploading a Document.
+
+<img src="docs/images/dataflowupload.png" alt="Document upload data flow" width="900" />
+
+#### DataFlow for Chat Endpoint.
+
+<img src="docs/images/dataflowchat.png" alt="Chat data flow" width="900" />
+
+
+
+## Deployment and Hosting Architecture
+
+This project is deployed through GitHub Actions using a Docker-based delivery pipeline. The workflow builds the Docker image, pushes it to GitHub Container Registry, connects to the Azure Virtual Machine, pulls the latest image, and runs the containerized ASP.NET Core API.
+
+### Components Architecture
+
+<img src="docs/images/components.png" alt="Chat data flow" width="900" />
+
+### Development and Deployment Architecture
+
+<img src="docs/images/deployflow.png" alt="Chat data flow" width="900" />
+
 ## APIs and Features
 
 ### APIs
@@ -141,67 +202,6 @@ The following APIs are implemented in the backend.
 - Performance Evaluation is configurable for Embedding Model, TopK, Chat Model, ChunkSize.
 - Automated Azure AI Search index initialization at startup
 - Docker-based local runtime with API and PostgreSQL services
-
-## System Architecture
-
-### Technology Used for the project
-
-- ASP.NET Core / .NET 8: used to build the backend API and orchestrate the document ingestion, indexing, retrieval, and chat workflows.
-- Azure Blob Storage: used to store uploaded PDF documents before and during processing.
-- Azure AI Search: used to index document chunks and perform vector-based retrieval for relevant context.
-- Azure OpenAI: used to generate embeddings for document chunks and user questions, and to generate grounded chat responses.
-- Semantic Kernel: used to provide an alternate plugin-based query path for context retrieval and answer generation.
-- PostgreSQL: used to persist document metadata and chat history.
-- Entity Framework Core: used as the ORM layer for database access and migrations.
-- PdfPig: used to extract text content from uploaded PDF files.
-- Docker / Docker Compose: used to run the API and PostgreSQL locally in a containerized setup.
-- Application Insights: used for telemetry and application monitoring.
-- xUnit and Moq: used for unit testing and dependency mocking in the test projects.
-
-### Architecture Diagrams
-
-#### The document upload pipeline.
-
-This diagram shows how a PDF document moves through the upload and indexing pipeline, from API request to blob storage, text extraction, chunk generation, embedding creation, and Azure AI Search indexing.
-
-<img src="docs/images/docupload-pipeline.png" alt="Document upload pipeline" width="900" />
-
-#### The question and answer pipeline.
-
-This diagram shows how a user question is processed through the standard RAG pipeline, including query embedding generation, chunk retrieval from Azure AI Search, context building, and answer generation using Azure OpenAI.
-
-<img src="docs/images/chatpipeline1.png" alt="Chat pipeline" width="900" />
-
-#### The question and answer pipeline with Semantic Kernel.
-
-This diagram shows how the Semantic Kernel-based query path works, including kernel creation, plugin registration, automatic plugin invocation, context retrieval, and final answer generation.
-
-<img src="docs/images/chatpipeline2.png" alt="Semantic Kernel chat pipeline" width="900" />
-
-### Data Flow Diagram
-
-
-#### DataFlow and Data Checks for Uploading a Document.
-
-<img src="docs/images/dataflowupload.png" alt="Document upload data flow" width="900" />
-
-#### DataFlow for Chat Endpoint.
-
-<img src="docs/images/dataflowchat.png" alt="Chat data flow" width="900" />
-
-
-
-## Deployment and Hosting Architecture
-
-This project is deployed through GitHub Actions using a Docker-based delivery pipeline. The workflow builds the Docker image, pushes it to GitHub Container Registry, connects to the Azure Virtual Machine, pulls the latest image, and runs the containerized ASP.NET Core API.
-
-### Components Architecture
-
-<img src="docs/images/components.png" alt="Chat data flow" width="900" />
-
-### Development and Deployment Architecture
-
-<img src="docs/images/deployflow.png" alt="Chat data flow" width="900" />
 
 
 ## Project structure
