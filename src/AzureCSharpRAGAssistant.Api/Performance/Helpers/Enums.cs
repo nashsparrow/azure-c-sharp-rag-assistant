@@ -6,6 +6,8 @@ namespace AzureCSharpRAGAssistant.Api.Performance.Helpers
         numeric = 2,
         entity = 3,
         multi_hop = 4,
+        boundary = 5,
+        no_answer = 6
     }
 
     public enum EvaluationResults

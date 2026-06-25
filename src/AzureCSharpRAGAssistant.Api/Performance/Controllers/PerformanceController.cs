@@ -19,7 +19,7 @@ namespace AzureCSharpRAGAssistant.Api.Controllers
         [ServiceFilter(typeof(ValidateFileUploadFilter))]
         public async Task<ActionResult> RecallEvaluation()
         {
-            await _evaluationPipelineService.RunAllEvaluations(runRecallEvaluations: true);
+            await _evaluationPipelineService.RunAllEvaluations();
             return Ok("Test Executed");
         }
     }

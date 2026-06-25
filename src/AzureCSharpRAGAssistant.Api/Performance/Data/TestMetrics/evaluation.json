@@ -1,22 +1,22 @@
 {
-  "datasetName": "synthetic_three_pdf_retrieval_evaluation_latest",
-  "version": "1.1",
-  "description": "Chunk-size independent retrieval evaluation set generated from the latest uploaded PDFs. Use this same file against 250, 350, 500, or other chunk sizes.",
+  "datasetName": "twocolumn_heavy_retrieval_evaluation",
+  "version": "3.0",
+  "description": "100-test retrieval benchmark for the three fixed 50/50 two-column PDFs. Single-hop and multi-hop tests are intentionally heavier, requiring multiple terms per evidence unit.",
   "sourceFiles": [
     {
       "paperId": "paper_1",
-      "fileName": "paper_1_quantum_agriculture.pdf",
-      "title": "Quantum Agriculture for Martian Soil"
+      "fileName": "paper_1_orbital_agriculture.pdf",
+      "title": "Adaptive Agriculture for Orbital Colonies"
     },
     {
       "paperId": "paper_2",
-      "fileName": "paper_2_coral_drones.pdf",
-      "title": "Autonomous Ocean Drones for Coral Monitoring"
+      "fileName": "paper_2_ocean_networks.pdf",
+      "title": "Autonomous Ocean Observation Networks"
     },
     {
       "paperId": "paper_3",
-      "fileName": "paper_3_battery_discovery.pdf",
-      "title": "AI-Assisted Battery Discovery"
+      "fileName": "paper_3_materials_discovery.pdf",
+      "title": "AI-driven Advanced Materials Discovery"
     }
   ],
   "recommendedMetrics": {
@@ -37,11 +37,11 @@
     ]
   },
   "scoringNotes": {
-    "expectedChunkContains": "Each inner array is one evidence unit. A retrieved chunk is relevant if it contains all strings in an evidence unit and matches the expected source when provided.",
-    "single_hop": "Pass Recall@K if any expected evidence unit appears in top K.",
-    "multi_hop": "Pass StrictMultiHopRecall if all expected evidence units appear in top K.",
-    "precision": "Relevant retrieved chunks divided by K.",
-    "mrr": "Reciprocal rank of the first relevant chunk.",
+    "expectedChunkContains": "Each inner array is one evidence unit. A retrieved chunk is relevant if it contains all strings in an evidence unit and matches expectedSource when provided.",
+    "single_hop": "Heavy single-hop tests require one chunk to contain multiple related terms from one local finding.",
+    "multi_hop": "Pass StrictMultiHopRecall only if all evidence units appear in top K.",
+    "precision": "Relevant retrieved chunks divided by K, or evidence-unit precision if you prefer overlap-resistant scoring.",
+    "mrr": "Reciprocal rank of the first relevant retrieved chunk.",
     "boundary": "Passes when boundaryTermsMustBeTogether appear together in a retrieved chunk.",
     "no_answer": "False positive if retriever returns confident evidence for a fact that is not present."
   },
@@ -50,42 +50,42 @@
       "id": "RET-001",
       "categories": [
         "single_hop",
-        "numeric"
+        "entity"
       ],
       "difficulty": "easy",
-      "question": "What percentage reduction in water consumption was achieved by the Martian irrigation system?",
+      "question": "Who conducted the study on wheat dwarfing genes?",
       "expectedFacts": [
-        "The irrigation system reduced water consumption by 37%."
+        "Dr. Helena Novak conducted the fictional study on wheat dwarfing genes."
       ],
       "expectedChunkContains": [
         [
-          "37%",
-          "water consumption"
+          "wheat dwarfing genes",
+          "Dr. Helena Novak"
         ]
       ],
       "expectedSource": {
-        "fileName": "paper_1_quantum_agriculture.pdf"
+        "fileName": "paper_1_orbital_agriculture.pdf"
       }
     },
     {
       "id": "RET-002",
       "categories": [
         "single_hop",
-        "numeric"
+        "entity"
       ],
       "difficulty": "easy",
-      "question": "How much did tomato yields increase in the Martian greenhouse simulations?",
+      "question": "Who conducted the study on closed-loop water recycling?",
       "expectedFacts": [
-        "Tomato yields increased by 22%."
+        "Dr. Amara Silva conducted the fictional study on closed-loop water recycling."
       ],
       "expectedChunkContains": [
         [
-          "tomato yields",
-          "22%"
+          "closed-loop water recycling",
+          "Dr. Amara Silva"
         ]
       ],
       "expectedSource": {
-        "fileName": "paper_1_quantum_agriculture.pdf"
+        "fileName": "paper_1_orbital_agriculture.pdf"
       }
     },
     {
@@ -95,18 +95,18 @@
         "entity"
       ],
       "difficulty": "easy",
-      "question": "Which university developed the quantum-enhanced irrigation system?",
+      "question": "Who conducted the study on root-zone microbiomes?",
       "expectedFacts": [
-        "The University of New Copenhagen developed the fictional quantum-enhanced irrigation system."
+        "Dr. Amara Lund conducted the fictional study on root-zone microbiomes."
       ],
       "expectedChunkContains": [
         [
-          "University of New Copenhagen",
-          "quantum-enhanced irrigation system"
+          "root-zone microbiomes",
+          "Dr. Amara Lund"
         ]
       ],
       "expectedSource": {
-        "fileName": "paper_1_quantum_agriculture.pdf"
+        "fileName": "paper_1_orbital_agriculture.pdf"
       }
     },
     {
@@ -116,18 +116,18 @@
         "entity"
       ],
       "difficulty": "easy",
-      "question": "Where were the Martian agriculture experiments conducted?",
+      "question": "Who conducted the study on blue-red LED tuning?",
       "expectedFacts": [
-        "The experiments were conducted inside the Borealis Dome in Iceland."
+        "Dr. Helena Raman conducted the fictional study on blue-red LED tuning."
       ],
       "expectedChunkContains": [
         [
-          "Borealis Dome",
-          "Iceland"
+          "blue-red LED tuning",
+          "Dr. Helena Raman"
         ]
       ],
       "expectedSource": {
-        "fileName": "paper_1_quantum_agriculture.pdf"
+        "fileName": "paper_1_orbital_agriculture.pdf"
       }
     },
     {
@@ -137,17 +137,18 @@
         "entity"
       ],
       "difficulty": "easy",
-      "question": "What kind of soil was used in the Borealis Dome experiments?",
+      "question": "Who conducted the study on robotic pollination?",
       "expectedFacts": [
-        "The experiments used simulated Martian regolith."
+        "Dr. Leila Stein conducted the fictional study on robotic pollination."
       ],
       "expectedChunkContains": [
         [
-          "simulated Martian regolith"
+          "robotic pollination",
+          "Dr. Leila Stein"
         ]
       ],
       "expectedSource": {
-        "fileName": "paper_1_quantum_agriculture.pdf"
+        "fileName": "paper_1_orbital_agriculture.pdf"
       }
     },
     {
@@ -157,964 +158,1107 @@
         "entity"
       ],
       "difficulty": "easy",
-      "question": "Who led the Martian agriculture project?",
+      "question": "Who conducted the study on coral bleaching alerts?",
       "expectedFacts": [
-        "The project was led by Dr. Helena Sorensen."
+        "Dr. Amara Raman conducted the fictional study on coral bleaching alerts."
       ],
       "expectedChunkContains": [
         [
-          "Dr.",
-          "Helena Sorensen"
+          "coral bleaching alerts",
+          "Dr. Amara Raman"
         ]
       ],
       "expectedSource": {
-        "fileName": "paper_1_quantum_agriculture.pdf"
+        "fileName": "paper_2_ocean_networks.pdf"
       }
     },
     {
       "id": "RET-007",
       "categories": [
         "single_hop",
-        "numeric"
+        "entity"
       ],
       "difficulty": "easy",
-      "question": "How many research institutions were involved in the Martian agriculture project?",
+      "question": "Who conducted the study on whale migration tagging?",
       "expectedFacts": [
-        "The project involved six research institutions."
+        "Dr. Lucas Novak conducted the fictional study on whale migration tagging."
       ],
       "expectedChunkContains": [
         [
-          "six",
-          "research institutions"
+          "whale migration tagging",
+          "Dr. Lucas Novak"
         ]
       ],
       "expectedSource": {
-        "fileName": "paper_1_quantum_agriculture.pdf"
+        "fileName": "paper_2_ocean_networks.pdf"
       }
     },
     {
       "id": "RET-008",
       "categories": [
         "single_hop",
-        "numeric"
+        "entity"
       ],
       "difficulty": "easy",
-      "question": "How often did moisture sensors collect readings?",
+      "question": "Who conducted the study on sonar reef mapping?",
       "expectedFacts": [
-        "Moisture sensors collected readings every fifteen minutes."
+        "Dr. Lucas Martin conducted the fictional study on sonar reef mapping."
       ],
       "expectedChunkContains": [
         [
-          "Moisture sensors",
-          "fifteen minutes"
+          "sonar reef mapping",
+          "Dr. Lucas Martin"
         ]
       ],
       "expectedSource": {
-        "fileName": "paper_1_quantum_agriculture.pdf"
+        "fileName": "paper_2_ocean_networks.pdf"
       }
     },
     {
       "id": "RET-009",
       "categories": [
-        "single_hop"
+        "single_hop",
+        "entity"
       ],
-      "difficulty": "medium",
-      "question": "What did the quantum-assisted prediction model dynamically adjust?",
+      "difficulty": "easy",
+      "question": "Who conducted the study on surface current forecasting?",
       "expectedFacts": [
-        "The model dynamically adjusted watering frequency and volume."
+        "Dr. Elena Cole conducted the fictional study on surface current forecasting."
       ],
       "expectedChunkContains": [
         [
-          "dynamically adjusted",
-          "watering frequency",
-          "volume"
+          "surface current forecasting",
+          "Dr. Elena Cole"
         ]
       ],
       "expectedSource": {
-        "fileName": "paper_1_quantum_agriculture.pdf"
+        "fileName": "paper_2_ocean_networks.pdf"
       }
     },
     {
       "id": "RET-010",
       "categories": [
-        "single_hop"
+        "single_hop",
+        "entity"
       ],
-      "difficulty": "medium",
-      "question": "What plant and environmental factors did researchers monitor during the Martian agriculture experiment?",
+      "difficulty": "easy",
+      "question": "Who conducted the study on bioacoustic species classification?",
       "expectedFacts": [
-        "Researchers monitored plant health, biomass growth, nutrient retention, and environmental stability."
+        "Dr. Lucas Meyer conducted the fictional study on bioacoustic species classification."
       ],
       "expectedChunkContains": [
         [
-          "plant health",
-          "biomass growth",
-          "nutrient retention",
-          "environmental stability"
+          "bioacoustic species classification",
+          "Dr. Lucas Meyer"
         ]
       ],
       "expectedSource": {
-        "fileName": "paper_1_quantum_agriculture.pdf"
+        "fileName": "paper_2_ocean_networks.pdf"
       }
     },
     {
       "id": "RET-011",
       "categories": [
         "single_hop",
-        "numeric"
+        "entity"
       ],
       "difficulty": "easy",
-      "question": "How much funding did the Martian agriculture project receive?",
+      "question": "Who conducted the study on solid-state electrolyte screening?",
       "expectedFacts": [
-        "The project received €12 million from the Nordic Space Farming Initiative."
+        "Dr. Leila Hassan conducted the fictional study on solid-state electrolyte screening."
       ],
       "expectedChunkContains": [
         [
-          "€12 million",
-          "Nordic Space Farming Initiative"
+          "solid-state electrolyte screening",
+          "Dr. Leila Hassan"
         ]
       ],
       "expectedSource": {
-        "fileName": "paper_1_quantum_agriculture.pdf"
+        "fileName": "paper_3_materials_discovery.pdf"
       }
     },
     {
       "id": "RET-012",
       "categories": [
-        "single_hop"
+        "single_hop",
+        "entity"
       ],
-      "difficulty": "medium",
-      "question": "What did researchers observe about predictive irrigation?",
+      "difficulty": "easy",
+      "question": "Who conducted the study on lithium-sodium alloy ranking?",
       "expectedFacts": [
-        "Researchers observed that predictive irrigation reduced resource waste while maintaining crop consistency."
+        "Dr. Mei Silva conducted the fictional study on lithium-sodium alloy ranking."
       ],
       "expectedChunkContains": [
         [
-          "predictive irrigation",
-          "reduced resource waste",
-          "crop consistency"
+          "lithium-sodium alloy ranking",
+          "Dr. Mei Silva"
         ]
       ],
       "expectedSource": {
-        "fileName": "paper_1_quantum_agriculture.pdf"
+        "fileName": "paper_3_materials_discovery.pdf"
       }
     },
     {
       "id": "RET-013",
       "categories": [
-        "paraphrase",
-        "numeric"
+        "single_hop",
+        "entity"
       ],
-      "difficulty": "medium",
-      "question": "Which crop experiment cut water use by more than one third?",
+      "difficulty": "easy",
+      "question": "Who conducted the study on graph neural property prediction?",
       "expectedFacts": [
-        "The Martian quantum-enhanced irrigation experiment reduced water consumption by 37%."
+        "Dr. Naomi Stein conducted the fictional study on graph neural property prediction."
       ],
       "expectedChunkContains": [
         [
-          "quantum-enhanced irrigation",
-          "37%"
+          "graph neural property prediction",
+          "Dr. Naomi Stein"
         ]
       ],
       "expectedSource": {
-        "fileName": "paper_1_quantum_agriculture.pdf"
+        "fileName": "paper_3_materials_discovery.pdf"
       }
     },
     {
       "id": "RET-014",
       "categories": [
-        "paraphrase"
+        "single_hop",
+        "entity"
       ],
-      "difficulty": "medium",
-      "question": "What study used fake Martian soil inside an Icelandic dome?",
+      "difficulty": "easy",
+      "question": "Who conducted the study on polymer membrane discovery?",
       "expectedFacts": [
-        "The Martian agriculture experiments used simulated Martian regolith inside the Borealis Dome in Iceland."
+        "Dr. Elena Reed conducted the fictional study on polymer membrane discovery."
       ],
       "expectedChunkContains": [
         [
-          "Borealis Dome",
-          "simulated Martian regolith"
+          "polymer membrane discovery",
+          "Dr. Elena Reed"
         ]
       ],
       "expectedSource": {
-        "fileName": "paper_1_quantum_agriculture.pdf"
+        "fileName": "paper_3_materials_discovery.pdf"
       }
     },
     {
       "id": "RET-015",
       "categories": [
-        "multi_hop"
+        "single_hop",
+        "entity"
       ],
-      "difficulty": "hard",
-      "question": "Who led the study that reduced water consumption by 37%?",
+      "difficulty": "easy",
+      "question": "Who conducted the study on thermal runaway modelling?",
       "expectedFacts": [
-        "The study reduced water consumption by 37%.",
-        "The project was led by Dr. Helena Sorensen."
+        "Dr. Amara Martin conducted the fictional study on thermal runaway modelling."
       ],
       "expectedChunkContains": [
         [
-          "37%",
-          "water consumption"
-        ],
-        [
-          "Helena Sorensen"
+          "thermal runaway modelling",
+          "Dr. Amara Martin"
         ]
       ],
       "expectedSource": {
-        "fileName": "paper_1_quantum_agriculture.pdf"
+        "fileName": "paper_3_materials_discovery.pdf"
       }
     },
     {
       "id": "RET-016",
       "categories": [
-        "multi_hop"
+        "single_hop",
+        "entity",
+        "numeric"
       ],
       "difficulty": "hard",
-      "question": "Which funding source supported the project conducted in the Borealis Dome?",
+      "question": "For carbon dioxide buffering, which researcher, lab, and improvement were reported?",
       "expectedFacts": [
-        "The experiments were conducted inside the Borealis Dome in Iceland.",
-        "The project received €12 million from the Nordic Space Farming Initiative."
+        "Dr. Wei Sorensen studied carbon dioxide buffering at Atlas Institute and reported a 20% improvement."
       ],
       "expectedChunkContains": [
         [
-          "Borealis Dome",
-          "Iceland"
-        ],
-        [
-          "Nordic Space Farming Initiative"
+          "carbon dioxide buffering",
+          "Dr. Wei Sorensen",
+          "Atlas Institute",
+          "20%"
         ]
       ],
       "expectedSource": {
-        "fileName": "paper_1_quantum_agriculture.pdf"
+        "fileName": "paper_1_orbital_agriculture.pdf"
       }
     },
     {
       "id": "RET-017",
       "categories": [
-        "boundary"
+        "single_hop",
+        "entity",
+        "numeric"
       ],
       "difficulty": "hard",
-      "question": "Who led the project that used simulated Martian regolith?",
+      "question": "For seed vault longevity, which researcher, lab, and improvement were reported?",
       "expectedFacts": [
-        "The project used simulated Martian regolith and was led by Dr. Helena Sorensen."
+        "Dr. Mei Kim studied seed vault longevity at Aurora Research Center and reported a 41% improvement."
       ],
       "expectedChunkContains": [
         [
-          "simulated Martian regolith",
-          "Helena Sorensen"
+          "seed vault longevity",
+          "Dr. Mei Kim",
+          "Aurora Research Center",
+          "41%"
         ]
       ],
       "expectedSource": {
-        "fileName": "paper_1_quantum_agriculture.pdf"
-      },
-      "boundaryTermsMustBeTogether": [
-        "simulated Martian regolith",
-        "Helena Sorensen"
-      ]
+        "fileName": "paper_1_orbital_agriculture.pdf"
+      }
     },
     {
       "id": "RET-018",
       "categories": [
-        "boundary"
+        "single_hop",
+        "entity",
+        "numeric"
       ],
       "difficulty": "hard",
-      "question": "What model adjusted watering frequency and volume?",
+      "question": "For radiation shielding mulch, which researcher, lab, and improvement were reported?",
       "expectedFacts": [
-        "A quantum-assisted prediction model dynamically adjusted watering frequency and volume."
+        "Dr. Leila Stein studied radiation shielding mulch at Pacific Systems Lab and reported a 20% improvement."
       ],
       "expectedChunkContains": [
         [
-          "quantum-assisted prediction model",
-          "watering frequency",
-          "volume"
+          "radiation shielding mulch",
+          "Dr. Leila Stein",
+          "Pacific Systems Lab",
+          "20%"
         ]
       ],
       "expectedSource": {
-        "fileName": "paper_1_quantum_agriculture.pdf"
-      },
-      "boundaryTermsMustBeTogether": [
-        "quantum-assisted prediction model",
-        "watering frequency",
-        "volume"
-      ]
+        "fileName": "paper_1_orbital_agriculture.pdf"
+      }
     },
     {
       "id": "RET-019",
       "categories": [
         "single_hop",
-        "entity"
+        "entity",
+        "numeric"
       ],
-      "difficulty": "easy",
-      "question": "What was the name of the coral monitoring drone network?",
+      "difficulty": "hard",
+      "question": "For nutrient mist scheduling, which researcher, lab, and improvement were reported?",
       "expectedFacts": [
-        "The drone network was called CoralEye."
+        "Dr. Amara Stein studied nutrient mist scheduling at Aurora Research Center and reported a 47% improvement."
       ],
       "expectedChunkContains": [
         [
-          "CoralEye",
-          "drone network"
+          "nutrient mist scheduling",
+          "Dr. Amara Stein",
+          "Aurora Research Center",
+          "47%"
         ]
       ],
       "expectedSource": {
-        "fileName": "paper_2_coral_drones.pdf"
+        "fileName": "paper_1_orbital_agriculture.pdf"
       }
     },
     {
       "id": "RET-020",
       "categories": [
         "single_hop",
+        "entity",
         "numeric"
       ],
-      "difficulty": "easy",
-      "question": "How many Pacific Ocean locations did CoralEye monitor?",
+      "difficulty": "hard",
+      "question": "For leaf disease prediction, which researcher, lab, and improvement were reported?",
       "expectedFacts": [
-        "CoralEye monitored reef health across 42 Pacific Ocean locations."
+        "Dr. Fatima Novak studied leaf disease prediction at Atlas Institute and reported a 49% improvement."
       ],
       "expectedChunkContains": [
         [
-          "42 Pacific Ocean locations"
+          "leaf disease prediction",
+          "Dr. Fatima Novak",
+          "Atlas Institute",
+          "49%"
         ]
       ],
       "expectedSource": {
-        "fileName": "paper_2_coral_drones.pdf"
+        "fileName": "paper_1_orbital_agriculture.pdf"
       }
     },
     {
       "id": "RET-021",
       "categories": [
         "single_hop",
+        "entity",
         "numeric"
       ],
-      "difficulty": "easy",
-      "question": "How much earlier did the CoralEye system detect coral bleaching events?",
+      "difficulty": "hard",
+      "question": "For lunar regolith amendments, which researcher, lab, and improvement were reported?",
       "expectedFacts": [
-        "The system detected bleaching events 17 days earlier than traditional survey approaches."
+        "Dr. Amara Silva studied lunar regolith amendments at Aurora Research Center and reported a 35% improvement."
       ],
       "expectedChunkContains": [
         [
-          "bleaching events",
-          "17 days earlier"
+          "lunar regolith amendments",
+          "Dr. Amara Silva",
+          "Aurora Research Center",
+          "35%"
         ]
       ],
       "expectedSource": {
-        "fileName": "paper_2_coral_drones.pdf"
+        "fileName": "paper_1_orbital_agriculture.pdf"
       }
     },
     {
       "id": "RET-022",
       "categories": [
-        "single_hop"
+        "single_hop",
+        "entity",
+        "numeric"
       ],
-      "difficulty": "medium",
-      "question": "What kind of image analysis did CoralEye combine with autonomous sensing?",
+      "difficulty": "hard",
+      "question": "For thermal stress recovery, which researcher, lab, and improvement were reported?",
       "expectedFacts": [
-        "CoralEye combined autonomous sensing with machine-learning-based image analysis."
+        "Dr. Naomi Meyer studied thermal stress recovery at Borealis Laboratory and reported a 30% improvement."
       ],
       "expectedChunkContains": [
         [
-          "autonomous sensing",
-          "machine-learning-based image analysis"
+          "thermal stress recovery",
+          "Dr. Naomi Meyer",
+          "Borealis Laboratory",
+          "30%"
         ]
       ],
       "expectedSource": {
-        "fileName": "paper_2_coral_drones.pdf"
+        "fileName": "paper_1_orbital_agriculture.pdf"
       }
     },
     {
       "id": "RET-023",
       "categories": [
-        "single_hop"
+        "single_hop",
+        "entity",
+        "numeric"
       ],
-      "difficulty": "medium",
-      "question": "Why are traditional coral monitoring approaches difficult?",
+      "difficulty": "hard",
+      "question": "For underwater battery endurance, which researcher, lab, and improvement were reported?",
       "expectedFacts": [
-        "Traditional monitoring often requires extensive fieldwork, specialized equipment, and substantial travel costs."
+        "Dr. Helena Martin studied underwater battery endurance at Pacific Systems Lab and reported a 32% improvement."
       ],
       "expectedChunkContains": [
         [
-          "extensive fieldwork",
-          "specialized equipment",
-          "substantial travel costs"
+          "underwater battery endurance",
+          "Dr. Helena Martin",
+          "Pacific Systems Lab",
+          "32%"
         ]
       ],
       "expectedSource": {
-        "fileName": "paper_2_coral_drones.pdf"
+        "fileName": "paper_2_ocean_networks.pdf"
       }
     },
     {
       "id": "RET-024",
       "categories": [
         "single_hop",
-        "entity"
+        "entity",
+        "numeric"
       ],
-      "difficulty": "easy",
-      "question": "What power system did each drone use?",
+      "difficulty": "hard",
+      "question": "For swarm navigation protocols, which researcher, lab, and improvement were reported?",
       "expectedFacts": [
-        "Each drone used a hybrid solar-wave power system."
+        "Dr. Jonas Stein studied swarm navigation protocols at Atlas Institute and reported a 29% improvement."
       ],
       "expectedChunkContains": [
         [
-          "hybrid solar-wave power system"
+          "swarm navigation protocols",
+          "Dr. Jonas Stein",
+          "Atlas Institute",
+          "29%"
         ]
       ],
       "expectedSource": {
-        "fileName": "paper_2_coral_drones.pdf"
+        "fileName": "paper_2_ocean_networks.pdf"
       }
     },
     {
       "id": "RET-025",
       "categories": [
         "single_hop",
+        "entity",
         "numeric"
       ],
-      "difficulty": "easy",
-      "question": "How long could each drone operate continuously?",
+      "difficulty": "hard",
+      "question": "For plastic plume detection, which researcher, lab, and improvement were reported?",
       "expectedFacts": [
-        "Each drone could operate continuously for up to 11 months."
+        "Dr. Leila Hassan studied plastic plume detection at Orion Field Station and reported a 26% improvement."
       ],
       "expectedChunkContains": [
         [
-          "operating continuously",
-          "11 months"
+          "plastic plume detection",
+          "Dr. Leila Hassan",
+          "Orion Field Station",
+          "26%"
         ]
       ],
       "expectedSource": {
-        "fileName": "paper_2_coral_drones.pdf"
+        "fileName": "paper_2_ocean_networks.pdf"
       }
     },
     {
       "id": "RET-026",
       "categories": [
-        "single_hop"
+        "single_hop",
+        "entity",
+        "numeric"
       ],
-      "difficulty": "medium",
-      "question": "What types of data did the CoralEye drones capture?",
+      "difficulty": "hard",
+      "question": "For tidal energy prediction, which researcher, lab, and improvement were reported?",
       "expectedFacts": [
-        "The drones captured high-resolution imagery, environmental measurements, and reef health indicators."
+        "Dr. Fatima Kim studied tidal energy prediction at Borealis Laboratory and reported a 33% improvement."
       ],
       "expectedChunkContains": [
         [
-          "high-resolution imagery",
-          "environmental measurements",
-          "reef health indicators"
+          "tidal energy prediction",
+          "Dr. Fatima Kim",
+          "Borealis Laboratory",
+          "33%"
         ]
       ],
       "expectedSource": {
-        "fileName": "paper_2_coral_drones.pdf"
+        "fileName": "paper_2_ocean_networks.pdf"
       }
     },
     {
       "id": "RET-027",
       "categories": [
-        "single_hop"
+        "single_hop",
+        "entity",
+        "numeric"
       ],
-      "difficulty": "medium",
-      "question": "Where was CoralEye data transmitted for processing?",
+      "difficulty": "hard",
+      "question": "For deep-sea image restoration, which researcher, lab, and improvement were reported?",
       "expectedFacts": [
-        "Data was transmitted to centralized processing systems."
+        "Dr. Leila Raman studied deep-sea image restoration at Aurora Research Center and reported a 34% improvement."
       ],
       "expectedChunkContains": [
         [
-          "Data was transmitted",
-          "centralized processing systems"
+          "deep-sea image restoration",
+          "Dr. Leila Raman",
+          "Aurora Research Center",
+          "34%"
         ]
       ],
       "expectedSource": {
-        "fileName": "paper_2_coral_drones.pdf"
+        "fileName": "paper_2_ocean_networks.pdf"
       }
     },
     {
       "id": "RET-028",
       "categories": [
         "single_hop",
+        "entity",
         "numeric"
       ],
-      "difficulty": "easy",
-      "question": "What image-classification accuracy did ReefNet-V5 achieve?",
+      "difficulty": "hard",
+      "question": "For thermal vent surveying, which researcher, lab, and improvement were reported?",
       "expectedFacts": [
-        "ReefNet-V5 achieved an image-classification accuracy of 94.8%."
+        "Dr. Jonas Vega studied thermal vent surveying at Quantum Test Center and reported a 17% improvement."
       ],
       "expectedChunkContains": [
         [
-          "ReefNet-V5",
-          "94.8%"
+          "thermal vent surveying",
+          "Dr. Jonas Vega",
+          "Quantum Test Center",
+          "17%"
         ]
       ],
       "expectedSource": {
-        "fileName": "paper_2_coral_drones.pdf"
+        "fileName": "paper_2_ocean_networks.pdf"
       }
     },
     {
       "id": "RET-029",
       "categories": [
-        "single_hop"
+        "single_hop",
+        "entity",
+        "numeric"
       ],
-      "difficulty": "medium",
-      "question": "What did persistent monitoring enable in the coral drone study?",
+      "difficulty": "hard",
+      "question": "For seagrass health scoring, which researcher, lab, and improvement were reported?",
       "expectedFacts": [
-        "Persistent monitoring enabled earlier detection of bleaching events and provided long-term trend visibility."
+        "Dr. Wei Stein studied seagrass health scoring at Atlas Institute and reported a 23% improvement."
       ],
       "expectedChunkContains": [
         [
-          "Persistent monitoring",
-          "earlier detection",
-          "long-term trend visibility"
+          "seagrass health scoring",
+          "Dr. Wei Stein",
+          "Atlas Institute",
+          "23%"
         ]
       ],
       "expectedSource": {
-        "fileName": "paper_2_coral_drones.pdf"
+        "fileName": "paper_2_ocean_networks.pdf"
       }
     },
     {
       "id": "RET-030",
       "categories": [
-        "single_hop"
+        "single_hop",
+        "entity",
+        "numeric"
       ],
-      "difficulty": "medium",
-      "question": "What improvements did researchers expect from autonomous marine sensing networks?",
+      "difficulty": "hard",
+      "question": "For manufacturing defect prediction, which researcher, lab, and improvement were reported?",
       "expectedFacts": [
-        "Researchers concluded autonomous marine sensing networks could improve response times, increase observational coverage, and reduce dependence on infrequent manual surveys."
+        "Dr. Sarah Novak studied manufacturing defect prediction at Atlas Institute and reported a 25% improvement."
       ],
       "expectedChunkContains": [
         [
-          "improve response times",
-          "increase observational coverage",
-          "reduce dependence"
+          "manufacturing defect prediction",
+          "Dr. Sarah Novak",
+          "Atlas Institute",
+          "25%"
         ]
       ],
       "expectedSource": {
-        "fileName": "paper_2_coral_drones.pdf"
+        "fileName": "paper_3_materials_discovery.pdf"
       }
     },
     {
       "id": "RET-031",
       "categories": [
-        "paraphrase",
+        "single_hop",
+        "entity",
         "numeric"
       ],
-      "difficulty": "medium",
-      "question": "Which marine monitoring system gave researchers more than two weeks of extra warning?",
+      "difficulty": "hard",
+      "question": "For quantum simulation pruning, which researcher, lab, and improvement were reported?",
       "expectedFacts": [
-        "The CoralEye drone network detected coral bleaching events 17 days earlier."
+        "Dr. Marco Reed studied quantum simulation pruning at Orion Field Station and reported a 34% improvement."
       ],
       "expectedChunkContains": [
         [
-          "CoralEye",
-          "17 days earlier"
+          "quantum simulation pruning",
+          "Dr. Marco Reed",
+          "Orion Field Station",
+          "34%"
         ]
       ],
       "expectedSource": {
-        "fileName": "paper_2_coral_drones.pdf"
+        "fileName": "paper_3_materials_discovery.pdf"
       }
     },
     {
       "id": "RET-032",
       "categories": [
-        "paraphrase"
+        "single_hop",
+        "entity",
+        "numeric"
       ],
-      "difficulty": "medium",
-      "question": "What autonomous reef project tried to reduce dependence on manual surveys?",
+      "difficulty": "hard",
+      "question": "For battery recycling catalysts, which researcher, lab, and improvement were reported?",
       "expectedFacts": [
-        "The CoralEye initiative explored autonomous systems and researchers concluded they could reduce dependence on infrequent manual surveys."
+        "Dr. Marco Meyer studied battery recycling catalysts at Atlas Institute and reported a 32% improvement."
       ],
       "expectedChunkContains": [
         [
-          "CoralEye",
-          "manual surveys"
+          "battery recycling catalysts",
+          "Dr. Marco Meyer",
+          "Atlas Institute",
+          "32%"
         ]
       ],
       "expectedSource": {
-        "fileName": "paper_2_coral_drones.pdf"
+        "fileName": "paper_3_materials_discovery.pdf"
       }
     },
     {
       "id": "RET-033",
       "categories": [
-        "multi_hop"
+        "single_hop",
+        "entity",
+        "numeric"
       ],
       "difficulty": "hard",
-      "question": "How long could the drones operate and what image-classification accuracy did ReefNet-V5 achieve?",
+      "question": "For ceramic interface adhesion, which researcher, lab, and improvement were reported?",
       "expectedFacts": [
-        "Drones could operate for up to 11 months.",
-        "ReefNet-V5 achieved 94.8% image-classification accuracy."
+        "Dr. Leila Hassan studied ceramic interface adhesion at Borealis Laboratory and reported a 20% improvement."
       ],
       "expectedChunkContains": [
         [
-          "11 months"
-        ],
-        [
-          "ReefNet-V5",
-          "94.8%"
+          "ceramic interface adhesion",
+          "Dr. Leila Hassan",
+          "Borealis Laboratory",
+          "20%"
         ]
       ],
       "expectedSource": {
-        "fileName": "paper_2_coral_drones.pdf"
+        "fileName": "paper_3_materials_discovery.pdf"
       }
     },
     {
       "id": "RET-034",
       "categories": [
-        "multi_hop"
+        "single_hop",
+        "entity",
+        "numeric"
       ],
       "difficulty": "hard",
-      "question": "What power system supported the drones and what data did they capture?",
+      "question": "For fast-charging protocol design, which researcher, lab, and improvement were reported?",
       "expectedFacts": [
-        "Each drone used a hybrid solar-wave power system.",
-        "The drones captured high-resolution imagery, environmental measurements, and reef health indicators."
+        "Dr. Leila Zhang studied fast-charging protocol design at Atlas Institute and reported a 19% improvement."
       ],
       "expectedChunkContains": [
         [
-          "hybrid solar-wave power system"
-        ],
-        [
-          "high-resolution imagery",
-          "environmental measurements",
-          "reef health indicators"
+          "fast-charging protocol design",
+          "Dr. Leila Zhang",
+          "Atlas Institute",
+          "19%"
         ]
       ],
       "expectedSource": {
-        "fileName": "paper_2_coral_drones.pdf"
+        "fileName": "paper_3_materials_discovery.pdf"
       }
     },
     {
       "id": "RET-035",
       "categories": [
-        "boundary"
+        "single_hop",
+        "entity",
+        "numeric"
       ],
       "difficulty": "hard",
-      "question": "Which power system enabled operation for up to 11 months?",
+      "question": "For magnesium cathode exploration, which researcher, lab, and improvement were reported?",
       "expectedFacts": [
-        "A hybrid solar-wave power system enabled operation for up to 11 months."
+        "Dr. Noah Raman studied magnesium cathode exploration at Quantum Test Center and reported a 25% improvement."
       ],
       "expectedChunkContains": [
         [
-          "hybrid solar-wave power system",
-          "11 months"
+          "magnesium cathode exploration",
+          "Dr. Noah Raman",
+          "Quantum Test Center",
+          "25%"
         ]
       ],
       "expectedSource": {
-        "fileName": "paper_2_coral_drones.pdf"
-      },
-      "boundaryTermsMustBeTogether": [
-        "hybrid solar-wave power system",
-        "11 months"
-      ]
+        "fileName": "paper_3_materials_discovery.pdf"
+      }
     },
     {
       "id": "RET-036",
       "categories": [
-        "boundary"
+        "multi_hop"
       ],
       "difficulty": "hard",
-      "question": "Which model achieved 94.8% accuracy?",
+      "question": "For tomato canopy pruning, retrieve the study location and the validation result.",
       "expectedFacts": [
-        "ReefNet-V5 achieved 94.8% image-classification accuracy."
+        "tomato canopy pruning was studied at Pacific Systems Lab in Japan.",
+        "The same study achieved 84.4% validation accuracy and used 5234 samples."
       ],
       "expectedChunkContains": [
         [
-          "ReefNet-V5",
-          "94.8%"
+          "tomato canopy pruning",
+          "Pacific Systems Lab",
+          "Japan"
+        ],
+        [
+          "tomato canopy pruning",
+          "84.4%",
+          "validation accuracy",
+          "5234"
         ]
       ],
       "expectedSource": {
-        "fileName": "paper_2_coral_drones.pdf"
-      },
-      "boundaryTermsMustBeTogether": [
-        "ReefNet-V5",
-        "94.8%"
-      ]
+        "fileName": "paper_1_orbital_agriculture.pdf"
+      }
     },
     {
       "id": "RET-037",
       "categories": [
-        "single_hop",
-        "entity"
+        "multi_hop"
       ],
-      "difficulty": "easy",
-      "question": "What was the name of the AI-assisted battery discovery platform?",
+      "difficulty": "hard",
+      "question": "For spin-gravity germination, retrieve the study location and the validation result.",
       "expectedFacts": [
-        "The platform was called ElectroMind."
+        "spin-gravity germination was studied at Orion Field Station in Chile.",
+        "The same study achieved 87.5% validation accuracy and used 2677 samples."
       ],
       "expectedChunkContains": [
         [
-          "ElectroMind",
-          "platform"
+          "spin-gravity germination",
+          "Orion Field Station",
+          "Chile"
+        ],
+        [
+          "spin-gravity germination",
+          "87.5%",
+          "validation accuracy",
+          "2677"
         ]
       ],
       "expectedSource": {
-        "fileName": "paper_3_battery_discovery.pdf"
+        "fileName": "paper_1_orbital_agriculture.pdf"
       }
     },
     {
       "id": "RET-038",
       "categories": [
-        "single_hop",
-        "numeric"
+        "multi_hop"
       ],
-      "difficulty": "easy",
-      "question": "How many candidate battery compounds did ElectroMind evaluate?",
+      "difficulty": "hard",
+      "question": "For algae-assisted oxygen exchange, retrieve the study location and the validation result.",
       "expectedFacts": [
-        "ElectroMind evaluated 8.2 million candidate battery compounds."
+        "algae-assisted oxygen exchange was studied at Aurora Research Center in India.",
+        "The same study achieved 87.2% validation accuracy and used 4392 samples."
       ],
       "expectedChunkContains": [
         [
-          "8.2 million",
-          "candidate battery compounds"
+          "algae-assisted oxygen exchange",
+          "Aurora Research Center",
+          "India"
+        ],
+        [
+          "algae-assisted oxygen exchange",
+          "87.2%",
+          "validation accuracy",
+          "4392"
         ]
       ],
       "expectedSource": {
-        "fileName": "paper_3_battery_discovery.pdf"
+        "fileName": "paper_1_orbital_agriculture.pdf"
       }
     },
     {
       "id": "RET-039",
       "categories": [
-        "single_hop"
+        "multi_hop"
       ],
-      "difficulty": "medium",
-      "question": "What was the goal of the ElectroMind project?",
+      "difficulty": "hard",
+      "question": "For greenhouse leak detection, retrieve the study location and the validation result.",
       "expectedFacts": [
-        "The project aimed to accelerate materials discovery by reducing exhaustive laboratory screening."
+        "greenhouse leak detection was studied at Nova Analytics Hub in Japan.",
+        "The same study achieved 85.5% validation accuracy and used 9057 samples."
       ],
       "expectedChunkContains": [
         [
-          "accelerate materials discovery",
-          "laboratory screening"
+          "greenhouse leak detection",
+          "Nova Analytics Hub",
+          "Japan"
+        ],
+        [
+          "greenhouse leak detection",
+          "85.5%",
+          "validation accuracy",
+          "9057"
         ]
       ],
       "expectedSource": {
-        "fileName": "paper_3_battery_discovery.pdf"
+        "fileName": "paper_1_orbital_agriculture.pdf"
       }
     },
     {
       "id": "RET-040",
       "categories": [
-        "single_hop"
+        "multi_hop"
       ],
-      "difficulty": "medium",
-      "question": "What battery research process is traditionally time-consuming?",
+      "difficulty": "hard",
+      "question": "For edible biomass accounting, retrieve the study location and the validation result.",
       "expectedFacts": [
-        "Discovering new battery chemistries is traditionally time-consuming and involves years of experimentation and validation."
+        "edible biomass accounting was studied at Quantum Test Center in Spain.",
+        "The same study achieved 94.8% validation accuracy and used 12220 samples."
       ],
       "expectedChunkContains": [
         [
-          "battery chemistries",
-          "years of experimentation",
-          "validation"
+          "edible biomass accounting",
+          "Quantum Test Center",
+          "Spain"
+        ],
+        [
+          "edible biomass accounting",
+          "94.8%",
+          "validation accuracy",
+          "12220"
         ]
       ],
       "expectedSource": {
-        "fileName": "paper_3_battery_discovery.pdf"
+        "fileName": "paper_1_orbital_agriculture.pdf"
       }
     },
     {
       "id": "RET-041",
       "categories": [
-        "single_hop"
+        "multi_hop"
       ],
-      "difficulty": "medium",
-      "question": "What techniques did ElectroMind combine to identify promising compounds?",
+      "difficulty": "hard",
+      "question": "For humidity pulse control, retrieve the study location and the validation result.",
       "expectedFacts": [
-        "ElectroMind combined predictive modeling, chemical simulation, and ranking algorithms."
+        "humidity pulse control was studied at Nova Analytics Hub in Spain.",
+        "The same study achieved 82.7% validation accuracy and used 7128 samples."
       ],
       "expectedChunkContains": [
         [
-          "predictive modeling",
-          "chemical simulation",
-          "ranking algorithms"
+          "humidity pulse control",
+          "Nova Analytics Hub",
+          "Spain"
+        ],
+        [
+          "humidity pulse control",
+          "82.7%",
+          "validation accuracy",
+          "7128"
         ]
       ],
       "expectedSource": {
-        "fileName": "paper_3_battery_discovery.pdf"
+        "fileName": "paper_1_orbital_agriculture.pdf"
       }
     },
     {
       "id": "RET-042",
       "categories": [
-        "single_hop",
-        "numeric"
+        "multi_hop"
       ],
-      "difficulty": "easy",
-      "question": "How much electricity did ElectroMind training consume?",
+      "difficulty": "hard",
+      "question": "For phosphate recovery membranes, retrieve the study location and the validation result.",
       "expectedFacts": [
-        "Training consumed approximately 3.1 GWh of electricity."
+        "phosphate recovery membranes was studied at Borealis Laboratory in Portugal.",
+        "The same study achieved 84.6% validation accuracy and used 8495 samples."
       ],
       "expectedChunkContains": [
         [
-          "3.1 GWh",
-          "electricity"
+          "phosphate recovery membranes",
+          "Borealis Laboratory",
+          "Portugal"
+        ],
+        [
+          "phosphate recovery membranes",
+          "84.6%",
+          "validation accuracy",
+          "8495"
         ]
       ],
       "expectedSource": {
-        "fileName": "paper_3_battery_discovery.pdf"
+        "fileName": "paper_1_orbital_agriculture.pdf"
       }
     },
     {
       "id": "RET-043",
       "categories": [
-        "single_hop",
-        "numeric"
+        "multi_hop"
       ],
-      "difficulty": "easy",
-      "question": "How long did ElectroMind training last?",
+      "difficulty": "hard",
+      "question": "For plant acoustic monitoring, retrieve the study location and the validation result.",
       "expectedFacts": [
-        "Training lasted over a nine-month period."
+        "plant acoustic monitoring was studied at Atlas Institute in Japan.",
+        "The same study achieved 97.8% validation accuracy and used 2962 samples."
       ],
       "expectedChunkContains": [
         [
-          "nine-month period"
+          "plant acoustic monitoring",
+          "Atlas Institute",
+          "Japan"
+        ],
+        [
+          "plant acoustic monitoring",
+          "97.8%",
+          "validation accuracy",
+          "2962"
         ]
       ],
       "expectedSource": {
-        "fileName": "paper_3_battery_discovery.pdf"
+        "fileName": "paper_1_orbital_agriculture.pdf"
       }
     },
     {
       "id": "RET-044",
       "categories": [
-        "single_hop"
+        "multi_hop"
       ],
-      "difficulty": "medium",
-      "question": "What did the ElectroMind platform do after analyzing candidate materials?",
+      "difficulty": "hard",
+      "question": "For fungal suppression coatings, retrieve the study location and the validation result.",
       "expectedFacts": [
-        "The platform generated performance estimates and prioritized compounds for laboratory testing."
+        "fungal suppression coatings was studied at Pacific Systems Lab in South Korea.",
+        "The same study achieved 93.5% validation accuracy and used 7541 samples."
       ],
       "expectedChunkContains": [
         [
-          "generated performance estimates",
-          "prioritized compounds",
-          "laboratory testing"
+          "fungal suppression coatings",
+          "Pacific Systems Lab",
+          "South Korea"
+        ],
+        [
+          "fungal suppression coatings",
+          "93.5%",
+          "validation accuracy",
+          "7541"
         ]
       ],
       "expectedSource": {
-        "fileName": "paper_3_battery_discovery.pdf"
+        "fileName": "paper_1_orbital_agriculture.pdf"
       }
     },
     {
       "id": "RET-045",
       "categories": [
-        "single_hop",
-        "entity"
+        "multi_hop"
       ],
-      "difficulty": "easy",
-      "question": "What battery chemistry did the system identify?",
+      "difficulty": "hard",
+      "question": "For microplastic spectral sensing, retrieve the study location and the validation result.",
       "expectedFacts": [
-        "The system identified a lithium-sodium hybrid chemistry."
+        "microplastic spectral sensing was studied at Nova Analytics Hub in Germany.",
+        "The same study achieved 90.8% validation accuracy and used 3655 samples."
       ],
       "expectedChunkContains": [
         [
-          "lithium-sodium hybrid chemistry"
+          "microplastic spectral sensing",
+          "Nova Analytics Hub",
+          "Germany"
+        ],
+        [
+          "microplastic spectral sensing",
+          "90.8%",
+          "validation accuracy",
+          "3655"
         ]
       ],
       "expectedSource": {
-        "fileName": "paper_3_battery_discovery.pdf"
+        "fileName": "paper_2_ocean_networks.pdf"
       }
     },
     {
       "id": "RET-046",
       "categories": [
-        "single_hop",
-        "numeric"
+        "multi_hop"
       ],
-      "difficulty": "easy",
-      "question": "How much did the lithium-sodium hybrid chemistry increase energy density?",
+      "difficulty": "hard",
+      "question": "For autonomous docking, retrieve the study location and the validation result.",
       "expectedFacts": [
-        "The lithium-sodium hybrid chemistry increased energy density by 28%."
+        "autonomous docking was studied at Atlas Institute in Japan.",
+        "The same study achieved 99.0% validation accuracy and used 7773 samples."
       ],
       "expectedChunkContains": [
         [
-          "lithium-sodium hybrid chemistry",
-          "28%"
+          "autonomous docking",
+          "Atlas Institute",
+          "Japan"
+        ],
+        [
+          "autonomous docking",
+          "99.0%",
+          "validation accuracy",
+          "7773"
         ]
       ],
       "expectedSource": {
-        "fileName": "paper_3_battery_discovery.pdf"
+        "fileName": "paper_2_ocean_networks.pdf"
       }
     },
     {
       "id": "RET-047",
       "categories": [
-        "single_hop",
-        "entity"
+        "multi_hop"
       ],
-      "difficulty": "easy",
-      "question": "Where were the final validation experiments conducted?",
+      "difficulty": "hard",
+      "question": "For fishery boundary compliance, retrieve the study location and the validation result.",
       "expectedFacts": [
-        "Final validation experiments were conducted at the Zurich Energy Laboratory in Switzerland."
+        "fishery boundary compliance was studied at Pacific Systems Lab in Kenya.",
+        "The same study achieved 89.4% validation accuracy and used 10321 samples."
       ],
       "expectedChunkContains": [
         [
-          "Zurich Energy Laboratory",
-          "Switzerland"
+          "fishery boundary compliance",
+          "Pacific Systems Lab",
+          "Kenya"
+        ],
+        [
+          "fishery boundary compliance",
+          "89.4%",
+          "validation accuracy",
+          "10321"
         ]
       ],
       "expectedSource": {
-        "fileName": "paper_3_battery_discovery.pdf"
+        "fileName": "paper_2_ocean_networks.pdf"
       }
     },
     {
       "id": "RET-048",
       "categories": [
-        "single_hop"
+        "multi_hop"
       ],
-      "difficulty": "medium",
-      "question": "What did researchers conclude about AI-driven discovery platforms?",
+      "difficulty": "hard",
+      "question": "For storm surge sampling, retrieve the study location and the validation result.",
       "expectedFacts": [
-        "Researchers concluded that AI-driven discovery platforms could shorten development cycles and improve efficiency in advanced materials research."
+        "storm surge sampling was studied at Aurora Research Center in Chile.",
+        "The same study achieved 88.3% validation accuracy and used 2289 samples."
       ],
       "expectedChunkContains": [
         [
-          "AI-driven discovery platforms",
-          "shorten development cycles",
-          "advanced materials research"
+          "storm surge sampling",
+          "Aurora Research Center",
+          "Chile"
+        ],
+        [
+          "storm surge sampling",
+          "88.3%",
+          "validation accuracy",
+          "2289"
         ]
       ],
       "expectedSource": {
-        "fileName": "paper_3_battery_discovery.pdf"
+        "fileName": "paper_2_ocean_networks.pdf"
       }
     },
     {
       "id": "RET-049",
       "categories": [
-        "paraphrase",
-        "numeric"
+        "multi_hop"
       ],
-      "difficulty": "medium",
-      "question": "Which battery formulation improved storage density by nearly thirty percent?",
+      "difficulty": "hard",
+      "question": "For reef turbidity estimation, retrieve the study location and the validation result.",
       "expectedFacts": [
-        "A lithium-sodium hybrid chemistry increased energy density by 28%."
+        "reef turbidity estimation was studied at Pacific Systems Lab in South Korea.",
+        "The same study achieved 88.6% validation accuracy and used 2291 samples."
       ],
       "expectedChunkContains": [
         [
-          "lithium-sodium hybrid chemistry",
-          "28%"
+          "reef turbidity estimation",
+          "Pacific Systems Lab",
+          "South Korea"
+        ],
+        [
+          "reef turbidity estimation",
+          "88.6%",
+          "validation accuracy",
+          "2291"
         ]
       ],
       "expectedSource": {
-        "fileName": "paper_3_battery_discovery.pdf"
+        "fileName": "paper_2_ocean_networks.pdf"
       }
     },
     {
       "id": "RET-050",
       "categories": [
-        "paraphrase"
+        "multi_hop"
       ],
-      "difficulty": "medium",
-      "question": "What AI system screened millions of battery materials before lab testing?",
+      "difficulty": "hard",
+      "question": "For ship-noise attribution, retrieve the study location and the validation result.",
       "expectedFacts": [
-        "ElectroMind evaluated 8.2 million candidate battery compounds and prioritized compounds for laboratory testing."
+        "ship-noise attribution was studied at Pacific Systems Lab in Portugal.",
+        "The same study achieved 92.9% validation accuracy and used 10745 samples."
       ],
       "expectedChunkContains": [
         [
-          "ElectroMind",
-          "8.2 million"
+          "ship-noise attribution",
+          "Pacific Systems Lab",
+          "Portugal"
         ],
         [
-          "prioritized compounds",
-          "laboratory testing"
+          "ship-noise attribution",
+          "92.9%",
+          "validation accuracy",
+          "10745"
         ]
       ],
       "expectedSource": {
-        "fileName": "paper_3_battery_discovery.pdf"
+        "fileName": "paper_2_ocean_networks.pdf"
       }
     },
     {
@@ -1123,23 +1267,26 @@
         "multi_hop"
       ],
       "difficulty": "hard",
-      "question": "How many compounds were evaluated and how much electricity did training consume?",
+      "question": "For low-bandwidth modem routing, retrieve the study location and the validation result.",
       "expectedFacts": [
-        "ElectroMind evaluated 8.2 million candidate battery compounds.",
-        "Training consumed approximately 3.1 GWh of electricity."
+        "low-bandwidth modem routing was studied at Quantum Test Center in Canada.",
+        "The same study achieved 88.2% validation accuracy and used 3833 samples."
       ],
       "expectedChunkContains": [
         [
-          "8.2 million",
-          "candidate battery compounds"
+          "low-bandwidth modem routing",
+          "Quantum Test Center",
+          "Canada"
         ],
         [
-          "3.1 GWh",
-          "electricity"
+          "low-bandwidth modem routing",
+          "88.2%",
+          "validation accuracy",
+          "3833"
         ]
       ],
       "expectedSource": {
-        "fileName": "paper_3_battery_discovery.pdf"
+        "fileName": "paper_2_ocean_networks.pdf"
       }
     },
     {
@@ -1148,317 +1295,1224 @@
         "multi_hop"
       ],
       "difficulty": "hard",
-      "question": "Which chemistry improved energy density and where was it validated?",
+      "question": "For kelp canopy mapping, retrieve the study location and the validation result.",
       "expectedFacts": [
-        "A lithium-sodium hybrid chemistry increased energy density by 28%.",
-        "Final validation experiments were conducted at the Zurich Energy Laboratory in Switzerland."
+        "kelp canopy mapping was studied at Atlas Institute in Japan.",
+        "The same study achieved 87.6% validation accuracy and used 857 samples."
       ],
       "expectedChunkContains": [
         [
-          "lithium-sodium hybrid chemistry",
-          "28%"
+          "kelp canopy mapping",
+          "Atlas Institute",
+          "Japan"
         ],
         [
-          "Zurich Energy Laboratory",
-          "Switzerland"
+          "kelp canopy mapping",
+          "87.6%",
+          "validation accuracy",
+          "857"
         ]
       ],
       "expectedSource": {
-        "fileName": "paper_3_battery_discovery.pdf"
+        "fileName": "paper_2_ocean_networks.pdf"
       }
     },
     {
       "id": "RET-053",
       "categories": [
-        "boundary"
+        "multi_hop"
       ],
       "difficulty": "hard",
-      "question": "Which chemistry increased energy density by 28%?",
+      "question": "For salinity gradient tracking, retrieve the study location and the validation result.",
       "expectedFacts": [
-        "The lithium-sodium hybrid chemistry increased energy density by 28%."
+        "salinity gradient tracking was studied at Pacific Systems Lab in Norway.",
+        "The same study achieved 85.8% validation accuracy and used 5324 samples."
       ],
       "expectedChunkContains": [
         [
-          "lithium-sodium hybrid chemistry",
-          "28%"
+          "salinity gradient tracking",
+          "Pacific Systems Lab",
+          "Norway"
+        ],
+        [
+          "salinity gradient tracking",
+          "85.8%",
+          "validation accuracy",
+          "5324"
         ]
       ],
       "expectedSource": {
-        "fileName": "paper_3_battery_discovery.pdf"
-      },
-      "boundaryTermsMustBeTogether": [
-        "lithium-sodium hybrid chemistry",
-        "28%"
-      ]
+        "fileName": "paper_2_ocean_networks.pdf"
+      }
     },
     {
       "id": "RET-054",
       "categories": [
-        "boundary"
+        "multi_hop"
       ],
       "difficulty": "hard",
-      "question": "Where were the final validation experiments for the 28% energy-density result conducted?",
+      "question": "For silicon anode swelling, retrieve the study location and the validation result.",
       "expectedFacts": [
-        "The 28% energy-density result was validated at the Zurich Energy Laboratory in Switzerland."
+        "silicon anode swelling was studied at Aurora Research Center in Singapore.",
+        "The same study achieved 91.8% validation accuracy and used 6398 samples."
       ],
       "expectedChunkContains": [
         [
-          "28%",
-          "Zurich Energy Laboratory",
-          "Switzerland"
+          "silicon anode swelling",
+          "Aurora Research Center",
+          "Singapore"
+        ],
+        [
+          "silicon anode swelling",
+          "91.8%",
+          "validation accuracy",
+          "6398"
         ]
       ],
       "expectedSource": {
-        "fileName": "paper_3_battery_discovery.pdf"
-      },
-      "boundaryTermsMustBeTogether": [
-        "28%",
-        "Zurich Energy Laboratory",
-        "Switzerland"
-      ]
+        "fileName": "paper_3_materials_discovery.pdf"
+      }
     },
     {
       "id": "RET-055",
       "categories": [
-        "cross_document",
-        "entity"
+        "multi_hop"
       ],
       "difficulty": "hard",
-      "question": "Which paper involved Iceland and which involved Switzerland?",
+      "question": "For cobalt-free material search, retrieve the study location and the validation result.",
       "expectedFacts": [
-        "The Martian agriculture paper involved Iceland.",
-        "The battery discovery paper involved Switzerland."
+        "cobalt-free material search was studied at Pacific Systems Lab in Australia.",
+        "The same study achieved 92.0% validation accuracy and used 10360 samples."
       ],
       "expectedChunkContains": [
         [
-          "Borealis Dome",
-          "Iceland"
+          "cobalt-free material search",
+          "Pacific Systems Lab",
+          "Australia"
         ],
         [
-          "Zurich Energy Laboratory",
-          "Switzerland"
+          "cobalt-free material search",
+          "92.0%",
+          "validation accuracy",
+          "10360"
         ]
-      ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_3_materials_discovery.pdf"
+      }
     },
     {
       "id": "RET-056",
       "categories": [
-        "cross_document",
-        "numeric"
+        "multi_hop"
       ],
       "difficulty": "hard",
-      "question": "Compare the main percentage improvements in the Martian agriculture and battery discovery papers.",
+      "question": "For high-entropy alloy sampling, retrieve the study location and the validation result.",
       "expectedFacts": [
-        "The Martian agriculture paper reported 37% water savings and 22% tomato yield improvement.",
-        "The battery paper reported a 28% energy-density improvement."
+        "high-entropy alloy sampling was studied at Nova Analytics Hub in Japan.",
+        "The same study achieved 91.2% validation accuracy and used 1305 samples."
       ],
       "expectedChunkContains": [
         [
-          "37%",
-          "22%"
+          "high-entropy alloy sampling",
+          "Nova Analytics Hub",
+          "Japan"
         ],
         [
-          "28%",
-          "energy density"
+          "high-entropy alloy sampling",
+          "91.2%",
+          "validation accuracy",
+          "1305"
         ]
-      ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_3_materials_discovery.pdf"
+      }
     },
     {
       "id": "RET-057",
       "categories": [
-        "cross_document",
-        "numeric"
+        "multi_hop"
       ],
       "difficulty": "hard",
-      "question": "Which system operated for 11 months and which system trained for nine months?",
+      "question": "For electrolyte solvent stability, retrieve the study location and the validation result.",
       "expectedFacts": [
-        "The CoralEye drones operated for up to 11 months.",
-        "ElectroMind training lasted a nine-month period."
+        "electrolyte solvent stability was studied at Aurora Research Center in Australia.",
+        "The same study achieved 88.3% validation accuracy and used 8586 samples."
       ],
       "expectedChunkContains": [
         [
-          "11 months",
-          "drone"
+          "electrolyte solvent stability",
+          "Aurora Research Center",
+          "Australia"
         ],
         [
-          "nine-month period"
+          "electrolyte solvent stability",
+          "88.3%",
+          "validation accuracy",
+          "8586"
         ]
-      ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_3_materials_discovery.pdf"
+      }
     },
     {
       "id": "RET-058",
       "categories": [
-        "cross_document",
-        "entity"
+        "multi_hop"
       ],
       "difficulty": "hard",
-      "question": "Which project used a hybrid solar-wave power system and which used a quantum-assisted prediction model?",
+      "question": "For crystal graph augmentation, retrieve the study location and the validation result.",
       "expectedFacts": [
-        "The coral drone project used a hybrid solar-wave power system.",
-        "The Martian agriculture project used a quantum-assisted prediction model."
+        "crystal graph augmentation was studied at Borealis Laboratory in Australia.",
+        "The same study achieved 87.2% validation accuracy and used 12029 samples."
       ],
       "expectedChunkContains": [
         [
-          "hybrid solar-wave power system"
+          "crystal graph augmentation",
+          "Borealis Laboratory",
+          "Australia"
         ],
         [
-          "quantum-assisted prediction model"
+          "crystal graph augmentation",
+          "87.2%",
+          "validation accuracy",
+          "12029"
         ]
-      ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_3_materials_discovery.pdf"
+      }
     },
     {
       "id": "RET-059",
       "categories": [
-        "cross_document"
+        "multi_hop"
       ],
       "difficulty": "hard",
-      "question": "Which project focused on reef health and which focused on battery materials discovery?",
+      "question": "For lab robot scheduling, retrieve the study location and the validation result.",
       "expectedFacts": [
-        "The CoralEye project focused on reef health.",
-        "The ElectroMind project focused on battery materials discovery."
+        "lab robot scheduling was studied at Orion Field Station in Canada.",
+        "The same study achieved 96.3% validation accuracy and used 5050 samples."
       ],
       "expectedChunkContains": [
         [
-          "reef health",
-          "CoralEye"
+          "lab robot scheduling",
+          "Orion Field Station",
+          "Canada"
         ],
         [
-          "battery compounds",
-          "ElectroMind"
+          "lab robot scheduling",
+          "96.3%",
+          "validation accuracy",
+          "5050"
         ]
-      ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_3_materials_discovery.pdf"
+      }
     },
     {
       "id": "RET-060",
       "categories": [
-        "cross_document",
-        "numeric"
+        "multi_hop"
       ],
       "difficulty": "hard",
-      "question": "Which paper mentioned 42 locations and which mentioned six research institutions?",
+      "question": "For thin-film deposition control, retrieve the study location and the validation result.",
       "expectedFacts": [
-        "The coral drone paper mentioned 42 Pacific Ocean locations.",
-        "The Martian agriculture paper mentioned six research institutions."
+        "thin-film deposition control was studied at Quantum Test Center in South Korea.",
+        "The same study achieved 94.8% validation accuracy and used 5903 samples."
       ],
       "expectedChunkContains": [
         [
-          "42 Pacific Ocean locations"
+          "thin-film deposition control",
+          "Quantum Test Center",
+          "South Korea"
         ],
         [
-          "six",
-          "research institutions"
+          "thin-film deposition control",
+          "94.8%",
+          "validation accuracy",
+          "5903"
         ]
-      ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_3_materials_discovery.pdf"
+      }
     },
     {
       "id": "RET-061",
       "categories": [
-        "no_answer"
+        "cross_document",
+        "multi_hop"
       ],
-      "difficulty": "medium",
-      "question": "What color were the CoralEye drones?",
-      "expectedFacts": [],
-      "expectedChunkContains": [],
-      "expectedSource": {
-        "fileName": "paper_2_coral_drones.pdf"
-      },
-      "expectedAnswerBehavior": "no_relevant_evidence"
+      "difficulty": "hard",
+      "question": "Compare the reported benchmark improvements for wheat dwarfing genes and coral bleaching alerts.",
+      "expectedFacts": [
+        "wheat dwarfing genes reported 30% improvement.",
+        "coral bleaching alerts reported 15% improvement."
+      ],
+      "expectedChunkContains": [
+        [
+          "wheat dwarfing genes",
+          "30%",
+          "primary benchmark"
+        ],
+        [
+          "coral bleaching alerts",
+          "15%",
+          "primary benchmark"
+        ]
+      ]
     },
     {
       "id": "RET-062",
       "categories": [
-        "no_answer"
+        "cross_document",
+        "multi_hop"
       ],
-      "difficulty": "medium",
-      "question": "Which GPU model was used to train ElectroMind?",
-      "expectedFacts": [],
-      "expectedChunkContains": [],
-      "expectedSource": {
-        "fileName": "paper_3_battery_discovery.pdf"
-      },
-      "expectedAnswerBehavior": "no_relevant_evidence"
+      "difficulty": "hard",
+      "question": "Compare the reported benchmark improvements for closed-loop water recycling and lithium-sodium alloy ranking.",
+      "expectedFacts": [
+        "closed-loop water recycling reported 47% improvement.",
+        "lithium-sodium alloy ranking reported 30% improvement."
+      ],
+      "expectedChunkContains": [
+        [
+          "closed-loop water recycling",
+          "47%",
+          "primary benchmark"
+        ],
+        [
+          "lithium-sodium alloy ranking",
+          "30%",
+          "primary benchmark"
+        ]
+      ]
     },
     {
       "id": "RET-063",
       "categories": [
-        "no_answer"
+        "cross_document",
+        "multi_hop"
       ],
-      "difficulty": "medium",
-      "question": "What was the pH level of the simulated Martian regolith?",
-      "expectedFacts": [],
-      "expectedChunkContains": [],
-      "expectedSource": {
-        "fileName": "paper_1_quantum_agriculture.pdf"
-      },
-      "expectedAnswerBehavior": "no_relevant_evidence"
+      "difficulty": "hard",
+      "question": "Compare the reported benchmark improvements for sonar reef mapping and graph neural property prediction.",
+      "expectedFacts": [
+        "sonar reef mapping reported 37% improvement.",
+        "graph neural property prediction reported 41% improvement."
+      ],
+      "expectedChunkContains": [
+        [
+          "sonar reef mapping",
+          "37%",
+          "primary benchmark"
+        ],
+        [
+          "graph neural property prediction",
+          "41%",
+          "primary benchmark"
+        ]
+      ]
     },
     {
       "id": "RET-064",
       "categories": [
-        "no_answer"
+        "cross_document",
+        "multi_hop"
       ],
-      "difficulty": "medium",
-      "question": "How many researchers worked on the CoralEye project?",
-      "expectedFacts": [],
-      "expectedChunkContains": [],
-      "expectedSource": {
-        "fileName": "paper_2_coral_drones.pdf"
-      },
-      "expectedAnswerBehavior": "no_relevant_evidence"
+      "difficulty": "hard",
+      "question": "Compare the reported benchmark improvements for blue-red LED tuning and surface current forecasting.",
+      "expectedFacts": [
+        "blue-red LED tuning reported 26% improvement.",
+        "surface current forecasting reported 35% improvement."
+      ],
+      "expectedChunkContains": [
+        [
+          "blue-red LED tuning",
+          "26%",
+          "primary benchmark"
+        ],
+        [
+          "surface current forecasting",
+          "35%",
+          "primary benchmark"
+        ]
+      ]
     },
     {
       "id": "RET-065",
       "categories": [
-        "no_answer"
+        "cross_document",
+        "multi_hop"
       ],
-      "difficulty": "medium",
-      "question": "What was the launch date of the Nordic Space Farming Initiative?",
-      "expectedFacts": [],
-      "expectedChunkContains": [],
-      "expectedSource": {
-        "fileName": "paper_1_quantum_agriculture.pdf"
-      },
-      "expectedAnswerBehavior": "no_relevant_evidence"
+      "difficulty": "hard",
+      "question": "Compare the reported benchmark improvements for robotic pollination and thermal runaway modelling.",
+      "expectedFacts": [
+        "robotic pollination reported 39% improvement.",
+        "thermal runaway modelling reported 35% improvement."
+      ],
+      "expectedChunkContains": [
+        [
+          "robotic pollination",
+          "39%",
+          "primary benchmark"
+        ],
+        [
+          "thermal runaway modelling",
+          "35%",
+          "primary benchmark"
+        ]
+      ]
     },
     {
       "id": "RET-066",
       "categories": [
-        "no_answer"
+        "cross_document",
+        "multi_hop"
       ],
-      "difficulty": "medium",
-      "question": "What brand of laboratory sensors was used in the Martian agriculture study?",
-      "expectedFacts": [],
-      "expectedChunkContains": [],
-      "expectedSource": {
-        "fileName": "paper_1_quantum_agriculture.pdf"
-      },
-      "expectedAnswerBehavior": "no_relevant_evidence"
+      "difficulty": "hard",
+      "question": "Compare the reported benchmark improvements for underwater battery endurance and manufacturing defect prediction.",
+      "expectedFacts": [
+        "underwater battery endurance reported 32% improvement.",
+        "manufacturing defect prediction reported 25% improvement."
+      ],
+      "expectedChunkContains": [
+        [
+          "underwater battery endurance",
+          "32%",
+          "primary benchmark"
+        ],
+        [
+          "manufacturing defect prediction",
+          "25%",
+          "primary benchmark"
+        ]
+      ]
     },
     {
       "id": "RET-067",
       "categories": [
-        "no_answer"
+        "cross_document",
+        "multi_hop"
       ],
-      "difficulty": "medium",
-      "question": "What ocean depth did the CoralEye drones operate at?",
-      "expectedFacts": [],
-      "expectedChunkContains": [],
-      "expectedSource": {
-        "fileName": "paper_2_coral_drones.pdf"
-      },
-      "expectedAnswerBehavior": "no_relevant_evidence"
+      "difficulty": "hard",
+      "question": "Compare the reported benchmark improvements for seed vault longevity and swarm navigation protocols.",
+      "expectedFacts": [
+        "seed vault longevity reported 41% improvement.",
+        "swarm navigation protocols reported 29% improvement."
+      ],
+      "expectedChunkContains": [
+        [
+          "seed vault longevity",
+          "41%",
+          "primary benchmark"
+        ],
+        [
+          "swarm navigation protocols",
+          "29%",
+          "primary benchmark"
+        ]
+      ]
     },
     {
       "id": "RET-068",
       "categories": [
+        "cross_document",
+        "multi_hop"
+      ],
+      "difficulty": "hard",
+      "question": "Compare the reported benchmark improvements for radiation shielding mulch and battery recycling catalysts.",
+      "expectedFacts": [
+        "radiation shielding mulch reported 20% improvement.",
+        "battery recycling catalysts reported 32% improvement."
+      ],
+      "expectedChunkContains": [
+        [
+          "radiation shielding mulch",
+          "20%",
+          "primary benchmark"
+        ],
+        [
+          "battery recycling catalysts",
+          "32%",
+          "primary benchmark"
+        ]
+      ]
+    },
+    {
+      "id": "RET-069",
+      "categories": [
+        "cross_document",
+        "multi_hop"
+      ],
+      "difficulty": "hard",
+      "question": "Compare the reported benchmark improvements for tidal energy prediction and ceramic interface adhesion.",
+      "expectedFacts": [
+        "tidal energy prediction reported 33% improvement.",
+        "ceramic interface adhesion reported 20% improvement."
+      ],
+      "expectedChunkContains": [
+        [
+          "tidal energy prediction",
+          "33%",
+          "primary benchmark"
+        ],
+        [
+          "ceramic interface adhesion",
+          "20%",
+          "primary benchmark"
+        ]
+      ]
+    },
+    {
+      "id": "RET-070",
+      "categories": [
+        "cross_document",
+        "multi_hop"
+      ],
+      "difficulty": "hard",
+      "question": "Compare the reported benchmark improvements for leaf disease prediction and deep-sea image restoration.",
+      "expectedFacts": [
+        "leaf disease prediction reported 49% improvement.",
+        "deep-sea image restoration reported 34% improvement."
+      ],
+      "expectedChunkContains": [
+        [
+          "leaf disease prediction",
+          "49%",
+          "primary benchmark"
+        ],
+        [
+          "deep-sea image restoration",
+          "34%",
+          "primary benchmark"
+        ]
+      ]
+    },
+    {
+      "id": "RET-071",
+      "categories": [
+        "cross_document",
+        "multi_hop"
+      ],
+      "difficulty": "hard",
+      "question": "Compare the reported benchmark improvements for lunar regolith amendments and magnesium cathode exploration.",
+      "expectedFacts": [
+        "lunar regolith amendments reported 35% improvement.",
+        "magnesium cathode exploration reported 25% improvement."
+      ],
+      "expectedChunkContains": [
+        [
+          "lunar regolith amendments",
+          "35%",
+          "primary benchmark"
+        ],
+        [
+          "magnesium cathode exploration",
+          "25%",
+          "primary benchmark"
+        ]
+      ]
+    },
+    {
+      "id": "RET-072",
+      "categories": [
+        "cross_document",
+        "multi_hop"
+      ],
+      "difficulty": "hard",
+      "question": "Compare the reported benchmark improvements for seagrass health scoring and sodium-ion separator ageing.",
+      "expectedFacts": [
+        "seagrass health scoring reported 23% improvement.",
+        "sodium-ion separator ageing reported 33% improvement."
+      ],
+      "expectedChunkContains": [
+        [
+          "seagrass health scoring",
+          "23%",
+          "primary benchmark"
+        ],
+        [
+          "sodium-ion separator ageing",
+          "33%",
+          "primary benchmark"
+        ]
+      ]
+    },
+    {
+      "id": "RET-073",
+      "categories": [
+        "cross_document",
+        "multi_hop"
+      ],
+      "difficulty": "hard",
+      "question": "Compare the reported benchmark improvements for tomato canopy pruning and microplastic spectral sensing.",
+      "expectedFacts": [
+        "tomato canopy pruning reported 15% improvement.",
+        "microplastic spectral sensing reported 20% improvement."
+      ],
+      "expectedChunkContains": [
+        [
+          "tomato canopy pruning",
+          "15%",
+          "primary benchmark"
+        ],
+        [
+          "microplastic spectral sensing",
+          "20%",
+          "primary benchmark"
+        ]
+      ]
+    },
+    {
+      "id": "RET-074",
+      "categories": [
+        "cross_document",
+        "multi_hop"
+      ],
+      "difficulty": "hard",
+      "question": "Compare the reported benchmark improvements for spin-gravity germination and cobalt-free material search.",
+      "expectedFacts": [
+        "spin-gravity germination reported 16% improvement.",
+        "cobalt-free material search reported 46% improvement."
+      ],
+      "expectedChunkContains": [
+        [
+          "spin-gravity germination",
+          "16%",
+          "primary benchmark"
+        ],
+        [
+          "cobalt-free material search",
+          "46%",
+          "primary benchmark"
+        ]
+      ]
+    },
+    {
+      "id": "RET-075",
+      "categories": [
+        "cross_document",
+        "multi_hop"
+      ],
+      "difficulty": "hard",
+      "question": "Compare the reported benchmark improvements for fishery boundary compliance and high-entropy alloy sampling.",
+      "expectedFacts": [
+        "fishery boundary compliance reported 37% improvement.",
+        "high-entropy alloy sampling reported 17% improvement."
+      ],
+      "expectedChunkContains": [
+        [
+          "fishery boundary compliance",
+          "37%",
+          "primary benchmark"
+        ],
+        [
+          "high-entropy alloy sampling",
+          "17%",
+          "primary benchmark"
+        ]
+      ]
+    },
+    {
+      "id": "RET-076",
+      "categories": [
+        "boundary"
+      ],
+      "difficulty": "hard",
+      "question": "Retrieve the complete finding for microgreen harvest timing.",
+      "expectedFacts": [
+        "The complete finding for microgreen harvest timing includes Dr. Elena Raman, 42%, 96.5% validation accuracy, and Pacific Systems Lab."
+      ],
+      "expectedChunkContains": [
+        [
+          "microgreen harvest timing",
+          "Dr. Elena Raman",
+          "42%",
+          "96.5%",
+          "Pacific Systems Lab"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_1_orbital_agriculture.pdf"
+      },
+      "boundaryTermsMustBeTogether": [
+        "microgreen harvest timing",
+        "Dr. Elena Raman",
+        "42%",
+        "96.5%",
+        "Pacific Systems Lab"
+      ]
+    },
+    {
+      "id": "RET-077",
+      "categories": [
+        "boundary"
+      ],
+      "difficulty": "hard",
+      "question": "Retrieve the complete finding for autonomous tray logistics.",
+      "expectedFacts": [
+        "The complete finding for autonomous tray logistics includes Dr. Victor Stein, 30%, 90.3% validation accuracy, and Atlas Institute."
+      ],
+      "expectedChunkContains": [
+        [
+          "autonomous tray logistics",
+          "Dr. Victor Stein",
+          "30%",
+          "90.3%",
+          "Atlas Institute"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_1_orbital_agriculture.pdf"
+      },
+      "boundaryTermsMustBeTogether": [
+        "autonomous tray logistics",
+        "Dr. Victor Stein",
+        "30%",
+        "90.3%",
+        "Atlas Institute"
+      ]
+    },
+    {
+      "id": "RET-078",
+      "categories": [
+        "boundary"
+      ],
+      "difficulty": "hard",
+      "question": "Retrieve the complete finding for crop failure early warning.",
+      "expectedFacts": [
+        "The complete finding for crop failure early warning includes Dr. Mei Zhang, 41%, 85.1% validation accuracy, and Zenith Facility."
+      ],
+      "expectedChunkContains": [
+        [
+          "crop failure early warning",
+          "Dr. Mei Zhang",
+          "41%",
+          "85.1%",
+          "Zenith Facility"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_1_orbital_agriculture.pdf"
+      },
+      "boundaryTermsMustBeTogether": [
+        "crop failure early warning",
+        "Dr. Mei Zhang",
+        "41%",
+        "85.1%",
+        "Zenith Facility"
+      ]
+    },
+    {
+      "id": "RET-079",
+      "categories": [
+        "boundary"
+      ],
+      "difficulty": "hard",
+      "question": "Retrieve the complete finding for soil-less tuber cultivation.",
+      "expectedFacts": [
+        "The complete finding for soil-less tuber cultivation includes Dr. Naomi Hassan, 44%, 97.0% validation accuracy, and Atlas Institute."
+      ],
+      "expectedChunkContains": [
+        [
+          "soil-less tuber cultivation",
+          "Dr. Naomi Hassan",
+          "44%",
+          "97.0%",
+          "Atlas Institute"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_1_orbital_agriculture.pdf"
+      },
+      "boundaryTermsMustBeTogether": [
+        "soil-less tuber cultivation",
+        "Dr. Naomi Hassan",
+        "44%",
+        "97.0%",
+        "Atlas Institute"
+      ]
+    },
+    {
+      "id": "RET-080",
+      "categories": [
+        "boundary"
+      ],
+      "difficulty": "hard",
+      "question": "Retrieve the complete finding for subsurface oxygen logging.",
+      "expectedFacts": [
+        "The complete finding for subsurface oxygen logging includes Dr. Lucas Vega, 44%, 94.9% validation accuracy, and Pacific Systems Lab."
+      ],
+      "expectedChunkContains": [
+        [
+          "subsurface oxygen logging",
+          "Dr. Lucas Vega",
+          "44%",
+          "94.9%",
+          "Pacific Systems Lab"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_2_ocean_networks.pdf"
+      },
+      "boundaryTermsMustBeTogether": [
+        "subsurface oxygen logging",
+        "Dr. Lucas Vega",
+        "44%",
+        "94.9%",
+        "Pacific Systems Lab"
+      ]
+    },
+    {
+      "id": "RET-081",
+      "categories": [
+        "boundary"
+      ],
+      "difficulty": "hard",
+      "question": "Retrieve the complete finding for edge inference compression.",
+      "expectedFacts": [
+        "The complete finding for edge inference compression includes Dr. Marco Okafor, 28%, 94.2% validation accuracy, and Pacific Systems Lab."
+      ],
+      "expectedChunkContains": [
+        [
+          "edge inference compression",
+          "Dr. Marco Okafor",
+          "28%",
+          "94.2%",
+          "Pacific Systems Lab"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_2_ocean_networks.pdf"
+      },
+      "boundaryTermsMustBeTogether": [
+        "edge inference compression",
+        "Dr. Marco Okafor",
+        "28%",
+        "94.2%",
+        "Pacific Systems Lab"
+      ]
+    },
+    {
+      "id": "RET-082",
+      "categories": [
+        "boundary"
+      ],
+      "difficulty": "hard",
+      "question": "Retrieve the complete finding for buoy-to-drone handoff.",
+      "expectedFacts": [
+        "The complete finding for buoy-to-drone handoff includes Dr. Elena Lund, 23%, 89.2% validation accuracy, and Zenith Facility."
+      ],
+      "expectedChunkContains": [
+        [
+          "buoy-to-drone handoff",
+          "Dr. Elena Lund",
+          "23%",
+          "89.2%",
+          "Zenith Facility"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_2_ocean_networks.pdf"
+      },
+      "boundaryTermsMustBeTogether": [
+        "buoy-to-drone handoff",
+        "Dr. Elena Lund",
+        "23%",
+        "89.2%",
+        "Zenith Facility"
+      ]
+    },
+    {
+      "id": "RET-083",
+      "categories": [
+        "boundary"
+      ],
+      "difficulty": "hard",
+      "question": "Retrieve the complete finding for solid electrolyte interface repair.",
+      "expectedFacts": [
+        "The complete finding for solid electrolyte interface repair includes Dr. Priya Zhang, 21%, 96.6% validation accuracy, and Orion Field Station."
+      ],
+      "expectedChunkContains": [
+        [
+          "solid electrolyte interface repair",
+          "Dr. Priya Zhang",
+          "21%",
+          "96.6%",
+          "Orion Field Station"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_3_materials_discovery.pdf"
+      },
+      "boundaryTermsMustBeTogether": [
+        "solid electrolyte interface repair",
+        "Dr. Priya Zhang",
+        "21%",
+        "96.6%",
+        "Orion Field Station"
+      ]
+    },
+    {
+      "id": "RET-084",
+      "categories": [
+        "boundary"
+      ],
+      "difficulty": "hard",
+      "question": "Retrieve the complete finding for defect microscopy labelling.",
+      "expectedFacts": [
+        "The complete finding for defect microscopy labelling includes Dr. Lucas Silva, 18%, 96.3% validation accuracy, and Nova Analytics Hub."
+      ],
+      "expectedChunkContains": [
+        [
+          "defect microscopy labelling",
+          "Dr. Lucas Silva",
+          "18%",
+          "96.3%",
+          "Nova Analytics Hub"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_3_materials_discovery.pdf"
+      },
+      "boundaryTermsMustBeTogether": [
+        "defect microscopy labelling",
+        "Dr. Lucas Silva",
+        "18%",
+        "96.3%",
+        "Nova Analytics Hub"
+      ]
+    },
+    {
+      "id": "RET-085",
+      "categories": [
+        "boundary"
+      ],
+      "difficulty": "hard",
+      "question": "Retrieve the complete finding for thermal cycling benchmarks.",
+      "expectedFacts": [
+        "The complete finding for thermal cycling benchmarks includes Dr. Wei Vega, 24%, 85.8% validation accuracy, and Aurora Research Center."
+      ],
+      "expectedChunkContains": [
+        [
+          "thermal cycling benchmarks",
+          "Dr. Wei Vega",
+          "24%",
+          "85.8%",
+          "Aurora Research Center"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_3_materials_discovery.pdf"
+      },
+      "boundaryTermsMustBeTogether": [
+        "thermal cycling benchmarks",
+        "Dr. Wei Vega",
+        "24%",
+        "85.8%",
+        "Aurora Research Center"
+      ]
+    },
+    {
+      "id": "RET-086",
+      "categories": [
+        "paraphrase",
+        "single_hop"
+      ],
+      "difficulty": "medium",
+      "question": "Which section describes a orbital agriculture method that improved performance by 36 percent after long-term evaluation?",
+      "expectedFacts": [
+        "The crew diet diversity section reported 36% improvement after 32 months."
+      ],
+      "expectedChunkContains": [
+        [
+          "crew diet diversity",
+          "36%",
+          "32",
+          "months"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_1_orbital_agriculture.pdf"
+      }
+    },
+    {
+      "id": "RET-087",
+      "categories": [
+        "paraphrase",
+        "single_hop"
+      ],
+      "difficulty": "medium",
+      "question": "Which section describes a orbital agriculture method that improved performance by 42 percent after long-term evaluation?",
+      "expectedFacts": [
+        "The drip emitter clogging section reported 42% improvement after 27 months."
+      ],
+      "expectedChunkContains": [
+        [
+          "drip emitter clogging",
+          "42%",
+          "27",
+          "months"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_1_orbital_agriculture.pdf"
+      }
+    },
+    {
+      "id": "RET-088",
+      "categories": [
+        "paraphrase",
+        "single_hop"
+      ],
+      "difficulty": "medium",
+      "question": "Which section describes a ocean monitoring method that improved performance by 31 percent after long-term evaluation?",
+      "expectedFacts": [
+        "The sensor biofouling correction section reported 31% improvement after 11 months."
+      ],
+      "expectedChunkContains": [
+        [
+          "sensor biofouling correction",
+          "31%",
+          "11",
+          "months"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_2_ocean_networks.pdf"
+      }
+    },
+    {
+      "id": "RET-089",
+      "categories": [
+        "paraphrase",
+        "single_hop"
+      ],
+      "difficulty": "medium",
+      "question": "Which section describes a ocean monitoring method that improved performance by 20 percent after long-term evaluation?",
+      "expectedFacts": [
+        "The coastal erosion imaging section reported 20% improvement after 23 months."
+      ],
+      "expectedChunkContains": [
+        [
+          "coastal erosion imaging",
+          "20%",
+          "23",
+          "months"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_2_ocean_networks.pdf"
+      }
+    },
+    {
+      "id": "RET-090",
+      "categories": [
+        "paraphrase",
+        "single_hop"
+      ],
+      "difficulty": "medium",
+      "question": "Which section describes a materials discovery method that improved performance by 13 percent after long-term evaluation?",
+      "expectedFacts": [
+        "The cell-pack safety scoring section reported 13% improvement after 13 months."
+      ],
+      "expectedChunkContains": [
+        [
+          "cell-pack safety scoring",
+          "13%",
+          "13",
+          "months"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_3_materials_discovery.pdf"
+      }
+    },
+    {
+      "id": "RET-091",
+      "categories": [
+        "numeric",
+        "single_hop"
+      ],
+      "difficulty": "medium",
+      "question": "What sample count and study duration were reported for salinity alarm thresholds?",
+      "expectedFacts": [
+        "salinity alarm thresholds evaluated 10943 samples over 8 months."
+      ],
+      "expectedChunkContains": [
+        [
+          "salinity alarm thresholds",
+          "10943",
+          "8",
+          "months"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_1_orbital_agriculture.pdf"
+      }
+    },
+    {
+      "id": "RET-092",
+      "categories": [
+        "numeric",
+        "single_hop"
+      ],
+      "difficulty": "medium",
+      "question": "What sample count and study duration were reported for nighttime plankton counting?",
+      "expectedFacts": [
+        "nighttime plankton counting evaluated 2865 samples over 25 months."
+      ],
+      "expectedChunkContains": [
+        [
+          "nighttime plankton counting",
+          "2865",
+          "25",
+          "months"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_2_ocean_networks.pdf"
+      }
+    },
+    {
+      "id": "RET-093",
+      "categories": [
+        "numeric",
+        "single_hop"
+      ],
+      "difficulty": "medium",
+      "question": "What sample count and study duration were reported for multi-fidelity simulation?",
+      "expectedFacts": [
+        "multi-fidelity simulation evaluated 4552 samples over 12 months."
+      ],
+      "expectedChunkContains": [
+        [
+          "multi-fidelity simulation",
+          "4552",
+          "12",
+          "months"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_3_materials_discovery.pdf"
+      }
+    },
+    {
+      "id": "RET-094",
+      "categories": [
+        "numeric",
+        "single_hop"
+      ],
+      "difficulty": "medium",
+      "question": "What sample count and study duration were reported for pollinator drone navigation?",
+      "expectedFacts": [
+        "pollinator drone navigation evaluated 4480 samples over 9 months."
+      ],
+      "expectedChunkContains": [
+        [
+          "pollinator drone navigation",
+          "4480",
+          "9",
+          "months"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_1_orbital_agriculture.pdf"
+      }
+    },
+    {
+      "id": "RET-095",
+      "categories": [
+        "numeric",
+        "single_hop"
+      ],
+      "difficulty": "medium",
+      "question": "What sample count and study duration were reported for active learning acquisition?",
+      "expectedFacts": [
+        "active learning acquisition evaluated 2695 samples over 10 months."
+      ],
+      "expectedChunkContains": [
+        [
+          "active learning acquisition",
+          "2695",
+          "10",
+          "months"
+        ]
+      ],
+      "expectedSource": {
+        "fileName": "paper_3_materials_discovery.pdf"
+      }
+    },
+    {
+      "id": "RET-096",
+      "categories": [
         "no_answer"
       ],
       "difficulty": "medium",
-      "question": "What was the exact cost of the ElectroMind computing cluster?",
+      "question": "Which rocket launched the orbital agriculture experiments?",
       "expectedFacts": [],
       "expectedChunkContains": [],
       "expectedSource": {
-        "fileName": "paper_3_battery_discovery.pdf"
+        "fileName": "paper_1_orbital_agriculture.pdf"
+      },
+      "expectedAnswerBehavior": "no_relevant_evidence"
+    },
+    {
+      "id": "RET-097",
+      "categories": [
+        "no_answer"
+      ],
+      "difficulty": "medium",
+      "question": "What was the exact cost of the greenhouse hardware?",
+      "expectedFacts": [],
+      "expectedChunkContains": [],
+      "expectedSource": {
+        "fileName": "paper_1_orbital_agriculture.pdf"
+      },
+      "expectedAnswerBehavior": "no_relevant_evidence"
+    },
+    {
+      "id": "RET-098",
+      "categories": [
+        "no_answer"
+      ],
+      "difficulty": "medium",
+      "question": "What color were the autonomous ocean drones painted?",
+      "expectedFacts": [],
+      "expectedChunkContains": [],
+      "expectedSource": {
+        "fileName": "paper_2_ocean_networks.pdf"
+      },
+      "expectedAnswerBehavior": "no_relevant_evidence"
+    },
+    {
+      "id": "RET-099",
+      "categories": [
+        "no_answer"
+      ],
+      "difficulty": "medium",
+      "question": "Which insurance provider covered the ocean monitoring network?",
+      "expectedFacts": [],
+      "expectedChunkContains": [],
+      "expectedSource": {
+        "fileName": "paper_2_ocean_networks.pdf"
+      },
+      "expectedAnswerBehavior": "no_relevant_evidence"
+    },
+    {
+      "id": "RET-100",
+      "categories": [
+        "no_answer"
+      ],
+      "difficulty": "medium",
+      "question": "What GPU model trained the materials discovery system?",
+      "expectedFacts": [],
+      "expectedChunkContains": [],
+      "expectedSource": {
+        "fileName": "paper_3_materials_discovery.pdf"
       },
       "expectedAnswerBehavior": "no_relevant_evidence"
     }

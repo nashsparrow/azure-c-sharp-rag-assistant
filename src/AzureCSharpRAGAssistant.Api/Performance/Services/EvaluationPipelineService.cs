@@ -13,6 +13,7 @@ using AzureCSharpRAGAssistant.Api.Services.Indexing;
 using AzureCSharpRAGAssistant.Api.Services.Processing;
 using Microsoft.Extensions.Options;
 using OpenAI.Embeddings;
+using OpenAI.Realtime;
 using UglyToad.PdfPig.Outline;
 
 namespace AzureCSharpRAGAssistant.Api.Performance.Services
@@ -104,9 +105,9 @@ namespace AzureCSharpRAGAssistant.Api.Performance.Services
         {
             var fileList = new List<string>
             {
-                "paper_1_quantum_agriculture.pdf",
-                "paper_2_coral_drones.pdf",
-                "paper_3_battery_discovery.pdf"
+                "paper_1_orbital_agriculture.pdf",
+                "paper_2_ocean_networks.pdf",
+                "paper_3_materials_discovery.pdf"
             };
 
             var assembly = typeof(EvaluationPipelineService).Assembly;
@@ -294,7 +295,7 @@ namespace AzureCSharpRAGAssistant.Api.Performance.Services
             }
         }
 
-        public async Task RunRecallEvaluation(StringBuilder stringBuilder, int topK)
+        public async Task RunRecallPrecisionMRRHitBoundaryFalseEvaluation(StringBuilder stringBuilder, int topK)
         {
             var totalTests = 0;
             var matchedAll = 0;
@@ -302,16 +303,27 @@ namespace AzureCSharpRAGAssistant.Api.Performance.Services
             var matchedNone = 0;
             var mRR_total = 0f;
             var precision_total = 0f;
+            var recall_total = 0f;
 
+            var boundaryTotalTests = 0;
+            var boundayPassed = 0;
+
+            var noAnswerTotalTests = 0;
+            var noAnswerPassed = 0;
+
+
+            //type Main tests
             foreach (var test in _evaluationDataset.Tests)
             {
-                if (test.Categories.Contains(EvaluationCategories.single_hop.ToString()))
+                var resultChunks = await SearchIndexes(test.Question, topK);
+
+                if (test.Categories.Contains(EvaluationCategories.single_hop.ToString()) || test.Categories.Contains(EvaluationCategories.multi_hop.ToString()))
                 {
                     totalTests++;
-                    var result = await SearchIndexes(test.Question, topK);
-                    var compareResult = CompareChunks(test.ExpectedChunkContains, result);
+                    var compareResult = CompareChunks(test.ExpectedChunkContains, resultChunks);
                     mRR_total += CalculateMRRValue(compareResult.rankForMRR);
                     precision_total += CalculatePrecisionValue(compareResult.relevantChunks, topK);
+                    recall_total += compareResult.hitRatio;
 
                     switch (compareResult.result)
                     {
@@ -329,15 +341,80 @@ namespace AzureCSharpRAGAssistant.Api.Performance.Services
                             break;
                     }
                 }
+
+                if (test.Categories.Contains(EvaluationCategories.boundary.ToString()))
+                {
+                    boundaryTotalTests++;
+                    var compareResult = CompareChunksForBoundaryEvaluation(test.BoundaryTermsMustBeTogether, resultChunks);
+                    if (compareResult)
+                    {
+                        boundayPassed++;
+                    }
+                }
+
+                if (test.Categories.Contains(EvaluationCategories.no_answer.ToString()))
+                {
+                    noAnswerTotalTests++;
+                    var compareResult = CompareChunksForNoAnswerFalsePositiveEvaluation(resultChunks);
+                    if (compareResult == true)
+                    {
+                        noAnswerPassed++;
+                    }
+                }
             }
 
-            var recallatValue = ((float)partialyMatched + matchedAll) / totalTests;
+            var hitAtK = ((float)partialyMatched + matchedAll) / totalTests;
+            var recallatValue = recall_total / totalTests;
             var mRRMean = mRR_total / totalTests;
             var precisionMean = precision_total / totalTests;
-            stringBuilder.Append($"Recall@{topK} : ratio: {recallatValue} percentage: {Math.Round(recallatValue * 100, 2)}%");
-            stringBuilder.Append($"MRR@{topK} : ratio: {mRRMean} percentage: {Math.Round(mRRMean * 100, 2)}%");
-            stringBuilder.Append($"Pricision@{topK} : ratio: {precisionMean} percentage: {Math.Round(precisionMean * 100, 2)}%");
-            Console.WriteLine("Recall@{0} : percentage: {1}", topK, recallatValue);
+            var boundaryMean = (float)boundayPassed / boundaryTotalTests;
+            var noAnswerMean = (float)noAnswerPassed / noAnswerTotalTests;
+
+            stringBuilder.AppendLine($"Recall@{topK} : ratio: {recallatValue}  percentage: {Math.Round(recallatValue * 100, 2)}%");
+            stringBuilder.AppendLine($"MRR@{topK} : ratio: {mRRMean}  percentage: {Math.Round(mRRMean * 100, 2)}%");
+            stringBuilder.AppendLine($"Pricision@{topK} : ratio: {precisionMean} percentage: {Math.Round(precisionMean * 100, 2)}%");
+            stringBuilder.AppendLine($"Hit@{topK} : ratio: {hitAtK} percentage: {Math.Round(hitAtK * 100, 2)}%");
+            stringBuilder.AppendLine($"BoundaryRecall@{topK} : ratio: {boundaryMean} percentage: {Math.Round(boundaryMean * 100, 2)}%");
+            stringBuilder.AppendLine($"NoAnswerFalsePositive@{topK} : ratio: {noAnswerMean} percentage: {Math.Round(noAnswerMean * 100, 2)}%");
+
+            stringBuilder.AppendLine($"Recall@{topK},Pricision@{topK}, MRR@{topK},Hit@{topK},BoundaryRecall@{topK},NoAnswerFalsePositive@{topK}");
+            stringBuilder.AppendLine($"{Math.Round(recallatValue * 100, 2)},{Math.Round(precisionMean * 100, 2)},{Math.Round(mRRMean * 100, 2)},{Math.Round(hitAtK * 100, 2)},{Math.Round(boundaryMean * 100, 2)},{Math.Round(noAnswerMean * 100, 2)}");
+
+            Console.WriteLine("Recall@{0} : ratio: {1}", topK, recallatValue);
+        }
+
+        // this method will true - passed, false - fails
+        private bool? CompareChunksForNoAnswerFalsePositiveEvaluation(List<Chunk> chunks)
+        {
+            var threshold = 0.60f;
+
+            if (chunks.Count() == 0)
+            {
+                return true;
+            }
+
+            Console.WriteLine("Chunk Score {0}", chunks[0].Score);
+            var isAllScoresBelowThreshold = chunks?.All(x =>
+                        x.Score <= threshold);
+
+            return isAllScoresBelowThreshold;
+        }
+
+        // this method will true - passed, false - fails
+        private bool CompareChunksForBoundaryEvaluation(List<string>? expectedChunkContains, List<Chunk> chunks)
+        {
+            foreach (var chunk in chunks)
+            {
+                var isMatch = expectedChunkContains?.All(word =>
+                        chunk.Content.Contains(word, StringComparison.OrdinalIgnoreCase));
+
+                if (isMatch == true)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private (EvaluationResults result, float hitRatio, int rankForMRR, int relevantChunks) CompareChunks(List<List<string>> expectedChunkContains, List<Chunk> chunks)
@@ -389,7 +466,7 @@ namespace AzureCSharpRAGAssistant.Api.Performance.Services
             }
         }
 
-        public async Task RunAllEvaluations(bool runRecallEvaluations = true)
+        public async Task RunAllEvaluations()
         {
             var candidatePaths = new[]
             {
@@ -418,6 +495,7 @@ namespace AzureCSharpRAGAssistant.Api.Performance.Services
                 foreach (var chunkSize in config?.ChunkSizes!)
                 {
                     var summaryBuilder = new StringBuilder();
+                    summaryBuilder.AppendLine($"==============================================");
                     summaryBuilder.AppendLine($"Evaluation run started: {DateTime.UtcNow:O}");
                     summaryBuilder.AppendLine($"Embedding deployment: {embeddingDeployment}");
                     summaryBuilder.AppendLine($"Chunk size: {chunkSize}");
@@ -435,7 +513,7 @@ namespace AzureCSharpRAGAssistant.Api.Performance.Services
                     {
                         summaryBuilder.AppendLine($"Processing test: {test.Name}");
 
-                        if (test.Name == "Recall@ Tests" && runRecallEvaluations)
+                        if (test.Name == "@Tests")
                         {
                             var scenarios = test.Scenarios?
                                 .Select(scenario => new { scenario.Name, scenario.TopK })
@@ -444,9 +522,9 @@ namespace AzureCSharpRAGAssistant.Api.Performance.Services
                             //For each scenario in each test category
                             foreach (var scenario in scenarios)
                             {
-                                summaryBuilder.AppendLine($"Running recall scenario: {scenario.Name} with topK={scenario.TopK}");
-                                await RunRecallEvaluation(summaryBuilder, scenario.TopK);
-                                summaryBuilder.AppendLine($"Completed recall scenario: {scenario.Name}");
+                                summaryBuilder.AppendLine($"Running Recall Precision MRR Hit Bounday False scenario: {scenario.Name} with topK={scenario.TopK}");
+                                await RunRecallPrecisionMRRHitBoundaryFalseEvaluation(summaryBuilder, scenario.TopK);
+                                summaryBuilder.AppendLine($"Completed Recall Precision MRR Hit Bounday False scenario: {scenario.Name}");
                             }
                         }
                     }
