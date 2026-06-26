@@ -64,6 +64,13 @@ namespace AzureCSharpRAGAssistant.Api.Services.Documents
                 .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
         }
 
+        public async Task<IReadOnlyList<DocumentRecord>> GetAllDocumentsAsync(CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.Documents
+                .OrderByDescending(x => x.CreatedUtc)
+                .ToListAsync(cancellationToken);
+        }
+
         public async Task<DocumentRecord?> GetByContentHashAsync(string contentHash, CancellationToken cancellationToken = default)
         {
             return await _dbContext.Documents
