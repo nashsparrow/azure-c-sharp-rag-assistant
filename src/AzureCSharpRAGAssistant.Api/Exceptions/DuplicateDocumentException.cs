@@ -8,7 +8,7 @@ namespace AzureCSharpRAGAssistant.Api.Exceptions
     public class DuplicateDocumentException : Exception
     {
         public DuplicateDocumentException(string contentHash)
-            : base($"Document ceontent already exists.")
+            : base($"Document content already exists.")
         {
         }
     }
