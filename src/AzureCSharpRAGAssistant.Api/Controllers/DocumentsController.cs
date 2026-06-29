@@ -30,7 +30,6 @@ namespace AzureCSharpRAGAssistant.Api.Controllers
         }
 
         [HttpGet("getall")]
-        [ServiceFilter(typeof(ValidateFileUploadFilter))]
         public async Task<ActionResult> GetAllDocuments()
         {
             var documents = await _documentRecordsService.GetAllDocumentsAsync();
@@ -38,14 +37,13 @@ namespace AzureCSharpRAGAssistant.Api.Controllers
             return Ok(response);
         }
 
-        [HttpGet("getstatus")]
-        [ServiceFilter(typeof(ValidateFileUploadFilter))]
-        public async Task<ActionResult> GetStatusDocuments([FromBody] DocumentStatusQueryObject request)
+        [HttpGet("getstatus/{id}")]
+        public async Task<ActionResult> GetStatusDocuments([FromRoute] string jobId)
         {
-            var document = await _documentRecordsService.GetByIdAsync(new Guid(request.DocumentId));
+            var document = await _documentRecordsService.GetByJobIdAsync(new Guid(jobId));
             if (document is not null)
             {
-                var response = new DocumentStatusResultObject { DocumentId = document.Id.ToString(), Status = document.Status.ToString() };
+                var response = new DocumentStatusResultObject { JobId = document.JobId.ToString(), Status = document.Status.ToString() };
                 return Ok(response);
             }
 

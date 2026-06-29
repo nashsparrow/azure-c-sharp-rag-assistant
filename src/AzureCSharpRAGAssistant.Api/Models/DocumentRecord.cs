@@ -8,6 +8,7 @@ namespace AzureCSharpRAGAssistant.Api.Models
         public DateTime CreatedUtc { get; set; }
         public bool Indexed { get; set; } = false;
         public DocumentStatus Status { get; set; } = DocumentStatus.Pending;
+        public Guid JobId { get; set; }
     }
 
     public enum DocumentStatus

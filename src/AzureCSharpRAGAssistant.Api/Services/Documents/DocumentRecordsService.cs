@@ -80,6 +80,12 @@ namespace AzureCSharpRAGAssistant.Api.Services.Documents
                 .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
         }
 
+        public async Task<DocumentRecord?> GetByJobIdAsync(Guid id, CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.Documents
+                .FirstOrDefaultAsync(x => x.JobId == id, cancellationToken);
+        }
+
         public async Task<IReadOnlyList<DocumentRecord>> GetAllDocumentsAsync(CancellationToken cancellationToken = default)
         {
             return await _dbContext.Documents

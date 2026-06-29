@@ -57,7 +57,8 @@ namespace AzureCSharpRAGAssistant.Api.Services.Documents
                         FileName = request.File.FileName,
                         ContentHash = hashString,
                         Indexed = false,
-                        Status = DocumentStatus.Uploaded
+                        Status = DocumentStatus.Uploaded,
+                        JobId = request.JobId
                     });
 
                 if (request.Indexing)
