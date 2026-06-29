@@ -63,22 +63,32 @@ namespace AzureCSharpRAGAssistant.Api.Services.Processing
                 var chunks = new List<Chunk>();
                 var fileId = CreateStableDocumentId(file.Content);
                 var extension = Path.GetExtension(fileName);
-
+                bool firstChunk = false;
+                bool firstClean = false;
 
                 if (string.Equals(extension, ".pdf", StringComparison.OrdinalIgnoreCase))
                 {
                     var pages = _pdfExtractionService.ExtractPdfPages(file);
-                    UpdateDocumentStatus(documentId, DocumentStatus.Extracted);
+                    await UpdateDocumentStatus(documentId, DocumentStatus.Extracted);
 
                     foreach (var page in pages)
                     {
                         int chunkIndex = 0;
                         var cleanedText = _textCleanupService.CleanupText(page.Text);
-                        UpdateDocumentStatus(documentId, DocumentStatus.Cleaned);
+                        if (!firstClean)
+                        {
+                            await UpdateDocumentStatus(documentId, DocumentStatus.Cleaned);
+                            firstClean = true;
+                        }
+
                         if (cleanedText != null)
                         {
                             var chunkedArray = _chunkingService.ChunkText(file.FileName, page.PageNumber, cleanedText);
-                            UpdateDocumentStatus(documentId, DocumentStatus.Chunked);
+                            if (!firstChunk)
+                            {
+                                await UpdateDocumentStatus(documentId, DocumentStatus.Chunked);
+                                firstChunk = true;
+                            }
 
                             if (chunkedArray != null)
                             {
@@ -90,19 +100,18 @@ namespace AzureCSharpRAGAssistant.Api.Services.Processing
                                     chunk.ChunkIndex = chunkIndex;
                                     chunks.Add(chunk);
                                 }
-                                UpdateDocumentStatus(documentId, DocumentStatus.Embedded);
-
                                 var res = await _searchIndexService.IndexChunksAsync(chunkedArray);
-                                UpdateDocumentStatus(documentId, DocumentStatus.Indexed);
                             }
                         }
                     }
                 }
+                await UpdateDocumentStatus(documentId, DocumentStatus.Embedded);
+                await UpdateDocumentStatus(documentId, DocumentStatus.Indexed);
                 return chunks;
             }
             catch (Exception ex)
             {
-                UpdateDocumentStatus(documentId, DocumentStatus.Failed);
+                await UpdateDocumentStatus(documentId, DocumentStatus.Failed);
                 throw;
             }
         }
@@ -114,7 +123,7 @@ namespace AzureCSharpRAGAssistant.Api.Services.Processing
         }
 
 
-        private async void UpdateDocumentStatus(Guid? docId, DocumentStatus status)
+        private async Task UpdateDocumentStatus(Guid? docId, DocumentStatus status)
         {
             if (docId is null)
             {

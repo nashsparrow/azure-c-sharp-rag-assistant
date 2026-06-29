@@ -3,6 +3,7 @@ using AzureCSharpRAGAssistant.Api.Contracts.Requests;
 using AzureCSharpRAGAssistant.Api.Contracts.Results;
 using AzureCSharpRAGAssistant.Api.Filters;
 using AzureCSharpRAGAssistant.Api.Mappers;
+using AzureCSharpRAGAssistant.Api.Models;
 using AzureCSharpRAGAssistant.Api.Services.Documents;
 using Microsoft.AspNetCore.Mvc;
 
@@ -37,7 +38,7 @@ namespace AzureCSharpRAGAssistant.Api.Controllers
             return Ok(response);
         }
 
-        [HttpGet("getstatus/{id}")]
+        [HttpGet("getstatus/{jobId}")]
         public async Task<ActionResult> GetStatusDocuments([FromRoute] string jobId)
         {
             var document = await _documentRecordsService.GetByJobIdAsync(new Guid(jobId));
@@ -47,7 +48,7 @@ namespace AzureCSharpRAGAssistant.Api.Controllers
                 return Ok(response);
             }
 
-            return Ok(null);
+            return Ok(new DocumentStatusResultObject { JobId = jobId, Status = DocumentStatus.Pending.ToString() });
         }
     }
 }
