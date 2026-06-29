@@ -42,6 +42,22 @@ namespace AzureCSharpRAGAssistant.Api.Services.Documents
             return existingDocument;
         }
 
+        public async Task<DocumentRecord?> UpdateStatusByIdAsync(Guid id, DocumentStatus status, CancellationToken cancellationToken = default)
+        {
+            var existingDocument = await _dbContext.Documents
+                .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+
+            if (existingDocument is null)
+            {
+                return null;
+            }
+            existingDocument.Status = status;
+
+            await _dbContext.SaveChangesAsync(cancellationToken);
+
+            return existingDocument;
+        }
+
         public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
         {
             var document = await _dbContext.Documents

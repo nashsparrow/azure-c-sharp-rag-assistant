@@ -1,4 +1,6 @@
 using AzureCSharpRAGAssistant.Api.Contracts;
+using AzureCSharpRAGAssistant.Api.Contracts.Requests;
+using AzureCSharpRAGAssistant.Api.Contracts.Results;
 using AzureCSharpRAGAssistant.Api.Filters;
 using AzureCSharpRAGAssistant.Api.Mappers;
 using AzureCSharpRAGAssistant.Api.Services.Documents;
@@ -34,6 +36,20 @@ namespace AzureCSharpRAGAssistant.Api.Controllers
             var documents = await _documentRecordsService.GetAllDocumentsAsync();
             var response = documents.Select(x => x.ToResponse());
             return Ok(response);
+        }
+
+        [HttpGet("getstatus")]
+        [ServiceFilter(typeof(ValidateFileUploadFilter))]
+        public async Task<ActionResult> GetStatusDocuments([FromBody] DocumentStatusQueryObject request)
+        {
+            var document = await _documentRecordsService.GetByIdAsync(new Guid(request.DocumentId));
+            if (document is not null)
+            {
+                var response = new DocumentStatusResultObject { DocumentId = document.Id.ToString(), Status = document.Status.ToString() };
+                return Ok(response);
+            }
+
+            return Ok(null);
         }
     }
 }

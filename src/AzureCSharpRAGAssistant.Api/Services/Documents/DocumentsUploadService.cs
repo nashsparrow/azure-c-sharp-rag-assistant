@@ -56,12 +56,22 @@ namespace AzureCSharpRAGAssistant.Api.Services.Documents
                     {
                         FileName = request.File.FileName,
                         ContentHash = hashString,
-                        Indexed = false
+                        Indexed = false,
+                        Status = DocumentStatus.Uploaded
                     });
 
                 if (request.Indexing)
                 {
-                    var res = await _documentProcessingService.ProcessDocument(request.File.FileName);
+                    byte[] fileContent;
+                    await using (var fileStream = request.File.OpenReadStream())
+                    await using (var memoryStream = new MemoryStream())
+                    {
+                        await fileStream.CopyToAsync(memoryStream);
+                        fileContent = memoryStream.ToArray();
+                    }
+
+                    var blobFile = new BlobFileResult { Content = fileContent, FileName = request.File.FileName };
+                    var res = await _documentProcessingService.ProcessDocument(documentRecord.Id, blobFile);
 
                     if (res.Succeeded)
                     {

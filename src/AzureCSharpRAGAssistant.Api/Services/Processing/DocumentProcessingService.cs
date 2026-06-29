@@ -1,7 +1,9 @@
 using System.Security.Cryptography;
+using AzureCSharpRAGAssistant.Api.Contracts;
 using AzureCSharpRAGAssistant.Api.Contracts.Results;
 using AzureCSharpRAGAssistant.Api.Contracts.Settings;
 using AzureCSharpRAGAssistant.Api.Models;
+using AzureCSharpRAGAssistant.Api.Services.Documents;
 using AzureCSharpRAGAssistant.Api.Services.Embedding;
 using AzureCSharpRAGAssistant.Api.Services.Indexing;
 using AzureCSharpRAGAssistant.Api.Services.Storage;
@@ -18,9 +20,11 @@ namespace AzureCSharpRAGAssistant.Api.Services.Processing
         private readonly IEmbeddingService _embeddingService;
         private readonly ISearchIndexService _searchIndexService;
         private readonly FolderSettings _folderSettings;
+        private readonly IDocumentRecordsService _documentRecordService;
 
         public DocumentProcessingService(IPdfExtractionService pdfExtractionService, ITextCleanupService textCleanupService, IFileStorageService fileStorageService,
-         IOptions<FolderSettings> folderSettings, IChunkingService chunkingService, IEmbeddingService embeddingService, ISearchIndexService searchIndexService)
+         IOptions<FolderSettings> folderSettings, IChunkingService chunkingService, IEmbeddingService embeddingService, ISearchIndexService searchIndexService,
+         IDocumentRecordsService documentRecordService)
         {
             _pdfExtractionService = pdfExtractionService;
             _textCleanupService = textCleanupService;
@@ -29,6 +33,7 @@ namespace AzureCSharpRAGAssistant.Api.Services.Processing
             _chunkingService = chunkingService;
             _embeddingService = embeddingService;
             _searchIndexService = searchIndexService;
+            _documentRecordService = documentRecordService;
         }
 
         public async Task<DocumentProcessingResult> ProcessAllDocuments()
@@ -44,55 +49,79 @@ namespace AzureCSharpRAGAssistant.Api.Services.Processing
             return new DocumentProcessingResult { Succeeded = true, Chunks = chunks };
         }
 
-        public async Task<DocumentProcessingResult> ProcessDocument(string fileName)
+        public async Task<DocumentProcessingResult> ProcessDocument(Guid documentId, BlobFileResult file)
         {
-            var file = await _fileStorageService.DownloadDocument(_folderSettings.DocumentsFolder, fileName);
-            var chunks = await Process(file, fileName);
+            var chunks = await Process(file, file.FileName, documentId);
             return new DocumentProcessingResult { Succeeded = true, Chunks = chunks };
 
         }
 
-        public async Task<List<Chunk>> Process(Contracts.BlobFileResult file, string fileName)
+        public async Task<List<Chunk>> Process(BlobFileResult file, string fileName, Guid? documentId = null)
         {
-            var chunks = new List<Chunk>();
-            var fileId = CreateStableDocumentId(file.Content);
-            var extension = Path.GetExtension(fileName);
-
-
-            if (string.Equals(extension, ".pdf", StringComparison.OrdinalIgnoreCase))
+            try
             {
-                var pages = _pdfExtractionService.ExtractPdfPages(file);
-                foreach (var page in pages)
+                var chunks = new List<Chunk>();
+                var fileId = CreateStableDocumentId(file.Content);
+                var extension = Path.GetExtension(fileName);
+
+
+                if (string.Equals(extension, ".pdf", StringComparison.OrdinalIgnoreCase))
                 {
-                    int chunkIndex = 0;
-                    var cleanedText = _textCleanupService.CleanupText(page.Text);
-                    if (cleanedText != null)
+                    var pages = _pdfExtractionService.ExtractPdfPages(file);
+                    UpdateDocumentStatus(documentId, DocumentStatus.Extracted);
+
+                    foreach (var page in pages)
                     {
-                        var chunkedArray = _chunkingService.ChunkText(file.FileName, page.PageNumber, cleanedText);
-
-                        if (chunkedArray != null)
+                        int chunkIndex = 0;
+                        var cleanedText = _textCleanupService.CleanupText(page.Text);
+                        UpdateDocumentStatus(documentId, DocumentStatus.Cleaned);
+                        if (cleanedText != null)
                         {
-                            foreach (var chunk in chunkedArray)
-                            {
-                                chunkIndex++;
-                                chunk.ContentVector = await _embeddingService.GenerateEmbeddings(chunk.Content);
-                                chunk.FileId = fileId.ToString();
-                                chunk.ChunkIndex = chunkIndex;
-                                chunks.Add(chunk);
-                            }
+                            var chunkedArray = _chunkingService.ChunkText(file.FileName, page.PageNumber, cleanedText);
+                            UpdateDocumentStatus(documentId, DocumentStatus.Chunked);
 
-                            var res = await _searchIndexService.IndexChunksAsync(chunkedArray);
+                            if (chunkedArray != null)
+                            {
+                                foreach (var chunk in chunkedArray)
+                                {
+                                    chunkIndex++;
+                                    chunk.ContentVector = await _embeddingService.GenerateEmbeddings(chunk.Content);
+                                    chunk.FileId = fileId.ToString();
+                                    chunk.ChunkIndex = chunkIndex;
+                                    chunks.Add(chunk);
+                                }
+                                UpdateDocumentStatus(documentId, DocumentStatus.Embedded);
+
+                                var res = await _searchIndexService.IndexChunksAsync(chunkedArray);
+                                UpdateDocumentStatus(documentId, DocumentStatus.Indexed);
+                            }
                         }
                     }
                 }
+                return chunks;
             }
-            return chunks;
+            catch (Exception ex)
+            {
+                UpdateDocumentStatus(documentId, DocumentStatus.Failed);
+                throw;
+            }
         }
 
         private static string CreateStableDocumentId(byte[] content)
         {
             var hash = SHA256.HashData(content);
             return Convert.ToHexString(hash).ToLowerInvariant();
+        }
+
+
+        private async void UpdateDocumentStatus(Guid? docId, DocumentStatus status)
+        {
+            if (docId is null)
+            {
+                return;
+            }
+
+            await _documentRecordService.UpdateStatusByIdAsync(docId.Value, status);
         }
     }
 }

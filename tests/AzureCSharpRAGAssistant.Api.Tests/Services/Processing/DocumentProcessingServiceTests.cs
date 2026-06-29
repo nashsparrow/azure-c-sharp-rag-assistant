@@ -2,6 +2,7 @@ using AzureCSharpRAGAssistant.Api.Contracts;
 using AzureCSharpRAGAssistant.Api.Contracts.Settings;
 using AzureCSharpRAGAssistant.Api.Models;
 using AzureCSharpRAGAssistant.Api.Services;
+using AzureCSharpRAGAssistant.Api.Services.Documents;
 using AzureCSharpRAGAssistant.Api.Services.Embedding;
 using AzureCSharpRAGAssistant.Api.Services.Indexing;
 using AzureCSharpRAGAssistant.Api.Services.Processing;
@@ -20,6 +21,7 @@ namespace AzureCSharpRAGAssistant.Api.Tests.Services.Processing
         private readonly Mock<IChunkingService> _chunkingServiceMock;
         private readonly Mock<IEmbeddingService> _embeddingServiceMock;
         private readonly Mock<ISearchIndexService> _searchIndexServiceMock;
+        private readonly Mock<IDocumentRecordsService> _documentRecordsService;
         private readonly IOptions<FolderSettings> _folderSettings;
 
 
@@ -31,11 +33,12 @@ namespace AzureCSharpRAGAssistant.Api.Tests.Services.Processing
             _chunkingServiceMock = new Mock<IChunkingService>();
             _embeddingServiceMock = new Mock<IEmbeddingService>();
             _searchIndexServiceMock = new Mock<ISearchIndexService>();
+            _documentRecordsService = new Mock<IDocumentRecordsService>();
 
             _folderSettings = Options.Create(new FolderSettings { DocumentsFolder = "test", OutputFolder = "output" });
 
             _documentProcessingService = new DocumentProcessingService(_pdfExtractionServiceMock.Object, _textCleanupServiceMock.Object,
-             _fileStorageServiceMock.Object, _folderSettings, _chunkingServiceMock.Object, _embeddingServiceMock.Object, _searchIndexServiceMock.Object);
+             _fileStorageServiceMock.Object, _folderSettings, _chunkingServiceMock.Object, _embeddingServiceMock.Object, _searchIndexServiceMock.Object, _documentRecordsService.Object);
         }
 
         [Fact]
@@ -85,7 +88,7 @@ namespace AzureCSharpRAGAssistant.Api.Tests.Services.Processing
                 .Setup(x => x.IndexChunksAsync(It.IsAny<IEnumerable<Chunk>>()))
                 .ReturnsAsync(Mock.Of<Azure.Search.Documents.Models.IndexDocumentsResult>());
 
-            var result = await _documentProcessingService.ProcessDocument(fileName);
+            var result = await _documentProcessingService.ProcessDocument(Guid.NewGuid(), blobFile);
 
             var chunks = result.Chunks;
             Assert.Single(result.Chunks);

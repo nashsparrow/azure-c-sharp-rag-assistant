@@ -11,5 +11,6 @@ namespace AzureCSharpRAGAssistant.Api.Services.Documents
         Task<DocumentRecord?> GetByContentHashAsync(string contentHash, CancellationToken cancellationToken = default);
         Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken = default);
         Task<IReadOnlyList<DocumentRecord>> GetAllDocumentsAsync(CancellationToken cancellationToken = default);
+        Task<DocumentRecord?> UpdateStatusByIdAsync(Guid id, DocumentStatus status, CancellationToken cancellationToken = default);
     }
 }
