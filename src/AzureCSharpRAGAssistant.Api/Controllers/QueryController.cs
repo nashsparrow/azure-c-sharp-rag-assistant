@@ -26,7 +26,7 @@ namespace AzureCSharpRAGAssistant.Api.Controllers
         public async Task<ActionResult> Query([FromBody] QueryRequest request)
         {
             var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
-            var sessionResult = await _sessionsService.HandleSessionAndReturnValidAsync(ipAddress, ActivityType.upload);
+            var sessionResult = await _sessionsService.HandleSessionAndReturnValidAsync(ipAddress, ActivityType.chat);
 
             if (!sessionResult.isValid)
             {
@@ -46,7 +46,7 @@ namespace AzureCSharpRAGAssistant.Api.Controllers
         public async Task<ActionResult> QueryWithSemanticKernel([FromBody] QueryRequest request)
         {
             var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
-            var sessionResult = await _sessionsService.HandleSessionAndReturnValidAsync(ipAddress, ActivityType.upload);
+            var sessionResult = await _sessionsService.HandleSessionAndReturnValidAsync(ipAddress, ActivityType.chat);
 
             if (!sessionResult.isValid)
             {
