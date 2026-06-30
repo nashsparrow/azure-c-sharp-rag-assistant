@@ -5,6 +5,7 @@ using AzureCSharpRAGAssistant.Api.Contracts.Settings;
 using AzureCSharpRAGAssistant.Api.Exceptions;
 using AzureCSharpRAGAssistant.Api.Models;
 using AzureCSharpRAGAssistant.Api.Services.Processing;
+using AzureCSharpRAGAssistant.Api.Services.Sessions;
 using AzureCSharpRAGAssistant.Api.Services.Storage;
 using Microsoft.Extensions.Options;
 
@@ -32,6 +33,7 @@ namespace AzureCSharpRAGAssistant.Api.Services.Documents
         {
             ArgumentNullException.ThrowIfNull(request);
             ArgumentNullException.ThrowIfNull(request.File);
+
             _logger.LogInformation(
                 "Uploading File {FileName} with Indexing: {Indexing}.",
                 request.File.FileName,

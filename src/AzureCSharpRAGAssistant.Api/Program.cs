@@ -15,6 +15,7 @@ using AzureCSharpRAGAssistant.Api.Services.Documents;
 using AzureCSharpRAGAssistant.Api.Services.Embedding;
 using AzureCSharpRAGAssistant.Api.Services.Indexing;
 using AzureCSharpRAGAssistant.Api.Services.Processing;
+using AzureCSharpRAGAssistant.Api.Services.Sessions;
 using AzureCSharpRAGAssistant.Api.Services.Storage;
 using Microsoft.EntityFrameworkCore;
 
@@ -80,6 +81,7 @@ builder.Services.AddScoped<IKernelFactory, KernelFactory>();
 builder.Services.AddScoped<DocumentSearchPlugin>();
 builder.Services.AddScoped<ISKAnswerService, SKAnswerService>();
 builder.Services.AddScoped<IEvaluationPipelineService, EvaluationPipelineService>();
+builder.Services.AddScoped<ISessionsService, SessionsService>();
 
 builder.Services.AddScoped<ValidateFileUploadFilter>();
 

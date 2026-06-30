@@ -13,6 +13,7 @@ namespace AzureCSharpRAGAssistant.Api.Data
         public DbSet<DocumentRecord> Documents => Set<DocumentRecord>();
 
         public DbSet<ChatHistory> ChatHistories => Set<ChatHistory>();
+        public DbSet<Session> Sessions => Set<Session>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

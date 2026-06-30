@@ -1,6 +1,5 @@
 using AzureCSharpRAGAssistant.Api.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.ApplicationInsights;
 
 namespace AzureCSharpRAGAssistant.Api.Data
 {
@@ -8,6 +7,7 @@ namespace AzureCSharpRAGAssistant.Api.Data
     {
         DbSet<DocumentRecord> Documents { get; }
         DbSet<ChatHistory> ChatHistories { get; }
+        DbSet<Session> Sessions { get; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }

@@ -1,10 +1,11 @@
 using AzureCSharpRAGAssistant.Api.Contracts;
-using AzureCSharpRAGAssistant.Api.Contracts.Requests;
 using AzureCSharpRAGAssistant.Api.Contracts.Results;
+using AzureCSharpRAGAssistant.Api.Exceptions;
 using AzureCSharpRAGAssistant.Api.Filters;
 using AzureCSharpRAGAssistant.Api.Mappers;
 using AzureCSharpRAGAssistant.Api.Models;
 using AzureCSharpRAGAssistant.Api.Services.Documents;
+using AzureCSharpRAGAssistant.Api.Services.Sessions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AzureCSharpRAGAssistant.Api.Controllers
@@ -15,17 +16,27 @@ namespace AzureCSharpRAGAssistant.Api.Controllers
     {
         private readonly IDocumentsUploadService _documentsUploadService;
         private readonly IDocumentRecordsService _documentRecordsService;
+        private readonly ISessionsService _sessionsService;
 
-        public DocumentsController(IDocumentsUploadService documentsUploadService, IDocumentRecordsService documentRecordsService)
+        public DocumentsController(IDocumentsUploadService documentsUploadService, IDocumentRecordsService documentRecordsService, ISessionsService sessionsService)
         {
             _documentsUploadService = documentsUploadService;
             _documentRecordsService = documentRecordsService;
+            _sessionsService = sessionsService;
         }
 
         [HttpPost("upload")]
         [ServiceFilter(typeof(ValidateFileUploadFilter))]
         public async Task<ActionResult> DocumentUpload([FromForm] DocumentUploadRequest request)
         {
+            var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+            var sessionResult = await _sessionsService.HandleSessionAndReturnValidAsync(ipAddress, ActivityType.upload);
+
+            if (!sessionResult.isValid)
+            {
+                throw new SessionValidationException(sessionResult.reason);
+            }
+
             var document = await _documentsUploadService.UploadDocument(request);
             return Ok(document.ToResponse());
         }
